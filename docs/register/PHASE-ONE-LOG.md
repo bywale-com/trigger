@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 13:40 UTC 2026-10-19 — product overview filed beside this log at [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md). Vision captured. Architecture and implementation not authorized. Nothing planted.
+**Current (read first, then the newest stamp at the bottom):** 13:50 UTC 2026-10-19 — seed and self-contained grain discussed. Overview §8 still open. Architecture not authorized. Nothing planted.
 
 **How we maintain this log**
 
@@ -52,3 +52,35 @@
 **Status on that document:** Vision captured; architecture and implementation not yet authorized. Next stage named there: architectural and implementation planning, when separately authorized.
 
 **What changed:** the file. This stamp does not restate it. The 13:30 stamp is unchanged.
+
+---
+
+## 13:50 UTC 2026-10-19 — seed, and the grain that stops
+
+**Kind:** founder discussion. Excerpts. Not a locked grain. Not an authorization to architect.
+
+**Founder wording:**
+
+> The problem with decoupling UI for systems. We ran into this problem where we were retrospectively looking to map the state changes and mutations caused by UI interfaces and interactions.
+>
+> The evolved version had us building both together. We build a self-contained UI layer — meaning its dependencies were considered, factored in and specified alongside the UI component. We didn't simply think of the UI idea and move on. We had to complete the thinking for each packet.
+>
+> Whatever the unit of a task inside of a trigger row, it must somehow contain everything required to make the seed function work.
+>
+> There's always a trigger that starts the thinking towards a functionality or component or feature. That thing is the seed.
+>
+> With Travis, we recognized a critical bottleneck was needing to log back into Cursor to log an issue. So the Look module exists to quickly log an issue without needing to log back into Cursor and recreate from memory or needing to perfectly describe the issue. The risk is that it might seed the wrong thing into the description of the solution.
+>
+> The Look modal allowed us to accurately capture the problem, without needing to depend on me to re-enact the problem.
+>
+> Seed plus first implementation idea creates considerations, but there must be an end. It can't go on forever. The retrospective question is: could Look have resolved into the boundedness that it ultimately developed into, or would it have gone on and on, even into other modules?
+>
+> Everything within it is what I think a unit of work is. Specified to a grain that keeps it self-contained.
+>
+> Is it all just system message / synthesized methodology that we're chasing and a place to organize that decomposition? Or is there some harness engineering in there?
+>
+> What part would Cursor even play here? Is it the building? Very possible. No need to invent a build harness. It's the decomposition. But then why wouldn't Cursor be ok for that? Is it just avoiding responsibility for maintaining the agent?
+
+**Read back, as asked.** Overview §8, still undecided: a packet must be precise enough for an agent to execute, and meaningful enough for the factory to verify. Grain follows from the work and from whether the intended result can be shown. §8.1: the obligation survives a failed attempt. Seat law beside that: one module, list the perimeter it forces open, those outskirts are the next entries. A packet holds face and technical grain together. Leftover grain means it is not ready.
+
+**Agent alignment (not a flag):** The row holds a seed. The unit inside it is closed when it contains the face and the mutations that face causes, and when a check can show the seed happened. Further modules are the next seeds. Cursor builds an authorized unit. Trigger keeps the seed, the stop, and the check. That is the picture in this chat. It does not amend the overview.
