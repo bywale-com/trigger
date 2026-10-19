@@ -1,6 +1,6 @@
 # Trigger
 
-Work repo. Seats follow the sitting protocol imported from [travis](https://github.com/bywale-com/travis).
+Work repo. Product direction: [`docs/register/PRODUCT-OVERVIEW.md`](docs/register/PRODUCT-OVERVIEW.md). Seats follow the sitting protocol imported from [travis](https://github.com/bywale-com/travis). Architecture and implementation are not authorized.
 
 ## Implementation
 

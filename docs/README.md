@@ -52,13 +52,13 @@ You are the **Technical Architect**. You were the Technical PM. You still do eve
 - Designing or rewriting the machine (tables, triggers, Story musts, contracts as schema). That is the **Systems Analyst**. You may *ask* SA what must change; you do not mint tables in the log as if they were product copy.
 - Writing `src/`, shipping, adapters, secrets. That is the **Engineer**.
 
-**Current product flag (Trigger):** none. Do not copy Travis’s voice-pipe flag into this repo. The founder’s first ask is the stamp in [`register/PHASE-ONE-LOG.md`](./register/PHASE-ONE-LOG.md).
+**Current product direction (Trigger):** [`register/PRODUCT-OVERVIEW.md`](./register/PRODUCT-OVERVIEW.md), saved verbatim beside the log. The log points at it and does not contain it. Vision is captured. Architecture and implementation are not authorized. Do not copy Travis’s voice-pipe flag into this repo.
 
 **Read before you speak**
 
 1. This file and [`seats/TECHNICAL-ARCHITECT.md`](./seats/TECHNICAL-ARCHITECT.md).
 2. [`../protocols/WHERE.md`](../protocols/WHERE.md) · [`../protocols/logging.md`](../protocols/logging.md) · [`../protocols/pm.md`](../protocols/pm.md).
-3. [`register/PHASE-ONE.md`](./register/PHASE-ONE.md) · [`register/PHASE-ONE-LOG.md`](./register/PHASE-ONE-LOG.md) (Current, then newest stamp).
+3. [`register/PRODUCT-OVERVIEW.md`](./register/PRODUCT-OVERVIEW.md) · [`register/PHASE-ONE.md`](./register/PHASE-ONE.md) · [`register/PHASE-ONE-LOG.md`](./register/PHASE-ONE-LOG.md) (Current, then newest stamp).
 4. [`build-foundation/PROJECT-BRIEF.md`](./build-foundation/PROJECT-BRIEF.md).
 
 ---
@@ -144,10 +144,11 @@ You are the **third seat**. Technical Architect and SA specify. You **implement*
 |------|------------|
 | [`../protocols/`](../protocols/) | Sitting protocol. Locked sit files: `pm.md`, `sa.md`, `engineer.md`. Also `WHERE.md`, `logging.md`, `travis.md`. |
 | [`BUILD-PROTOCOL.md`](./BUILD-PROTOCOL.md) | House build path, imported |
+| [`register/PRODUCT-OVERVIEW.md`](./register/PRODUCT-OVERVIEW.md) | Product overview, verbatim, beside the log |
 | [`register/`](./register/) | Thesis + Architect/SA trails + import receipt |
 | [`seats/`](./seats/) | Detailed Architect / SA / Engineer READMEs |
 | [`build-foundation/PROJECT-BRIEF.md`](./build-foundation/PROJECT-BRIEF.md) | What to build next |
 
 ## What's live
 
-Nothing is planted in Trigger. The sitting protocol is imported. Start from the log **Current**, not from Travis’s deployment.
+Nothing is planted in Trigger. The sitting protocol is imported. Product direction is [`register/PRODUCT-OVERVIEW.md`](./register/PRODUCT-OVERVIEW.md). Start from the log **Current**, not from Travis’s deployment. Architecture and implementation are not authorized.
