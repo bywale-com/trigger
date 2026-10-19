@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 14:57 UTC 2026-10-19 — seed references behave like Go to Declaration / Go to References. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 15:05 UTC 2026-10-19 — recent seed/page moves checked against the existing cycles. Overview not amended. Architecture not authorized.
 
 **How we maintain this log**
 
@@ -168,3 +168,30 @@ Cursor still builds. The page is the place the derived structure is held. This a
 > I’m sure this alone plants various ideas that support what we just discovered.
 
 **Agent alignment (not a flag):** A seed’s page is its declaration. The root lives there once. A mention on another page, in prose, How, systems specification, a plate, or a click-path, is a reference. Go to Declaration opens the root page. Go to References lists every page that cites this seed. Peek shows the root without bringing its body into this page. Go to implementations is a different jump, from the seed to its build attempts and evidence. Inside a page, How stays a tree until a leaf is a reference. Across pages the structure is a reference graph. A necessary neighbor with no page yet is an unresolved reference and open work. A new promise can be cited and stays unenterable as V1. The right-click offers those jumps. It does not paste the other seed here. This does not lock the menu or a symbol store.
+
+---
+
+## 15:05 UTC 2026-10-19 — which cycles these decompositions already are
+
+**Kind:** founder question. Check against the written method. Alignment labeled. Not a new cycle. Overview not amended. Architecture not authorized.
+
+**Founder wording:**
+
+> I’m not only using a How Analysis to decompose, am I? We have other cycles, check.
+>
+> Can you use just those cycles (in whichever combination) to explain some of these most recent decompositions from me? Or would we find something, some method, that lies outside of that as well?
+
+**Cycles checked** (Travis method and build foundation, not Trigger’s overview):
+
+- Seed → World, then a machine column and a face column (`docs/method/TWO-COLUMN-SYNTHESIS.md`)
+- How Analysis — DNA, visibility, stop at the leaf (`01-ui-first-and-how.md`)
+- Outcome so-that — point at the next entity already in the lattice, or register the missing one (`08-outcome-so-that.md`)
+- Flows — at the anchor, leaves are test cases and process assumptions (`04-flows-and-shipping.md`)
+- Click-through, strips, outcomes tree (`05-register-augmented-build.md`)
+- Surface registry — a region has a name and a home (`02-surface-registry.md`)
+- Parametric elimination — one job, quiet until invited (`06-parametric-elimination.md`)
+- Decision constitution — no catch-all bucket (`DECISION-CONSTITUTION.md`)
+
+**Agent alignment (not a flag):** The page, the ejection of other seeds, and Go to Declaration / Go to References are those cycles in combination. How alone would keep the child in the tree. Seed → World makes one seed a world. The two columns are why the page holds a face and a machine. So-that plus the decision constitution are why the neighbor is registered on its own page and this page only points. The surface registry plus that lattice are why a mention in prose, How, a plate, or a systems line can resolve to one root. Parametric elimination is why the popup stays a small invited menu.
+
+Outside those cycles: a jump from the seed to its build attempts and verification evidence; the refusal to give a discovered neighbor a page in this version; and the rule for when a cycle is allowed to run again. Those are Trigger’s factory and its version boundary. They are not a further decomposition method.
