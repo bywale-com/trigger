@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 14:52 UTC 2026-10-19 — a seed’s decomposition pushes other seeds out; their roots live on those other pages. Page shape discussed. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 14:57 UTC 2026-10-19 — seed references behave like Go to Declaration / Go to References. Overview not amended. Architecture not authorized.
 
 **How we maintain this log**
 
@@ -154,3 +154,17 @@ Cursor still builds. The page is the place the derived structure is held. This a
 > Naturally the structure of a page is called into question. It appears to be a mix of prose (potentially where other seeds would appear — it of course would capture the discovery of other seeds), how-analysis, systems specification, plates, click-path formatting, etc.
 
 **Agent alignment (not a flag):** Depth stays inside this seed. Another seed is pushed out at the moment it is recognized. This page keeps a discovery in prose: the phrase that forced the other seed, and a pointer. The root is written on the other page, and that page cites back. How, systems specification, plates, and click-path are completions of this seed only. A section that describes another seed does not stay here. A necessary neighbor gets its own page. A new promise is captured and does not become a V1 page by being discovered. This does not lock the section list.
+
+---
+
+## 14:57 UTC 2026-10-19 — Go to Declaration, Go to References
+
+**Kind:** founder discussion. Excerpt. Alignment labeled. Not a locked interaction, not an editor inside Trigger. Overview not amended. Architecture not authorized.
+
+**Founder wording:**
+
+> Further decomposition of that idea of seeds referenceable in root pages. I’m drawn to a specific VS Code functionality that allows you to right click on a function or component in a TypeScript file (or even across multiple languages), then be served with a popup modal with options like Go to Declaration or Go to References, etc.
+>
+> I’m sure this alone plants various ideas that support what we just discovered.
+
+**Agent alignment (not a flag):** A seed’s page is its declaration. The root lives there once. A mention on another page, in prose, How, systems specification, a plate, or a click-path, is a reference. Go to Declaration opens the root page. Go to References lists every page that cites this seed. Peek shows the root without bringing its body into this page. Go to implementations is a different jump, from the seed to its build attempts and evidence. Inside a page, How stays a tree until a leaf is a reference. Across pages the structure is a reference graph. A necessary neighbor with no page yet is an unresolved reference and open work. A new promise can be cited and stays unenterable as V1. The right-click offers those jumps. It does not paste the other seed here. This does not lock the menu or a symbol store.

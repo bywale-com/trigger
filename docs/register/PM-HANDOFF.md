@@ -16,14 +16,14 @@
 
 | What | Where |
 |------|--------|
-| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **14:52 UTC 2026-10-19** |
+| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **14:57 UTC 2026-10-19** |
 | Product overview | [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) — verbatim, beside the log |
 | Sitting protocol | [`protocols/`](../../protocols/) · receipt [`SITTING-PROTOCOL-IMPORT.md`](./SITTING-PROTOCOL-IMPORT.md) |
 | Plant | none |
 
 ## Next Architect job
 
-The overview’s next stage is architectural and implementation planning, when the founder authorizes it. The 13:50 stamp is seed and bound. The 14:39 stamp is cadence, Pages, and expansion through decomposition. The 14:52 stamp is pushing other seeds out of a page, and the page’s mix of prose, How, systems, plates, and click-path. None of these authorize that planning.
+The overview’s next stage is architectural and implementation planning, when the founder authorizes it. The 13:50 stamp is seed and bound. The 14:39 stamp is cadence, Pages, and expansion through decomposition. The 14:52 stamp is pushing other seeds out of a page, and the page’s mix of prose, How, systems, plates, and click-path. The 14:57 stamp is seed references modeled on Go to Declaration and Go to References. None of these authorize that planning.
 
 ## Must-not
 
