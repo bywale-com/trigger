@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 13:30 UTC 2026-10-19 — sitting protocol imported from travis. No product flag. Nothing planted.
+**Current (read first, then the newest stamp at the bottom):** 13:40 UTC 2026-10-19 — product overview filed beside this log at [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md). Vision captured. Architecture and implementation not authorized. Nothing planted.
 
 **How we maintain this log**
 
@@ -36,3 +36,19 @@
 **Agent alignment (not a flag):** Trigger is the work repo. The imported protocol is how personas sit. Travis’s product flag is not Trigger’s flag.
 
 **Ask:** none. Waiting for the next founder ask.
+
+---
+
+## 13:40 UTC 2026-10-19 — product overview filed beside the log
+
+**Kind:** founder separate entry. Pointer only. The overview is not pasted into this log.
+
+**Founder instruction:**
+
+> Add a pointer in the logs. Don't actually append this to the logs. Save this verbatim near the logs.
+
+**Pointer:** [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) — Product Overview V0.1, October 19, 2026, saved verbatim next to this file.
+
+**Status on that document:** Vision captured; architecture and implementation not yet authorized. Next stage named there: architectural and implementation planning, when separately authorized.
+
+**What changed:** the file. This stamp does not restate it. The 13:30 stamp is unchanged.
