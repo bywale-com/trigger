@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 14:39 UTC 2026-10-19 — cadence, Pages, and expansion through decomposition. Founder excerpts below. A CTO synthesis was studied and is not the flag. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 14:52 UTC 2026-10-19 — a seed’s decomposition pushes other seeds out; their roots live on those other pages. Page shape discussed. Overview not amended. Architecture not authorized.
 
 **How we maintain this log**
 
@@ -136,3 +136,21 @@ Detection that a cycle is leaving the version is the same DNA rule How already u
 The evolution of How is where the cut is allowed to finish. The face, the state it writes, the mechanism that keeps authorship off the build, and the proof that the seed happened, belong in the same parent. Process language is part of completing that parent. The leaf is when the parent can be demonstrated. An invisible obligation can be required and still have no screen of its own.
 
 Cursor still builds. The page is the place the derived structure is held. This alignment does not authorize architecture, a seed inventory, or an automated classifier for borderline cases. A borderline case is a decision on the row.
+
+---
+
+## 14:52 UTC 2026-10-19 — push other seeds out; the page’s shape
+
+**Kind:** founder discussion. Excerpts. Alignment labeled. Not a locked page template. Overview not amended. Architecture not authorized.
+
+**Founder wording:**
+
+> Now let’s talk about that unit again. The seed / page. Self contained. Seemingly deep, yet still bounded.
+>
+> Of course, in fact, almost certainly the decomposition of a seed can / might / may produce other seeds.
+>
+> At this point we should already have enough context (even for decision fit) to push other seeds out (however capture their root that would obviously live in the pages of other seeds).
+>
+> Naturally the structure of a page is called into question. It appears to be a mix of prose (potentially where other seeds would appear — it of course would capture the discovery of other seeds), how-analysis, systems specification, plates, click-path formatting, etc.
+
+**Agent alignment (not a flag):** Depth stays inside this seed. Another seed is pushed out at the moment it is recognized. This page keeps a discovery in prose: the phrase that forced the other seed, and a pointer. The root is written on the other page, and that page cites back. How, systems specification, plates, and click-path are completions of this seed only. A section that describes another seed does not stay here. A necessary neighbor gets its own page. A new promise is captured and does not become a V1 page by being discovered. This does not lock the section list.
