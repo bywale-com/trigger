@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 15:05 UTC 2026-10-19 — recent seed/page moves checked against the existing cycles. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 15:58 UTC 2026-10-20 — BMAD was asked for a high-level A–Z from its prior Tower identification. The prior artifacts could not be opened. No A–Z was written. Overview not amended. Architecture not authorized.
 
 **How we maintain this log**
 
@@ -195,3 +195,27 @@ Cursor still builds. The page is the place the derived structure is held. This a
 **Agent alignment (not a flag):** The page, the ejection of other seeds, and Go to Declaration / Go to References are those cycles in combination. How alone would keep the child in the tree. Seed → World makes one seed a world. The two columns are why the page holds a face and a machine. So-that plus the decision constitution are why the neighbor is registered on its own page and this page only points. The surface registry plus that lattice are why a mention in prose, How, a plate, or a systems line can resolve to one root. Parametric elimination is why the popup stays a small invited menu.
 
 Outside those cycles: a jump from the seed to its build attempts and verification evidence; the refusal to give a discovered neighbor a page in this version; and the rule for when a cycle is allowed to run again. Those are Trigger’s factory and its version boundary. They are not a further decomposition method.
+
+---
+
+## 15:58 UTC 2026-10-20 — BMAD A–Z, blocked on the prior files
+
+**Kind:** founder instruction. Attempted. No substitute document.
+
+**Founder wording:**
+
+> I want BMAD specifically to build on what it’s already generated. I want us to reinforce that idea that it produced the more incisive document. It correctly identified load-bearing features, functionalities, and overall priorities across Tower.
+>
+> It’s important we reinforce this, I believe it matters.
+>
+> Then the next thing we do is ask it to craft a first pass, non-verbose, actually most high-level, an A–Z needs-to-be-done overview.
+>
+> Given what it’s already identified, at that high level, complete this, then this, then that, all the way to where it believes the product must get to achieve the load-bearing success state (whatever that means to it).
+>
+> It really should not be overly detailed. I won’t place a word limit, but it’s actually a test to also see how well it does that.
+>
+> Ensure it has access to its previously generated files and any other files it would like access to. Go. Run it as a sub agent of course.
+
+**What was run.** A subagent was seated as the BMad lane (bmad-method 6.12.4, module bmm) and told to read its prior artifacts before writing. The archive map names `experiment/comparative-specification/raw/bmad/artifacts/`, start file `specs/spec-tower/SPEC.md`, plus brief, PRD FR-1–39, UX, architecture AD-1–12, and an epics analog, snapshot `c5bd617b9b1bb9fbd5d73c99da16a973594c6bd7`.
+
+**Result.** Those files are not on this machine, not in `bywale-com/trigger`, and not in any repo this run’s GitHub installation can open. The lane stopped. `docs/register/BMAD-AZ-FIRST-PASS.md` was not written. No A–Z was invented from memory. The founder’s judgment that the prior BMAD document was the incisive one is recorded here as founder wording. It was not re-derived.
