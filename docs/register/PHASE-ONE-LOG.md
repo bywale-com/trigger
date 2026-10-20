@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 15:58 UTC 2026-10-20 — BMAD was asked for a high-level A–Z from its prior Tower identification. The prior artifacts could not be opened. No A–Z was written. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 16:14 UTC 2026-10-20 — founder correction: the BMAD ask was the wrong repo and the wrong chat. No A–Z was written. Do not resume that ask here. Overview not amended. Architecture not authorized.
 
 **How we maintain this log**
 
@@ -219,3 +219,17 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 **What was run.** A subagent was seated as the BMad lane (bmad-method 6.12.4, module bmm) and told to read its prior artifacts before writing. The archive map names `experiment/comparative-specification/raw/bmad/artifacts/`, start file `specs/spec-tower/SPEC.md`, plus brief, PRD FR-1–39, UX, architecture AD-1–12, and an epics analog, snapshot `c5bd617b9b1bb9fbd5d73c99da16a973594c6bd7`.
 
 **Result.** Those files are not on this machine, not in `bywale-com/trigger`, and not in any repo this run’s GitHub installation can open. The lane stopped. `docs/register/BMAD-AZ-FIRST-PASS.md` was not written. No A–Z was invented from memory. The founder’s judgment that the prior BMAD document was the incisive one is recorded here as founder wording. It was not re-derived.
+
+---
+
+## 16:14 UTC 2026-10-20 — wrong repo and wrong chat
+
+**Kind:** founder correction. The error to record.
+
+**Founder wording:**
+
+> wrong repo and chat....log that error
+
+**The error.** Asking BMAD, in this repository (`bywale-com/trigger`) and in this chat, to build the Tower A–Z was the miss. The 15:58 attempt was that miss. The follow-up — “rectification? Look into the problem, solve and retry” — was answered here by searching this environment for snapshot `c5bd617`. That search was the same miss. An uncommitted draft blamed a missing archive. That draft is not the cause and is not filed.
+
+**What changed.** This stamp. No A–Z file. No second BMAD pass. The correct repo and the correct chat were not named. Do not resume the A–Z in this repo or this chat. Overview not amended. Architecture not authorized.
