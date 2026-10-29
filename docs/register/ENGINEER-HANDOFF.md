@@ -4,7 +4,7 @@
 
 ## Where we stopped
 
-Nothing planted. V1 is a read-only desk on Tower, specified in `docs/register/V1-OBSERVABILITY-SPEC.md`. Plates are not approved. No packet is assigned. Do not build a factory.
+Nothing planted. Packet 001 is `**Wake:** sa`. Wait for the Systems Analyst’s change packet on this same PR. Then plant only that cut. Do not build a factory. The Ant table in light and dark is the locked chrome.
 
 ## Founder locks (keep)
 

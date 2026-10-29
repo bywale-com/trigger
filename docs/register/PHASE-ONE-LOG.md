@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 15:43 UTC 2026-10-29 — the paper plates are rejected. The table is redrawn in Tower’s Ant seed, light and dark. The other views are not redrawn yet. Do not plant.
+**Current (read first, then the newest stamp at the bottom):** 16:11 UTC 2026-10-29 — founder approved the Ant table. Packet 001 is Wake sa. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -265,3 +265,15 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 > no way man...no way...redo even just one of these images using the ant design system...no way...also very crucially, always build in light and dark mode...
 
 **What changed.** The paper plates are removed. The table is redrawn with Ant Design 6.5.3 and Tower’s seed in `prototype-ant/theme.ts`: primary `#1677ff`, radius 6, and both `defaultAlgorithm` and `darkAlgorithm`. Files: `plates/v1/a-table-light.png` and `plates/v1/a-table-dark.png`. The graph and the detail plates are not redrawn yet. Same ledger. No `src/`. Wake stays hold.
+
+---
+
+## 16:11 UTC 2026-10-29 — green light
+
+**Kind:** founder go.
+
+**Founder wording:**
+
+> Ok im good with this. You e got the green light
+
+**What changed.** [`PM-PACKET-001-tower-desk.md`](./PM-PACKET-001-tower-desk.md) is `**Wake:** sa`. The test sheet is beside it. The approved plates are the Ant table in light and in dark. Graph and detail use that chrome. They are not a second theme. No `src/` in this commit. This repo has no `wake-packet-seats` workflow, so the label does not land by itself.

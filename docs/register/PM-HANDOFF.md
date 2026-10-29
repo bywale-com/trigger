@@ -16,7 +16,7 @@
 
 | What | Where |
 |------|--------|
-| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **15:43 UTC 2026-10-29** |
+| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **16:11 UTC 2026-10-29** |
 | V1 direction | [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md) |
 | V1 spec and plates | [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) · [`plates/v1/`](./plates/v1/) |
 | Product overview | [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) — verbatim, beside the log |
@@ -25,7 +25,7 @@
 
 ## Next Architect job
 
-The founder reviews the Ant table in light and dark. The paper plates are rejected. The other views are not redrawn yet. Until the table is accepted, do not plant. The 15:34 stamp is the ledger. The 15:43 stamp is the visual correction.
+Packet 001 is `**Wake:** sa` on this PR. The Ant table is approved in both modes. This seat does not plant. The 15:34 stamp is the ledger. The 15:43 stamp is the visual correction. The 16:11 stamp is the go. This repo has no `wake-packet-seats` workflow, so the label does not land by itself.
 
 ## Must-not
 

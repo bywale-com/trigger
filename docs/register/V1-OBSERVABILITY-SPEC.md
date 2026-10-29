@@ -3,7 +3,7 @@
 **Date:** October 29, 2026  
 **Direction:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md)  
 **Plates:** [`plates/v1/README.md`](./plates/v1/README.md). The visual system is Tower’s Ant seed in `omcoda_tower` `src/app/register/prototype-ant/theme.ts`: `colorPrimary` `#1677ff`, `borderRadius` 6, `fontSize` 14, `controlHeight` 32, `defaultAlgorithm` and `darkAlgorithm`. Light and dark are both the product. The first pair is the table. The other views are not redrawn yet.  
-**Wake:** hold. The founder has not approved the plates. Do not plant `src/`. Do not modify Tower.
+**Wake:** the go is [`PM-PACKET-001-tower-desk.md`](./PM-PACKET-001-tower-desk.md). Do not plant from this file. Do not modify Tower.
 
 Tower was read at `main` `9c45f19fa1ac9d909247d6be83c9263273b1bcbb` (merge of pull request 136, 10:44 AM America/Toronto, 29 October 2026). `projectFactory` is `export function projectFactory` in `.factory/controller/queue.ts`. The committed ledger is `.factory/state/ledger.json`.
 
@@ -86,7 +86,7 @@ Nothing planted.
 
 ## 6. After the plates
 
-The founder approves or corrects the plates. The packet stays `**Wake:** hold` until then. The Systems Analyst ascribes the read before the adapter is built.
+The founder approved the Ant table in light and dark on 29 October 2026. Packet 001 carries `**Wake:** sa`. The Systems Analyst ascribes the read before the adapter is built.
 
 Order once both are true:
 
