@@ -1,0 +1,94 @@
+{
+  "stateRevision": 1,
+  "authorizedDispatches": null,
+  "usedDispatches": 0,
+  "scope": {
+    "id": null,
+    "status": "inactive",
+    "modules": [],
+    "founderDecision": null,
+    "blockReason": null
+  },
+  "initiatives": {
+    "exec-identity": {
+      "id": "exec-identity",
+      "module": "Agents and Automations",
+      "capability": "Which execution a result belongs to",
+      "entry": "Operator → Configuration libraries → Agents and Automations",
+      "obligation": "Specify and, where a packet is released, implement the identity rules already locked on PR 135.",
+      "priority": 10,
+      "dependsOn": [],
+      "inheritedSpecifications": ["docs/specification-pass/SPECIFICATION.md"],
+      "investigation": "investigating",
+      "queue": "eligible",
+      "coverageComplete": null,
+      "outstanding": ["Claims 4, 6, 7, and 8 have no packets."],
+      "session": "idle",
+      "revision": "rev-0",
+      "dispatch": null,
+      "blockedReason": null,
+      "packetIds": ["pkt-001-click-attribution"],
+      "updatedAt": null
+    },
+    "launch-agent": {
+      "id": "launch-agent",
+      "module": "Agents",
+      "capability": "Launch Agent",
+      "entry": "Operator → Configuration libraries → Agents → Launch Agent",
+      "obligation": "Not opened. Launch Agent is not the controller pilot.",
+      "priority": 20,
+      "dependsOn": ["exec-identity"],
+      "inheritedSpecifications": [],
+      "investigation": "discovered",
+      "queue": "discovered",
+      "coverageComplete": null,
+      "outstanding": [],
+      "session": "idle",
+      "revision": "rev-0",
+      "dispatch": null,
+      "blockedReason": "Factory production path is not the Launch Agent build.",
+      "packetIds": [],
+      "updatedAt": null
+    }
+  },
+  "packets": {
+    "pkt-001-click-attribution": {
+      "id": "pkt-001-click-attribution",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "hold",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "19c47938d8aa8884b4874999a50667f5677205b3",
+      "verifiedSha": "19c47938d8aa8884b4874999a50667f5677205b3",
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": null,
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": false,
+      "integratedSha": null,
+      "reconciliationId": null,
+      "dispatch": null,
+      "execution": {
+        "mode": "manual",
+        "checks": [
+          {
+            "name": "factory-check",
+            "runId": "40873984441",
+            "outcome": "pass"
+          },
+          {
+            "name": "verify:click-attribution",
+            "runId": "40873984426",
+            "outcome": "pass"
+          }
+        ]
+      }
+    }
+  }
+}

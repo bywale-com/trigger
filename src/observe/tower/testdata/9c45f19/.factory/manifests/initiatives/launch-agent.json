@@ -1,0 +1,12 @@
+{
+  "id": "launch-agent",
+  "title": "Launch Agent",
+  "module": "Agents",
+  "entry": "Operator → Configuration libraries → Agents → Launch Agent",
+  "obligation": "Not opened. This record exists so the factory does not treat Launch Agent as the controller pilot.",
+  "investigation": "discovered",
+  "mutation": "none",
+  "packets": [],
+  "requiredPackets": [],
+  "blockedBy": "Factory production path is not authorized. exec-identity packet PKT-001 is the pilot candidate."
+}

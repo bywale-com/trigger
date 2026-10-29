@@ -1,0 +1,28 @@
+{
+  "id": "pkt-001-click-attribution",
+  "initiativeId": "exec-identity",
+  "title": "An email click advances the enrollment stamped on the message",
+  "release": "draft",
+  "wake": "hold",
+  "releaseEligible": true,
+  "required": false,
+  "stage": "verified",
+  "revision": "rev-1",
+  "execution": "manual",
+  "verifiedSha": "19c47938d8aa8884b4874999a50667f5677205b3",
+  "claims": [3],
+  "sourceSha": "1f6f43ab2dbe8b0e32b0a344990795bb998c8be3",
+  "gates": {
+    "behaviorEstablished": true,
+    "scopeBounded": true,
+    "dependenciesUnderstood": true,
+    "acceptanceDefined": true,
+    "noBlockingQuestion": true,
+    "noContradictorySpecification": true,
+    "independentlyImplementable": true
+  },
+  "authorization": "Wake stays hold. Manual evidence is not a release. The committed ledger scope is inactive.",
+  "acceptanceOracle": ".factory/experiments/click-attribution.ts",
+  "productionPlant": "server/wire-service click path on this branch. Ledger stage is verified by manual evidence. integratedSha is null.",
+  "systemsChange": "docs/factory/initiatives/exec-identity/systems/SCP-pkt-001-click-attribution.md"
+}
