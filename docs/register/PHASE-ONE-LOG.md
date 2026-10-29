@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 15:34 UTC 2026-10-29 — V1 direction is read-only observability of Tower. Plates are filed from ledger revision 1. Founder has not approved them. Do not plant.
+**Current (read first, then the newest stamp at the bottom):** 15:43 UTC 2026-10-29 — the paper plates are rejected. The table is redrawn in Tower’s Ant seed, light and dark. The other views are not redrawn yet. Do not plant.
 
 **How we maintain this log**
 
@@ -253,3 +253,15 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 **What changed.** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md) is the V1 direction. The October 19 overview is unchanged. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) is the face and the file cut. Plates in [`plates/v1/`](./plates/v1/) show this ledger. Plate E is a running dispatch that the ledger does not contain, and it says so. No `src/`. Wake stays hold until the founder approves the plates.
 
 **Agent alignment (not a flag):** The desk groups by the module on the initiative. A running mark needs a dispatch or a live lease. Counts, not a percentage. No factory controls. Pull request 136’s merge is not written as an integration SHA.
+
+---
+
+## 15:43 UTC 2026-10-29 — Ant, light and dark
+
+**Kind:** founder correction. The plates just filed are not the system.
+
+**Founder wording:**
+
+> no way man...no way...redo even just one of these images using the ant design system...no way...also very crucially, always build in light and dark mode...
+
+**What changed.** The paper plates are removed. The table is redrawn with Ant Design 6.5.3 and Tower’s seed in `prototype-ant/theme.ts`: primary `#1677ff`, radius 6, and both `defaultAlgorithm` and `darkAlgorithm`. Files: `plates/v1/a-table-light.png` and `plates/v1/a-table-dark.png`. The graph and the detail plates are not redrawn yet. Same ledger. No `src/`. Wake stays hold.

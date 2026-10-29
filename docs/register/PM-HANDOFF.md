@@ -16,7 +16,7 @@
 
 | What | Where |
 |------|--------|
-| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **15:34 UTC 2026-10-29** |
+| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **15:43 UTC 2026-10-29** |
 | V1 direction | [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md) |
 | V1 spec and plates | [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) · [`plates/v1/`](./plates/v1/) |
 | Product overview | [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) — verbatim, beside the log |
@@ -25,7 +25,7 @@
 
 ## Next Architect job
 
-The founder reviews the plates. Until that approval, do not plant. The 15:34 stamp is the V1 direction and the ledger that was actually read. Earlier stamps through 16:14 remain history, including the correction that the BMAD ask was the wrong repo and chat. Do not resume that ask.
+The founder reviews the Ant table in light and dark. The paper plates are rejected. The other views are not redrawn yet. Until the table is accepted, do not plant. The 15:34 stamp is the ledger. The 15:43 stamp is the visual correction.
 
 ## Must-not
 

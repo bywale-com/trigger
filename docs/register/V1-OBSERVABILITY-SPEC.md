@@ -2,7 +2,7 @@
 
 **Date:** October 29, 2026  
 **Direction:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md)  
-**Plates:** [`plates/v1/README.md`](./plates/v1/README.md)  
+**Plates:** [`plates/v1/README.md`](./plates/v1/README.md). The visual system is Tower’s Ant seed in `omcoda_tower` `src/app/register/prototype-ant/theme.ts`: `colorPrimary` `#1677ff`, `borderRadius` 6, `fontSize` 14, `controlHeight` 32, `defaultAlgorithm` and `darkAlgorithm`. Light and dark are both the product. The first pair is the table. The other views are not redrawn yet.  
 **Wake:** hold. The founder has not approved the plates. Do not plant `src/`. Do not modify Tower.
 
 Tower was read at `main` `9c45f19fa1ac9d909247d6be83c9263273b1bcbb` (merge of pull request 136, 10:44 AM America/Toronto, 29 October 2026). `projectFactory` is `export function projectFactory` in `.factory/controller/queue.ts`. The committed ledger is `.factory/state/ledger.json`.
@@ -48,7 +48,7 @@ It does not return packet title, release, `hold`, `blockerId`, or `lease`. Those
 2. **Expansion.** Open the initiative when a packet is not yet `accepted`, when `blockedReason` is set, when a packet `blockerId` is set, or when `session` is `running` or `continuation_due`. Otherwise one line.
 3. **No factory controls.** No Run, Stop, Authorize, Dispatch, or wake flip. Wake `hold` is a fact, not a button.
 4. **Running is a record.** Architect running means `session === "running"` and `dispatch` is set. Engineer or analyst running means a lease whose role matches and whose `until` is still ahead of the read. A stage word never pulses. `executionMode: "manual"` with `dispatch: null` is history. The committed ledger pulses nothing.
-5. **Stage color is display-only.** `investigating` is the yellow mark. `verified` is green. `discovered` and any unknown word are neutral. A `blockedReason` or `blockerId` is a separate red mark and does not rename the stage. Queue stays visible because `discovered` is both an investigation word and a queue value, and they are different facts on Launch Agent.
+5. **Stage color is an Ant tag, display-only.** `investigating` is `processing`. `verified` is `success`. `discovered` and any unknown word are the default tag. A `blockedReason` or `blockerId` is an `error` tag and does not rename the stage. Queue stays visible because `discovered` is both an investigation word and a queue value, and they are different facts on Launch Agent.
 6. **Counts, not a percentage.** For an initiative: packets, how many are `verified`, how many have an `integratedSha`, how many have an open blocker. For a packet: checks passed, whether an integration SHA exists, whether a dispatch exists.
 7. **Edges.** Containment: module contains initiative, initiative contains packet. Dependency: `dependsOn`, dashed, labeled “depends on”. None are drawn that the record does not have. Launch Agent depends on `exec-identity`. `exec-identity` depends on nothing. The dependency is not treated as met, because `exec-identity`’s queue is not `completed`.
 8. **Same detail** from a row or a node.
