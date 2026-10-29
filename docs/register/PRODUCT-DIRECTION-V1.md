@@ -2,7 +2,7 @@
 
 **Date:** October 29, 2026  
 **Seat:** Technical Architect  
-**Status:** Authoritative for V1. Plates are waiting on the founder. Implementation is not authorized.  
+**Status:** Authoritative for V1. The Ant chrome is approved. The page-database plates correct the face of packet 001. This seat does not plant.  
 **Historical record, unchanged:** [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) (October 19, 2026). That file stays the original vision. It is not the build instruction.
 
 ---
@@ -19,7 +19,7 @@ Tower is the execution system. Trigger is the observability system. At least for
 
 Trigger opens on one factory, Tower, and shows the records Tower already keeps.
 
-Two views, one set of records. The table answers what is happening. The graph answers how the work is related and how the product is developing. A row and a node open the same detail.
+Two views, one database of pages. The table is that database. The graph is the same pages, with the same filter. A row and a node open the same page. Inside is which page contains this one. Depends on is the other relation. A packet is not a dependency of its initiative just because it sits inside it.
 
 The detail shows the specification, the packets, the dependencies, the verification, the blockers, and the execution evidence. It links to the authoritative record. It does not rewrite that record, and it does not author a summary the factory did not write.
 
@@ -48,4 +48,4 @@ The sitting protocol stays the way this repository's seats work. It is not a sec
 
 ## Gate
 
-The founder reviews the plates in [`plates/v1/`](./plates/v1/) before any desk is built. Until that approval, this direction is the specification, not a plant.
+The Ant header, the tags, and both color algorithms are approved. The founder then asked for a database of pages and a populated graph of those pages. The plates in [`plates/v1/`](./plates/v1/) are that face. Packet 001 stays `**Wake:** sa`. This seat does not plant. The Systems Analyst ascribes the read before the adapter is built.

@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 16:11 UTC 2026-10-29 — founder approved the Ant table. Packet 001 is Wake sa. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 21:14 UTC 2026-10-29 — the desk is one database of pages. The graph is that database. Packet 001 stays Wake sa. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -277,3 +277,17 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 > Ok im good with this. You e got the green light
 
 **What changed.** [`PM-PACKET-001-tower-desk.md`](./PM-PACKET-001-tower-desk.md) is `**Wake:** sa`. The test sheet is beside it. The approved plates are the Ant table in light and in dark. Graph and detail use that chrome. They are not a second theme. No `src/` in this commit. This repo has no `wake-packet-seats` workflow, so the label does not land by itself.
+
+---
+
+## 21:14 UTC 2026-10-29 — a database of pages
+
+**Kind:** founder correction of the face. Same packet. Wake stays sa.
+
+**Founder wording:**
+
+> You know actually... I actually would prefer an actual table view.. think notion databases...that is perfectly it...becauase now the pages inside rows makes sense...also for the nodegrpahs....i need to what a populates node graph looks like because the node graph should show all initiative and packets / perhaps also with the option filter e.t.c I mean literally it's just a graph view of the table...adn the table itself it practiclaly a table...that being said, giving the ant design system...I really like to see you attempt all the plates again that are implied here
+
+**What changed.** The plates in [`plates/v1/`](./plates/v1/) are redrawn in both modes: one Ant table of pages, the same pages as a graph, that graph filtered to initiatives, and the initiative, packet, running, and blocked pages. Inside is containment. Depends on is `dependsOn`. A packet is not drawn as depending on the initiative that contains it. The extra pages on the population plates are representative. Ledger revision 1 is still `exec-identity`, `pkt-001-click-attribution`, and `launch-agent`. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) decisions 1, 2, 7, 13, and 14 follow that face. Packet 001 and its test sheet follow it. `**Wake:** sa` stays. No `src/`.
+
+**Agent alignment (not a flag):** The graph is the table. The filter is the density control. Representative pages are plate furniture, not a store and not rows the product hardcodes.
