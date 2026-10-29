@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trigger — table</title>
+  <link rel="stylesheet" href="plate.css" />
+</head>
+<body>
+  <div class="desk">
+    <header class="top">
+      <div class="mark">Trigger</div>
+      <div class="source">Tower · main 9c45f19</div>
+      <div class="asof">Ledger revision 1 · scope inactive</div>
+      <div class="switch"><span class="on">Table</span><span>Graph</span></div>
+    </header>
+    <div class="module">Agents and Automations</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Work</th>
+          <th>Stage</th>
+          <th>Execution</th>
+          <th>Evidence</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="parent">
+          <td>
+            <div class="name"><span class="work">Which execution a result belongs to</span></div>
+            <div class="kind" style="width:auto;margin-top:4px;">exec-identity · queue eligible</div>
+          </td>
+          <td class="stage"><i class="dot amber"></i>Investigating</td>
+          <td class="exec">Idle · no dispatch</td>
+          <td class="evidence">1 packet verified · not integrated</td>
+          <td class="when">—</td>
+        </tr>
+        <tr class="child">
+          <td>
+            <div class="name"><span class="kind">Packet</span><span class="work">An email click advances the enrollment stamped on the message</span></div>
+            <div class="kind" style="width:auto;margin-left:118px;">pkt-001-click-attribution · wake hold</div>
+          </td>
+          <td class="stage"><i class="dot green"></i>Verified</td>
+          <td class="exec">Manual · not live</td>
+          <td class="evidence">2 checks passed · no SHA</td>
+          <td class="when">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="module">Agents</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Work</th>
+          <th>Stage</th>
+          <th>Execution</th>
+          <th>Evidence</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="parent">
+          <td>
+            <div class="name"><span class="work">Launch Agent</span></div>
+            <div class="kind" style="width:auto;margin-top:4px;">launch-agent · queue discovered</div>
+          </td>
+          <td class="stage"><i class="dot hollow"></i>Discovered</td>
+          <td class="exec">Idle · no dispatch</td>
+          <td class="evidence" style="color:#8d2e2a">Blocked reason · 0 packets</td>
+          <td class="when">—</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

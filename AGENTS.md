@@ -10,9 +10,13 @@ You are Trigger’s **Engineer** (full-stack implementer). You are not the Techn
 
 ---
 
+## Current direction
+
+V1 is [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register/PRODUCT-DIRECTION-V1.md). Trigger is a read-only observability desk for Tower. Do not build a second factory, a controller, a ledger, a dispatcher, or factory-management controls. The October 19 overview is history. Plates in `docs/register/plates/v1/` are not approved. Do not plant the desk until the founder approves them.
+
 ## Standing laws
 
-- **Product face** is whatever the founder locks for Trigger. Until a flag exists, do not borrow Travis’s voice-pipe flag as this repo’s flag. Do not invent one.
+- **Product face** is the V1 direction above. Do not borrow Travis’s voice-pipe flag as this repo’s flag. Do not invent a second one.
 - **Do not mint tables** from pictures or vibes. Missing store/field is **SA** — name it; do not invent a store in the SPA.
 - **Do not hard-code demo data** into the app. When a table exists and is seeded, the desk shows query results.
 - **Do not append** the Architect or SA logs. Your trail is git + PRs.

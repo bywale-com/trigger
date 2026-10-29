@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 16:14 UTC 2026-10-20 — founder correction: the BMAD ask was the wrong repo and the wrong chat. No A–Z was written. Do not resume that ask here. Overview not amended. Architecture not authorized.
+**Current (read first, then the newest stamp at the bottom):** 15:34 UTC 2026-10-29 — V1 direction is read-only observability of Tower. Plates are filed from ledger revision 1. Founder has not approved them. Do not plant.
 
 **How we maintain this log**
 
@@ -233,3 +233,23 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 **The error.** Asking BMAD, in this repository (`bywale-com/trigger`) and in this chat, to build the Tower A–Z was the miss. The 15:58 attempt was that miss. The follow-up — “rectification? Look into the problem, solve and retry” — was answered here by searching this environment for snapshot `c5bd617`. That search was the same miss. An uncommitted draft blamed a missing archive. That draft is not the cause and is not filed.
 
 **What changed.** This stamp. No A–Z file. No second BMAD pass. The correct repo and the correct chat were not named. Do not resume the A–Z in this repo or this chat. Overview not amended. Architecture not authorized.
+
+---
+
+## 15:34 UTC 2026-10-29 — Trigger observes Tower
+
+**Kind:** founder direction, then a correction of access. Plates filed. Not an authorization to plant.
+
+**Founder wording:**
+
+> Trigger is Omcoda's read-only observability interface for its software factories. Tower is its first source. Trigger displays the factory's work, state, relationships, evidence, and progress without controlling production.
+>
+> Are you incapable of accessing the omcoda_tower repo?
+>
+> I've made it temporarily public. Feel free to continue.
+
+**What was read.** `bywale-com/omcoda_tower` `main` `9c45f19`, the merge of pull request 136. `projectFactory` in `.factory/controller/queue.ts`. Ledger revision 1. Scope inactive. `authorizedDispatches` null. `usedDispatches` 0. `exec-identity` investigating, queue eligible, session idle, no dispatch. `launch-agent` discovered, depends on `exec-identity`, blocked reason “Factory production path is not the Launch Agent build.” `pkt-001-click-attribution` verified by manual evidence, wake hold, dispatch null, `integratedSha` null. Two passing checks. `scope.modules` is empty. The projection omits packet title, `hold`, `blockerId`, and `lease`.
+
+**What changed.** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md) is the V1 direction. The October 19 overview is unchanged. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) is the face and the file cut. Plates in [`plates/v1/`](./plates/v1/) show this ledger. Plate E is a running dispatch that the ledger does not contain, and it says so. No `src/`. Wake stays hold until the founder approves the plates.
+
+**Agent alignment (not a flag):** The desk groups by the module on the initiative. A running mark needs a dispatch or a live lease. Counts, not a percentage. No factory controls. Pull request 136’s merge is not written as an integration SHA.

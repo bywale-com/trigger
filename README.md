@@ -1,6 +1,6 @@
 # Trigger
 
-Work repo. Product direction: [`docs/register/PRODUCT-OVERVIEW.md`](docs/register/PRODUCT-OVERVIEW.md). Seats follow the sitting protocol imported from [travis](https://github.com/bywale-com/travis). Architecture and implementation are not authorized.
+Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register/PRODUCT-DIRECTION-V1.md). Trigger is a read-only view of Tower. The October 19 overview stays as history: [`docs/register/PRODUCT-OVERVIEW.md`](docs/register/PRODUCT-OVERVIEW.md). Plates are waiting on the founder. Nothing is planted.
 
 ## Implementation
 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trigger — packet</title>
+  <link rel="stylesheet" href="plate.css" />
+</head>
+<body>
+  <div class="desk">
+    <header class="top">
+      <div class="mark">Trigger</div>
+      <div class="source">Tower · main 9c45f19</div>
+      <div class="asof">Ledger revision 1 · scope inactive</div>
+      <div class="switch"><span class="on">Table</span><span>Graph</span></div>
+    </header>
+    <div class="back">← Which execution a result belongs to</div>
+    <h1>An email click advances the enrollment stamped on the message</h1>
+    <div class="lede">pkt-001-click-attribution · exec-identity · <i class="dot green"></i>Verified · wake hold · release draft</div>
+    <div class="counts">
+      <div><b>2</b><span>checks passed</span></div>
+      <div><b>0</b><span>integration SHA</span></div>
+      <div><b>0</b><span>dispatch</span></div>
+    </div>
+    <div class="grid">
+      <div>
+        <h2>Intended behavior</h2>
+        <div class="passage">
+          An email click advances the enrollment named on the outbound message. It does not advance the newest open enrollment for the contact.
+          <span class="src">docs/factory/initiatives/exec-identity/packets/PKT-001-click-attribution.md</span>
+        </div>
+        <h2>Systems change</h2>
+        <div class="passage">
+          The click entry loads the outbound message and advances the enrollment id on that row.
+          <span class="src">docs/factory/initiatives/exec-identity/systems/SCP-pkt-001-click-attribution.md</span>
+        </div>
+        <h2>Implementation</h2>
+        <div class="passage">
+          Production plant: server/wire-service click path. Execution mode on the ledger is manual. That session was not a label wake.
+          <span class="src">Verified SHA 19c47938d8aa8884b4874999a50667f5677205b3</span>
+        </div>
+      </div>
+      <div class="side">
+        <h2>Verification</h2>
+        <div class="card">
+          <div class="row"><span>factory-check</span><span style="color:#17693a">pass · 40873984441</span></div>
+          <div class="row"><span>verify:click-attribution</span><span style="color:#17693a">pass · 40873984426</span></div>
+          <div class="row"><span>Mode</span><span>manual</span></div>
+        </div>
+        <h2>Integration</h2>
+        <div class="card">
+          <div class="row"><span>integratedSha</span><span>none</span></div>
+          <div class="row"><span>reconciliationId</span><span>none</span></div>
+          <div class="row"><span>Stage</span><span>verified, not accepted</span></div>
+        </div>
+        <h2>Links on the record</h2>
+        <div class="card">
+          <div class="row"><span>Specification PR</span><span>#135</span></div>
+          <div class="row"><span>Source SHA</span><span>1f6f43ab</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 ## Where we stopped
 
-Nothing planted in this work repo. Sitting protocol is imported. No packet is assigned.
+Nothing planted. V1 is a read-only desk on Tower, specified in `docs/register/V1-OBSERVABILITY-SPEC.md`. Plates are not approved. No packet is assigned. Do not build a factory.
 
 ## Founder locks (keep)
 

@@ -4,7 +4,7 @@
 
 **Prior bind:** none.
 
-**Flag:** [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md), filed verbatim. Do not paste it into the log. Do not treat Travis’s voice-pipe flag as this flag. Architecture and implementation are not authorized.
+**Flag:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md). The October 19 overview stays historical. Do not paste either into the log. Plates are not approved. Do not plant.
 
 **Seat:** Technical Architect. Inspect `src/` when it exists. Spec face + technical cut + file-level architecture. Keep the log. Do not plant. Catalog `pm` is not this seat.
 
@@ -16,14 +16,16 @@
 
 | What | Where |
 |------|--------|
-| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **16:14 UTC 2026-10-20** |
+| Trail | [`PHASE-ONE-LOG.md`](./PHASE-ONE-LOG.md) — Current **15:34 UTC 2026-10-29** |
+| V1 direction | [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md) |
+| V1 spec and plates | [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) · [`plates/v1/`](./plates/v1/) |
 | Product overview | [`PRODUCT-OVERVIEW.md`](./PRODUCT-OVERVIEW.md) — verbatim, beside the log |
 | Sitting protocol | [`protocols/`](../../protocols/) · receipt [`SITTING-PROTOCOL-IMPORT.md`](./SITTING-PROTOCOL-IMPORT.md) |
 | Plant | none |
 
 ## Next Architect job
 
-The overview’s next stage is architectural and implementation planning, when the founder authorizes it. The 13:50 stamp is seed and bound. The 14:39 stamp is cadence, Pages, and expansion through decomposition. The 14:52 stamp is pushing other seeds out of a page, and the page’s mix of prose, How, systems, plates, and click-path. The 14:57 stamp is seed references modeled on Go to Declaration and Go to References. The 15:05 stamp checks those moves against the existing cycles. The 15:58 stamp is a BMAD A–Z asked for in this repo and this chat. The 16:14 stamp is the founder’s correction: that was the wrong repo and the wrong chat. Do not resume the A–Z here. None of these authorize planning.
+The founder reviews the plates. Until that approval, do not plant. The 15:34 stamp is the V1 direction and the ledger that was actually read. Earlier stamps through 16:14 remain history, including the correction that the BMAD ask was the wrong repo and chat. Do not resume that ask.
 
 ## Must-not
 
@@ -32,4 +34,4 @@ The overview’s next stage is architectural and implementation planning, when t
 - Do not mint `/protocols/technical-architect.md` or `/protocols/technical-pm.md`.
 - Do not treat Travis packet numbers as Trigger’s trail.
 - Do not paste the product overview into the log.
-- Do not begin architecture or implementation until the founder authorizes that stage.
+- Do not plant until the founder approves the plates.

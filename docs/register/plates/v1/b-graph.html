@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Trigger — graph</title>
+  <link rel="stylesheet" href="plate.css" />
+</head>
+<body>
+  <div class="desk">
+    <header class="top">
+      <div class="mark">Trigger</div>
+      <div class="source">Tower · main 9c45f19</div>
+      <div class="asof">Ledger revision 1 · scope inactive</div>
+      <div class="switch"><span>Table</span><span class="on">Graph</span></div>
+    </header>
+    <div class="graph" style="height:520px;">
+      <svg class="wires" viewBox="0 0 1368 520" aria-hidden="true">
+        <path d="M980 160 H 848" fill="none" stroke="#0a0a0a" stroke-width="1.5" stroke-dasharray="5 4" />
+        <path d="M848 160 l 8 -4 v 8 z" fill="#0a0a0a" />
+      </svg>
+      <div class="cluster" style="left:28px;top:20px;width:820px;height:480px;">
+        <div class="label">Agents and Automations · contains</div>
+      </div>
+      <div class="cluster" style="left:52px;top:64px;width:760px;height:400px;">
+        <div class="label">Initiative · exec-identity · contains</div>
+      </div>
+      <div class="node selected" style="left:76px;top:108px;width:500px;">
+        <div class="k">Initiative</div>
+        <div class="t">Which execution a result belongs to</div>
+        <div style="margin-top:8px;font-size:13px;"><i class="dot amber"></i>Investigating · idle · no dispatch</div>
+      </div>
+      <div class="node" style="left:108px;top:270px;width:640px;">
+        <div class="k">Packet · pkt-001-click-attribution</div>
+        <div class="t">An email click advances the enrollment stamped on the message</div>
+        <div style="margin-top:8px;color:#17693a;font-size:13px;"><i class="dot green"></i>Verified · wake hold · manual evidence</div>
+      </div>
+      <div class="cluster" style="left:980px;top:20px;width:360px;height:230px;">
+        <div class="label">Agents · contains</div>
+      </div>
+      <div class="node" style="left:1000px;top:68px;width:320px;">
+        <div class="k">Initiative · launch-agent</div>
+        <div class="t">Launch Agent</div>
+        <div style="margin-top:8px;font-size:13px;"><i class="dot hollow"></i>Discovered · idle</div>
+        <div style="margin-top:6px;color:#8d2e2a;font-size:13px;">Blocked reason recorded</div>
+      </div>
+      <div class="edge-label" style="left:868px;top:132px;">depends on</div>
+    </div>
+  </div>
+</body>
+</html>
