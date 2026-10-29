@@ -3,10 +3,12 @@
  * Does not import the controller and does not call decide.
  *
  * The reference tree at 9c45f19 is a fixture for the approved plates.
- * The desk follows TOWER_REF (default main) and records the commit it resolved.
+ * The factory branch comes from TOWER_REF, or from source.json when that is unset.
+ * The desk records the commit that branch resolved to. It does not pin a sha.
  */
 
 import { execFile } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { access, mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -37,8 +39,23 @@ type LedgerFile = {
 };
 
 const repoUrl = () => process.env.TOWER_REPO ?? "https://github.com/bywale-com/omcoda_tower.git";
-const repoRef = () => process.env.TOWER_REF ?? "main";
 const cloneDir = () => process.env.TOWER_CLONE ?? join(tmpdir(), "trigger-tower-read");
+
+export function configuredTowerRef(): string {
+  const file = join(import.meta.dirname, "source.json");
+  const parsed = JSON.parse(readFileSync(file, "utf8")) as { ref?: string };
+  const ref = parsed.ref?.trim();
+  if (!ref) throw new Error("tower source ref missing");
+  return ref;
+}
+
+export function resolveTowerRef(env: NodeJS.ProcessEnv = process.env): string {
+  const fromEnv = env.TOWER_REF?.trim();
+  if (fromEnv) return fromEnv;
+  return configuredTowerRef();
+}
+
+const repoRef = () => resolveTowerRef();
 
 let gate: Promise<unknown> = Promise.resolve();
 

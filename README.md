@@ -6,6 +6,7 @@ Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
+- 2026-10-29 · PR 4 — the desk observes Tower `cursor/factory-agents-scope-33ee` unless `TOWER_REF` is set, because the active factory is that branch and the branch must stay configurable.
 - 2026-10-29 · change packet 001 · PR 4 — the desk reads the current Tower branch and shows that commit, because the signed read is the factory tree and `9c45f19` is only the plate fixture.
 
 ## Seats

@@ -5,6 +5,7 @@ import { extname, join, normalize } from "node:path";
 import { currentSnapshot } from "./refresh.ts";
 
 const port = Number(process.env.PORT ?? 4173);
+const host = process.env.HOST ?? "127.0.0.1";
 const dist = join(process.cwd(), "dist");
 
 const types: Record<string, string> = {
@@ -41,6 +42,6 @@ const server = createServer(async (request, response) => {
   createReadStream(file).pipe(response);
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`http://${host}:${port}`);
 });

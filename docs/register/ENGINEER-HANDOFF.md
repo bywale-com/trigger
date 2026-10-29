@@ -4,27 +4,31 @@
 
 ## Where we stopped
 
-Packet 001 is planted on PR #4, branch `cursor/observability-v1-plates-7b9a`, base `cursor/seed-grain-note-7b9a`. The desk is the signed read: one snapshot of Tower, the table, the graph, the shared page, and a refresh kept in the server process. No Trigger database. No controller import. No build automation.
+Packet 001 is planted on PR #4, branch `cursor/observability-v1-plates-7b9a`, base `cursor/seed-grain-note-7b9a`. The desk is the signed read: one snapshot of Tower, the table, the graph, the shared page, and a refresh kept in the server process. No Trigger database. No controller import. No build automation. This correction is on that same PR. It is not a hotfix.
 
-The production read follows `TOWER_REF` (default `main`) on `https://github.com/bywale-com/omcoda_tower.git`. The header shows `Tower · {ref}` and the first 7 characters of the commit that was read. At 5:53 PM ET on 29 Oct 2026, `main` was `0405ac12c4f2e02b51bee15a3db0e7db0b6ad027` (merge of Tower PR 138). That sha is not pinned in the desk.
+The factory branch is configuration. `src/observe/tower/source.json` names the branch the desk observes. `TOWER_REF` replaces that file when it is set. The reader does not fall back to `main` and does not pin a commit. The header shows `Tower · {ref}` and the first 7 characters of the commit that was read, plus `Ledger revision {n} · scope {status}`.
 
-`src/observe/tower/testdata/9c45f19` is the reference fixture for the approved plates and the unit tests. `9c45f19fa1ac9d909247d6be83c9263273b1bcbb` is not the production source.
+At 6:15 PM ET on 29 Oct 2026 the configured branch `cursor/factory-agents-scope-33ee` (Tower PR #137) resolved to `fe5176095d4af9cb41d60243d8e17e8ddd27422c`. Ledger revision 25. Scope `active`. Seven pages: `exec-identity` (investigating, `continuation_due · no dispatch`, `1 verified · 1 integrated`), `pkt-001-click-attribution` (accepted, `Manual · not live`, `2 checks · SHA`, integrated `9c45f19fa1ac9d909247d6be83c9263273b1bcbb`), four released packets with `Idle · no dispatch` and `0 checks · no SHA`, and `launch-agent` (discovered, blocked reason, depends on `exec-identity`).
+
+`src/observe/tower/testdata/9c45f19` is the plate fixture. Walk it with `TOWER_FIXTURE` and `TOWER_REF=main`.
 
 How to run:
 
-- `npm run dev` — Vite. `GET /api/snapshot` reads the current factory branch.
-- `TOWER_FIXTURE=src/observe/tower/testdata/9c45f19` walks the approved revision.
-- `TOWER_REPO`, `TOWER_REF`, `TOWER_CLONE` (default `/tmp/trigger-tower-read`). `TOWER_FAIL_FLAG` is a file; contents `1` fails the read and keeps the last snapshot.
-- `npm run build`, then `npm start`. `PORT` defaults to 4173.
+- `npm run dev` — Vite. `GET /api/snapshot` reads the configured factory branch.
+- `TOWER_REF` selects another branch. `TOWER_REPO` selects another clone URL. `TOWER_CLONE` is the sparse checkout (default `/tmp/trigger-tower-read`).
+- `TOWER_FIXTURE` reads a tree instead of git. `TOWER_FAIL_FLAG` is a file; contents `1` fails the read and keeps the last snapshot.
+- `npm run build`, then `npm start`. `PORT` defaults to 4173. `HOST` defaults to `127.0.0.1`; set `HOST=0.0.0.0` when a platform routes to the process.
 
-Verification at 5:53 PM ET on 29 Oct 2026:
+Verification at 6:15 PM ET on 29 Oct 2026:
 
-- `npm test` and `npm run test:preflight`: vitest, 7 passed. `test:preflight` is vitest. This repo has no `src/runtime/walks` and no Vercel phone-face doors. The packet walk is `scripts/walk-desk.mjs` against a fixture desk.
-- `npm run build`: `tsc --noEmit` and `vite build` passed.
-- Browser walk of the fixture desk, viewport 1440: header `Tower · main 9c45f19`, ledger revision 1, scope inactive, three pages, the evidence and execution lines, no Run / Stop / Authorize / Dispatch, the initiative, packet, and blocked pages, graph of 3 nodes with 1 contains edge and 1 depends edge, `Type is Initiative` leaves 2 nodes and the depends edge, dark header `rgb(20, 20, 20)` against light `rgb(255, 255, 255)`. The Updated column sits inside the viewport. A failed read keeps the three pages and the header says `read failed`.
-- Live read with `TOWER_FIXTURE` unset: ref `main`, sha `0405ac12c4f2e02b51bee15a3db0e7db0b6ad027`, the same sha as `git ls-remote` `refs/heads/main`. The header on that desk reads `Tower · main 0405ac1`. Same three pages, ledger revision 1, scope inactive.
+- `npm test` / `npm run test:preflight`: vitest, 8 passed. Preflight stays the unit suite. This repo has no phone-face walks.
+- `scripts/walk-desk.mjs` against the fixture (`TOWER_REF=main`): the revision-1 walk, including dark mode and a failed read that keeps the rows.
+- `scripts/check-active-branch.mts`: the configured branch, sha matches `git ls-remote`, scope active, revision 25, the seven pages above.
+- `scripts/walk-active-branch.mjs` at 1440: header `Tower · cursor/factory-agents-scope-33ee fe51760`, ledger revision 25, scope active, the seven pages, packet integrated SHA, graph of 7 nodes with 5 contains edges and 1 depends edge, `Type is Initiative` leaves 2 nodes and the depends edge, dark header `rgb(20, 20, 20)`.
 
-Nothing in packet 001 is left open. The next packet number is 002, and that packet does not exist. Do not open a second PR. Do not append the Architect or SA logs.
+Deployment: no public URL. The Vercel token in this environment cannot list or create projects. The API answers that the scope `wale-omotayos-projects` needs re-authentication. `npm start` is the process a host would run. Tower was not modified.
+
+Nothing else in this correction is open. Do not open a second PR. Do not append the Architect or SA logs.
 
 ## Founder locks (keep)
 
@@ -33,7 +37,8 @@ Nothing in packet 001 is left open. The next packet number is 002, and that pack
 - Do not treat Travis planted packets as work in this repo.
 - Do not use the house build automations to build Trigger.
 - The Ant chrome in light and dark is locked. Do not reinterpret it.
+- The factory branch stays configurable. Do not pin a commit sha in the reader.
 
 ## Paste — new Engineer
 
-You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packet 001 is planted on PR #4. Do not replant it.
+You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packet 001 and the factory-branch correction are planted on PR #4. Do not replant them.
