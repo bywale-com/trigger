@@ -86,6 +86,8 @@ try {
   check("candidate not verified as merge", candidate.includes("Verified no") || candidate.includes("Verified yes"));
   check("github section", candidate.includes("GitHub"));
   check("no invented packet branch", !candidate.includes("cursor/pkt-002"));
+  check("no plates heading when none", !candidate.split("\n").includes("Plates"));
+  check("no plate approval", !candidate.includes("Approve") && !candidate.includes("Reject"));
   await page.screenshot({ path: "/tmp/desk-candidate-light.png" });
   await page.click(".ant-switch");
   await page.waitForFunction(() => document.body.innerText.includes("Dark"));

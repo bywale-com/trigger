@@ -2,6 +2,7 @@ import { Alert, Button, Tag, Typography, theme } from "antd";
 import type { ReactNode } from "react";
 import {
   leaseActive,
+  platesVisible,
   shortSha,
   stageColor,
   stageLabel,
@@ -9,6 +10,7 @@ import {
   type EvidencePresence,
   type GithubEvidence,
   type LifecycleStep,
+  type PacketPlates,
   type Page,
 } from "../observe/snapshot.ts";
 
@@ -51,6 +53,42 @@ function ShaLink({ sha, repo }: { sha: string | null; repo?: string }) {
     <Link href={href} target="_blank" rel="noreferrer">
       {sha}
     </Link>
+  );
+}
+
+function Plates({ plates }: { plates: PacketPlates }) {
+  const { token } = theme.useToken();
+  if (!platesVisible(plates)) return null;
+  return (
+    <>
+      <Title level={5}>Plates</Title>
+      <div data-testid="plates">
+        {plates.images.map((image) => (
+          <div key={image.path} data-testid="plate-image" style={{ marginBottom: 16 }}>
+            <img
+              src={image.imageUrl}
+              alt={image.alt}
+              style={{
+                display: "block",
+                maxWidth: "100%",
+                borderRadius: 6,
+                border: `1px solid ${token.colorSplit}`,
+              }}
+            />
+            <Link href={image.artifactUrl} target="_blank" rel="noreferrer">
+              {image.path}
+            </Link>
+          </div>
+        ))}
+        {plates.buckets.map((bucket) => (
+          <Property key={bucket.id} label={bucket.label}>
+            <span data-testid={`plate-bucket-${bucket.id}`} style={{ whiteSpace: "pre-wrap" }}>
+              {bucket.text ?? "unavailable"}
+            </span>
+          </Property>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -236,6 +274,7 @@ export function Detail({
           <Title level={5}>Intended behavior</Title>
           <Paragraph style={{ whiteSpace: "pre-wrap" }}>{page.intendedBehavior}</Paragraph>
           {page.intendedBehaviorPath ? <Text type="secondary">{page.intendedBehaviorPath}</Text> : null}
+          <Plates plates={page.plates} />
           <Title level={5}>Verification</Title>
           {page.checks.map((check) => (
             <Paragraph key={check.runId}>

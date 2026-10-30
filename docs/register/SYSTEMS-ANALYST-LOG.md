@@ -1,6 +1,6 @@
 # Systems Analyst — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:02 UTC 2026-10-30 — change packet 002 is signed. Ledger remains the record. GitHub is a read-only port. Next packet number is `003`. Engineer plants on PR 4.
+**Current (read first, then the newest stamp at the bottom):** 11:30 UTC 2026-10-30 — change packet 003 is signed. Ledger remains the record. Plates are tree files on the observed SHA. Next packet number is `004`. Engineer plants on PR 4.
 
 Append-only. Only Current moves in place. Quote stood-up truth from SQL and live ports. Never reuse a number.
 
@@ -47,3 +47,27 @@ Append-only. Only Current moves in place. Quote stood-up truth from SQL and live
 **Refused.** A Trigger workflow table. Scanning `refs/heads`. Inferring `cursor/pkt-*`. Hard-coding PR 137 as the rule. Failing the Tower read when GitHub 403s. Collapsing the six facts. Treating a Vercel dashboard `target_url` as a preview host.
 
 **Still open.** Engineer plant on PR 4. Next SA number is `003`.
+
+---
+
+## 11:30 UTC 2026-10-30 — packet 003 signed
+
+**Kind:** founder asked to show factory UI plates on the packet page, then sit Architect → SA → Engineer in this chat. No build automation.
+
+**Founder wording:**
+
+> When an Architect creates a UI plate for an implementation packet, Trigger should automatically discover and display the actual image within that packet's detail page.
+>
+> Plates should appear as soon as they're committed to the observed factory branch, without waiting for packet release, engineering, or merging into main.
+>
+> Trigger remains entirely read-only.
+
+**Stood up.** Trigger `src/observe/tower/read.ts` reads `.factory/state/ledger.json` and packet notes for `intendedSection`. `tree.file` is utf8. GitHub `list()` returns `[]` except journal probes `001`–`008.md`. `src/desk/Detail.tsx` has no Plates section. No SQL. Live Tower at `0bad2c30747c3c52894df345f65487a0cf42395b`, ledger revision 61: PKT-001 has no `## Plates` heading; PKT-002–009 are `## Plates` / `None.`; manifests have no `plates` field; recursive tree has no `docs/factory` image. Template and operating protocol name the five buckets. Travis `PLATE-READ.md` at `a47becf` is that table. Fixture `9c45f19` PKT-001 has no plate.
+
+**Inventory delta.** Materialized: the same ledger and packet notes, plus image files in scoped `docs/factory/initiatives/…` directories, plus GitHub Contents as a directory listing in GitHub read mode. Map-only: `plates` on the packet page of the in-memory snapshot. Named silence: whole-repo image scan, `docs/register` / blueprint screenshots, plate approval, image bytes in JSON.
+
+**Signed.** [`SYSTEMS-CHANGE-PACKET-003-factory-plates.md`](./SYSTEMS-CHANGE-PACKET-003-factory-plates.md). Not planted.
+
+**Refused.** A Trigger plates table. Proxying PNG bytes. Discovering blueprint screenshots. Approve / Reject. Waiting on release or merge. Failing the Tower read when a plate directory 404s.
+
+**Still open.** Engineer plant on PR 4. Next SA number is `004`.

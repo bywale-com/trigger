@@ -11,16 +11,21 @@ import { execFile } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { access, mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, posix } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   assemble,
+  blobFileUrl,
   intendedSection,
+  plateSection,
+  rawFileUrl,
   readAtNow,
   type GatheredInitiative,
   type GatheredPacket,
   type LedgerInitiative,
   type LedgerPacket,
+  type PacketPlateImage,
+  type PacketPlates,
   type Snapshot,
 } from "../snapshot.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
@@ -185,6 +190,160 @@ async function githubFetch(url: string, accept?: string): Promise<Response> {
   return fetch(url, { headers, signal: AbortSignal.timeout(4_000) });
 }
 
+async function probeJournal(files: TowerFiles, path: string): Promise<string[]> {
+  const probed = await Promise.all(
+    Array.from({ length: 8 }, (_, index) => {
+      const name = `${String(index + 1).padStart(3, "0")}.md`;
+      return files.file(`${path}/${name}`).then((text) => (text == null ? null : name));
+    }),
+  );
+  const names: string[] = [];
+  for (const name of probed) {
+    if (!name) break;
+    names.push(name);
+  }
+  return names;
+}
+
+async function listGithubDirectory(repo: string, sha: string, path: string, files: TowerFiles): Promise<string[] | null> {
+  const encoded = path
+    .split("/")
+    .filter(Boolean)
+    .map(encodeURIComponent)
+    .join("/");
+  try {
+    const response = await githubFetch(
+      `https://api.github.com/repos/${repo}/contents/${encoded}?ref=${encodeURIComponent(sha)}`,
+      "application/vnd.github+json",
+    );
+    if (response.status === 404) return [];
+    if (!response.ok) {
+      if (path.endsWith("/journal")) return probeJournal(files, path);
+      return [];
+    }
+    const json: unknown = await response.json();
+    if (!Array.isArray(json)) {
+      if (path.endsWith("/journal")) return probeJournal(files, path);
+      return [];
+    }
+    return json
+      .map((row) => {
+        if (!row || typeof row !== "object" || !("name" in row)) return "";
+        return String((row as { name: string }).name);
+      })
+      .filter((name) => name && !name.startsWith("."))
+      .sort();
+  } catch {
+    if (path.endsWith("/journal")) return probeJournal(files, path);
+    return [];
+  }
+}
+
+const IMAGE_EXT = /\.(png|webp|jpe?g|gif)$/i;
+
+export function packetIdForms(id: string): string[] {
+  const pkt = id.replace(/^PKT-/i, "pkt-");
+  const PKT = pkt.replace(/^pkt-/, "PKT-");
+  return [...new Set([id, pkt, PKT])];
+}
+
+export function plateFilenameMatches(name: string, packetId: string): boolean {
+  const lower = name.toLowerCase();
+  return packetIdForms(packetId).some((form) => lower.includes(form.toLowerCase()));
+}
+
+export function resolvePlateHref(noteDir: string, href: string, repo: string): string | null {
+  const trimmed = href.trim().replace(/^<|>$/g, "").split(/[?#]/)[0];
+  if (!trimmed || trimmed.startsWith("#")) return null;
+  const fromGithub = pathFromGithubUrl(trimmed, repo);
+  if (fromGithub) return fromGithub;
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return null;
+  const joined = posix.normalize(posix.join(noteDir, trimmed));
+  if (!joined || joined.startsWith("..") || posix.isAbsolute(joined)) return null;
+  if (!joined.startsWith("docs/factory/")) return null;
+  return joined;
+}
+
+function pathFromGithubUrl(href: string, repo: string): string | null {
+  const escaped = repo.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const raw = new RegExp(`^https://raw\\.githubusercontent\\.com/${escaped}/[^/]+/(.+)$`, "i");
+  const blob = new RegExp(`^https://github\\.com/${escaped}/(?:blob|raw)/[^/]+/(.+)$`, "i");
+  const match = raw.exec(href) ?? blob.exec(href);
+  if (!match) return null;
+  let path = match[1];
+  try {
+    path = decodeURIComponent(path);
+  } catch {
+    /* keep */
+  }
+  if (!path.startsWith("docs/factory/")) return null;
+  return path;
+}
+
+export async function gatherPacketPlates(
+  tree: TowerFiles,
+  packet: LedgerPacket,
+  noteDir: string,
+  note: string | null,
+  packetDirNames: string[] | null,
+  repo: string,
+): Promise<PacketPlates> {
+  const parsed = plateSection(note ?? "");
+  const dirs = [
+    { path: `docs/factory/initiatives/${packet.initiativeId}/plates`, packetSpecific: false },
+    { path: `docs/factory/initiatives/${packet.initiativeId}/packets/plates`, packetSpecific: false },
+    ...packetIdForms(packet.id).map((id) => ({ path: `${noteDir}/${id}`, packetSpecific: true })),
+  ];
+  const listed = await Promise.all(dirs.map(async (dir) => ({ ...dir, names: (await tree.list(dir.path)) ?? [] })));
+  const found = new Map<string, string>();
+  const add = (path: string, alt: string) => {
+    if (!IMAGE_EXT.test(path) || found.has(path)) return;
+    found.set(path, alt || posix.basename(path).replace(/\.[^.]+$/, ""));
+  };
+  for (const image of parsed.images) {
+    const path = resolvePlateHref(noteDir, image.href, repo);
+    if (path) add(path, image.alt);
+  }
+  for (const dir of listed) {
+    for (const name of dir.names) {
+      if (!IMAGE_EXT.test(name)) continue;
+      if (!dir.packetSpecific && !plateFilenameMatches(name, packet.id)) continue;
+      add(`${dir.path}/${name}`, name.replace(/\.[^.]+$/, ""));
+    }
+  }
+  for (const name of packetDirNames ?? []) {
+    if (!IMAGE_EXT.test(name) || !plateFilenameMatches(name, packet.id)) continue;
+    add(`${noteDir}/${name}`, name.replace(/\.[^.]+$/, ""));
+  }
+  const byPath = new Map<string, PacketPlateImage>();
+  for (const [path, alt] of found) {
+    byPath.set(path, {
+      path,
+      alt,
+      imageUrl: rawFileUrl(repo, tree.sha, path),
+      artifactUrl: blobFileUrl(repo, tree.sha, path),
+    });
+  }
+  const ordered: PacketPlateImage[] = [];
+  const seen = new Set<string>();
+  for (const image of parsed.images) {
+    const path = resolvePlateHref(noteDir, image.href, repo);
+    const row = path ? byPath.get(path) : undefined;
+    if (!row || seen.has(row.path)) continue;
+    ordered.push({ ...row, alt: image.alt || row.alt });
+    seen.add(row.path);
+  }
+  for (const row of [...byPath.values()].sort((a, b) => a.path.localeCompare(b.path))) {
+    if (seen.has(row.path)) continue;
+    ordered.push(row);
+  }
+  return {
+    buckets: parsed.buckets,
+    bucketsAvailable: parsed.bucketsAvailable,
+    images: ordered,
+  };
+}
+
 function shaFromText(text: string): string | null {
   const trimmed = text.trim();
   if (/^[0-9a-f]{40}$/.test(trimmed)) return trimmed;
@@ -222,6 +381,7 @@ export async function readGitHubRemote(): Promise<Snapshot> {
     const repo = githubRepo();
     const sha = await resolveGithubSha(repo, ref);
     const cache = new Map<string, Promise<string | null>>();
+    const listCache = new Map<string, Promise<string[] | null>>();
     const files: TowerFiles = {
       ref,
       sha,
@@ -236,21 +396,13 @@ export async function readGitHubRemote(): Promise<Snapshot> {
         cache.set(path, request);
         return request;
       },
-      async list(path) {
-        if (!path.endsWith("/journal")) return [];
-        const probed = await Promise.all(
-          Array.from({ length: 8 }, (_, index) => {
-            const name = `${String(index + 1).padStart(3, "0")}.md`;
-            return files.file(`${path}/${name}`).then((text) => (text == null ? null : name));
-          }),
-        );
-        const names: string[] = [];
-        for (const name of probed) {
-          if (!name) break;
-          names.push(name);
-        }
-        return names;
-      },
+    async list(path) {
+      const pending = listCache.get(path);
+      if (pending) return pending;
+      const request = listGithubDirectory(repo, sha, path, files);
+      listCache.set(path, request);
+      return request;
+    },
     };
     return snapshotFromFiles(files);
   });
@@ -331,6 +483,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
         ? (JSON.parse(manifestText) as { title?: string; release?: string; systemsChange?: string })
         : null;
       const systemsChangePath = manifest?.systemsChange ?? null;
+      const plates = await gatherPacketPlates(tree, raw, noteDir, resolvedNote, listed, githubRepo(repoUrl()));
       return {
         raw,
         title: manifest?.title ?? null,
@@ -339,6 +492,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
         intendedBehaviorPath: resolvedPath,
         systemsChangePath,
         systemsChangeText: systemsChangePath ? await tree.file(systemsChangePath) : null,
+        plates,
       };
     }),
   );

@@ -141,3 +141,41 @@ Dispatched, Running, Committed, Verified, Integrated, Accepted — each `yes` / 
 ### After this packet
 
 The founder asked for the implementation on PR 4, not another proposal. Wake is `sa`. This seat does not plant.
+
+---
+
+## 8. Packet 003 — Factory UI plates
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-003-factory-plates.md`](./PM-PACKET-003-factory-plates.md)  
+**Test:** [`PM-PACKET-003-factory-plates-TEST.md`](./PM-PACKET-003-factory-plates-TEST.md)
+
+Packet 001 remains the desk. Packet 002 remains GitHub evidence. This section extends the packet page. It does not replace the table, the graph, or the packet 001 / 002 property order.
+
+### What was read
+
+Tower PR 137, branch `cursor/factory-agents-scope-33ee`, commit `0bad2c30747c3c52894df345f65487a0cf42395b`, ledger revision 61.
+
+- Template `## Plates`: “None, or the five buckets.” Operating protocol: a plate is a `/prototype-ant` screenshot with only the new hole painted; five buckets are copy, do not build, implied, completes, out of scope.
+- PKT-001 has no `## Plates` section. PKT-002–009 say `None.` No image under `docs/factory`. Manifests have no `plates` field.
+- Travis `PLATE-READ.md` at `a47becf` is the five-bucket table. Do not invent a thirteenth bucket.
+
+### Discovery Trigger may use
+
+1. `## Plates` on the packet note: markdown images, HTML `img`, and the five buckets.
+2. Scoped directory listing on the observed SHA: `docs/factory/initiatives/<initiativeId>/plates/`, `…/packets/plates/`, `…/packets/<packetId>/`, plus packets-directory files whose names include the packet id.
+3. Extensions `png`, `webp`, `jpg`, `jpeg`, `gif`.
+
+Do not walk `docs/register` or the whole repository. Do not wait for release, wake, engineering, or merge to `main`. A committed file wins over the word `None.`
+
+### Face
+
+On the packet page, after Intended behavior: the images, each linked to the GitHub blob at `{repo}/{sha}/{path}`, then Copy / Do not build / Implied / Completes / Out of scope. Omit the section when there is no image and no bucket text. No approval control. Raw GitHub is the `img` src. Bytes are not on the snapshot.
+
+### File cut
+
+`src/observe/snapshot.ts` parses `## Plates` and holds plate types. `src/observe/tower/read.ts` lists the scoped directories and attaches URLs; GitHub `list()` uses Contents for those paths. `src/desk/Detail.tsx` renders the section. Fixture `9c45f19` stays without a plate.
+
+### After this packet
+
+The founder asked for the implementation on PR 4, not another proposal. Wake is `sa`. This seat does not plant.

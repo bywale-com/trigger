@@ -184,6 +184,7 @@ export type PacketPage = PageBase & {
   intendedBehaviorPath: string | null;
   systemsChangePath: string | null;
   systemsChangeText: string | null;
+  plates: PacketPlates;
   lifecycle: LifecycleStep[];
   github: GithubEvidence;
 };
@@ -225,6 +226,7 @@ export type GatheredPacket = {
   intendedBehaviorPath: string | null;
   systemsChangePath: string | null;
   systemsChangeText: string | null;
+  plates?: PacketPlates;
 };
 
 export type Gathered = {
@@ -314,6 +316,155 @@ export function intendedSection(markdown: string): string | null {
   const next = after.search(/\n## /);
   const body = (next < 0 ? after : after.slice(0, next)).trim();
   return body || null;
+}
+
+export const PLATE_BUCKETS = [
+  { id: "copy", label: "Copy" },
+  { id: "doNotBuild", label: "Do not build" },
+  { id: "implied", label: "Implied" },
+  { id: "completes", label: "Completes" },
+  { id: "outOfScope", label: "Out of scope" },
+] as const;
+
+export type PlateBucketId = (typeof PLATE_BUCKETS)[number]["id"];
+
+export type PlateBucket = {
+  id: PlateBucketId;
+  label: string;
+  text: string | null;
+};
+
+export type PacketPlateImage = {
+  path: string;
+  alt: string;
+  imageUrl: string;
+  artifactUrl: string;
+};
+
+export type PacketPlates = {
+  buckets: PlateBucket[];
+  bucketsAvailable: boolean;
+  images: PacketPlateImage[];
+};
+
+export type ParsedPlateImage = {
+  alt: string;
+  href: string;
+};
+
+export function emptyPlates(): PacketPlates {
+  return {
+    buckets: PLATE_BUCKETS.map((bucket) => ({ id: bucket.id, label: bucket.label, text: null })),
+    bucketsAvailable: false,
+    images: [],
+  };
+}
+
+export function platesVisible(plates: PacketPlates): boolean {
+  return plates.images.length > 0 || plates.bucketsAvailable;
+}
+
+export function rawFileUrl(repo: string, sha: string, path: string): string {
+  return `https://raw.githubusercontent.com/${repo}/${sha}/${path.split("/").map(encodeURIComponent).join("/")}`;
+}
+
+export function blobFileUrl(repo: string, sha: string, path: string): string {
+  return `https://github.com/${repo}/blob/${sha}/${path.split("/").map(encodeURIComponent).join("/")}`;
+}
+
+function markdownSection(markdown: string, heading: string): string | null {
+  const start = markdown.indexOf(heading);
+  if (start < 0) return null;
+  const after = markdown.slice(start + heading.length);
+  const next = after.search(/\n## /);
+  const body = (next < 0 ? after : after.slice(0, next)).trim();
+  return body || null;
+}
+
+function plateImagesFrom(body: string): ParsedPlateImage[] {
+  const images: ParsedPlateImage[] = [];
+  const seen = new Set<string>();
+  const add = (alt: string, href: string) => {
+    const target = href.trim();
+    if (!target || target.startsWith("#") || seen.has(target)) return;
+    seen.add(target);
+    images.push({ alt: alt.trim(), href: target });
+  };
+  const markdown = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  for (const match of body.matchAll(markdown)) add(match[1], match[2]);
+  const html = /<img\b[^>]*>/gi;
+  for (const match of body.matchAll(html)) {
+    const tag = match[0];
+    const src = /\bsrc\s*=\s*("([^"]+)"|'([^']+)'|([^\s>]+))/i.exec(tag);
+    const alt = /\balt\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(tag);
+    const href = src?.[2] ?? src?.[3] ?? src?.[4] ?? "";
+    add(alt?.[2] ?? alt?.[3] ?? alt?.[4] ?? "", href);
+  }
+  return images;
+}
+
+function bucketFromHeading(name: string): { id: PlateBucketId; label: string } | null {
+  const normalized = name.trim().toLowerCase().replace(/\s+this build$/, "");
+  const found = PLATE_BUCKETS.find((bucket) => bucket.label.toLowerCase() === normalized);
+  return found ? { id: found.id, label: found.label } : null;
+}
+
+function parseBucketLine(line: string): { bucket: { id: PlateBucketId; label: string }; rest: string } | null {
+  const match =
+    /^(?:#{2,4}\s+|\*{1,2})?(?:(?:\d+)[.)]\s+)?(Copy|Do not build|Implied|Completes|Out of scope(?: this build)?)\b[*:.\s—–-]*(.*)$/i.exec(
+      line.trim(),
+    );
+  if (!match) return null;
+  const bucket = bucketFromHeading(match[1]);
+  if (!bucket) return null;
+  return { bucket, rest: match[2].replace(/^\*+\s*/, "").replace(/\s*\*+$/, "").trim() };
+}
+
+function isEmptyPlateBody(text: string): boolean {
+  const stripped = text.replace(/!\[.*?\]\([^)]+\)/gs, "").replace(/<img\b[^>]*>/gi, "").trim();
+  if (!stripped) return true;
+  return /^(none\.?|none,\s*or the five buckets\b.*)$/i.test(stripped);
+}
+
+export function plateSection(markdown: string): { buckets: PlateBucket[]; bucketsAvailable: boolean; images: ParsedPlateImage[] } {
+  const empty = emptyPlates();
+  const body = markdownSection(markdown, "## Plates");
+  if (body == null) return { buckets: empty.buckets, bucketsAvailable: false, images: [] };
+  const images = plateImagesFrom(body);
+  if (isEmptyPlateBody(body)) return { buckets: empty.buckets, bucketsAvailable: false, images };
+  const texts = new Map<PlateBucketId, string[]>();
+  let current: PlateBucketId | null = null;
+  let sawHeading = false;
+  for (const line of body.split("\n")) {
+    const parsed = parseBucketLine(line);
+    if (parsed) {
+      sawHeading = true;
+      current = parsed.bucket.id;
+      if (parsed.rest) {
+        const list = texts.get(current) ?? [];
+        list.push(parsed.rest);
+        texts.set(current, list);
+      }
+      continue;
+    }
+    if (!current) continue;
+    if (/!\[/.test(line) || /<img\b/i.test(line)) continue;
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const list = texts.get(current) ?? [];
+    list.push(trimmed);
+    texts.set(current, list);
+  }
+  if (!sawHeading) return { buckets: empty.buckets, bucketsAvailable: false, images };
+  return {
+    buckets: PLATE_BUCKETS.map((bucket) => ({
+      id: bucket.id,
+      label: bucket.label,
+      text: texts.has(bucket.id) ? (texts.get(bucket.id) ?? []).join("\n") : null,
+    })),
+    bucketsAvailable: true,
+    images,
+  };
 }
 
 export function leaseActive(lease: Lease | null, readAt: string): boolean {
@@ -631,6 +782,7 @@ function toPacket(packet: GatheredPacket, module: string, readAt: string, repo: 
     intendedBehaviorPath: packet.intendedBehaviorPath,
     systemsChangePath: packet.systemsChangePath,
     systemsChangeText: packet.systemsChangeText,
+    plates: packet.plates ?? emptyPlates(),
     lifecycle: packetLifecycle(raw, readAt, github),
     github,
   };

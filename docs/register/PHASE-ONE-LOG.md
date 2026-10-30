@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:00 UTC 2026-10-30 — packet 002 is Wake sa. The desk follows named SHAs onto GitHub. The table is unchanged. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 11:28 UTC 2026-10-30 — packet 003 is Wake sa. The packet page shows factory UI plates committed on the observed branch. The table is unchanged. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -351,3 +351,63 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 > Continue on PR #4. Do not create another pull request.
 
 **What changed.** [`PM-PACKET-002-execution-observability.md`](./PM-PACKET-002-execution-observability.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §7 is the grain. Next PM number is 003. No `src/` from this seat.
+
+---
+
+## 11:22 UTC 2026-10-30 — factory plates, as they actually sit
+
+**Kind:** investigation for packet 003. Founder asked to show Tower UI plates on the packet page.
+
+**Founder wording:**
+
+> When an Architect creates a UI plate for an implementation packet, Trigger should automatically discover and display the actual image within that packet's detail page.
+>
+> Plates should appear as soon as they're committed to the observed factory branch, without waiting for packet release, engineering, or merging into main.
+
+**What was read.** `bywale-com/omcoda_tower` `cursor/factory-agents-scope-33ee` `0bad2c30747c3c52894df345f65487a0cf42395b`, ledger revision 61. Template `docs/factory/templates/IMPLEMENTATION-PACKET.md` `## Plates`: “None, or the five buckets. Do not invent a plate when the glass does not change.” `docs/factory/OPERATING-PROTOCOL.md`: the plate is a `/prototype-ant` screenshot with only the new hole painted; read with copy, do not build, implied, completes, out of scope. PKT-001 has no `## Plates` section. PKT-002–009 say `## Plates` / `None.` Manifests have no `plates` field. Recursive tree: no image under `docs/factory`. `docs/register/PLATE-READ.md` is 404 on this SHA. Travis `PLATE-READ.md` at `a47becf` is the five-bucket table. Do not invent a thirteenth.
+
+**What changed.** Nothing in `src/`. This stamp is the operating model packet 003 must follow.
+
+**Agent alignment (not a flag):** Live packets have no PNG yet. Discovery must still be real, so the next Architect commit on that branch shows without a release.
+
+---
+
+## 11:24 UTC 2026-10-30 — face of packet 003
+
+**Kind:** face. Same founder ask. Ant chrome stays.
+
+**Founder wording:**
+
+> Include the associated five-bucket plate read: copy, do not build, implied, completes, and out of scope.
+>
+> Support multiple plates per packet and link each image to its authoritative repository artifact.
+>
+> Do not introduce approval workflows, approval buttons, or new release requirements.
+
+**What changed.** The packet page, after Intended behavior, shows the images and the five buckets when either exists. Empty (`None.` and no file) omits the section so the `9c45f19` fixture does not grow copy. Each image links to the GitHub blob at the observed SHA. No Approve. Table, graph, and packet 002 GitHub evidence stay.
+
+**Ask:** none. The founder already sent the go to implement on PR 4 after the contracts.
+
+---
+
+## 11:26 UTC 2026-10-30 — file cut
+
+**Kind:** technical cut. Inspected planted `src/` read-only.
+
+**What hangs.** `src/observe/snapshot.ts` is the snapshot both views read. `intendedSection` already slices `## Intended behavior` from the packet note. `src/observe/tower/read.ts` fetches that note and, on GitHub mode, `list()` only probes journal `001`–`008.md`. `src/desk/Detail.tsx` is the shared page: Intended behavior, then Verification, execution evidence, GitHub. Fixture `testdata/9c45f19` PKT-001 has no plate.
+
+**What changed.** Packet 003 names plate types and a `## Plates` parser on `snapshot.ts`, scoped directory listing plus URL attach on `read.ts` (Contents API for GitHub `list()` of those dirs), and the Plates block on `Detail.tsx`. No second store. Do not `file()` PNG bytes.
+
+---
+
+## 11:28 UTC 2026-10-30 — packet 003 Wake sa
+
+**Kind:** founder go, already in this chat: treat plates as a packet, investigate, contract, then implement on PR 4. This seat writes the packet and stops planting.
+
+**Founder wording:**
+
+> Implement and verify this on the existing Trigger PR #4.
+>
+> Trigger remains entirely read-only.
+
+**What changed.** [`PM-PACKET-003-factory-plates.md`](./PM-PACKET-003-factory-plates.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §8 is the grain. Next PM number is 004. No `src/` from this seat.

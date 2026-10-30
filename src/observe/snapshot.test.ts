@@ -1,10 +1,16 @@
-import { readFileSync } from "node:fs";
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   assemble,
+  blobFileUrl,
   edges,
+  emptyPlates,
   parseReconciliationId,
+  plateSection,
+  platesVisible,
+  rawFileUrl,
   readAtNow,
   stageColor,
   stageLabel,
@@ -92,6 +98,8 @@ describe("revision 1 fixture", () => {
     expect(packet.github.checks.map((check) => check.runId)).toEqual(["40873984441", "40873984426"]);
     expect(packet.github.checks[0]?.url).toContain("/actions/runs/40873984441");
     expect(packet.dispatchHistory).toEqual([]);
+    expect(packet.plates).toEqual(emptyPlates());
+    expect(platesVisible(packet.plates)).toBe(false);
 
     expect(launch.execution).toBe("Idle · no dispatch");
     expect(launch.evidence).toBe("Blocked reason");
@@ -251,7 +259,141 @@ function gatheredFrom(snapshot: { pages: Page[]; ref: string; sha: string; state
         intendedBehaviorPath: page.intendedBehaviorPath,
         systemsChangePath: page.systemsChangePath,
         systemsChangeText: page.systemsChangeText,
+        plates: page.plates,
       };
     }),
   };
 }
+
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "base64",
+);
+
+function copyFixtureWithPlates(noteBody: string, files: { dir: string; name: string }[]): string {
+  const root = mkdtempSync(join(tmpdir(), "trigger-plates-"));
+  cpSync(fixture, root, { recursive: true });
+  const notePath = join(root, "docs/factory/initiatives/exec-identity/packets/PKT-001-click-attribution.md");
+  writeFileSync(notePath, `${readFileSync(notePath, "utf8").trimEnd()}\n\n${noteBody}\n`);
+  for (const file of files) {
+    mkdirSync(join(root, file.dir), { recursive: true });
+    writeFileSync(join(root, file.dir, file.name), PNG);
+  }
+  return root;
+}
+
+describe("factory plates", () => {
+  it("parses the five buckets and markdown images from ## Plates", () => {
+    const parsed = plateSection(`# PKT
+## Intended behavior
+Stay.
+## Plates
+**Copy:** the header stays Trigger
+**Do not build:** a switcher
+**Implied:** dark mode still works
+**Completes:** the packet page shows the plate
+**Out of scope:** approval workflow
+![PKT-003 light](../plates/pkt-003-open-ask-light.png)
+![PKT-003 dark](../plates/pkt-003-open-ask-dark.png)
+## Out of scope
+Not a plate.
+`);
+    expect(parsed.bucketsAvailable).toBe(true);
+    expect(parsed.buckets.map((bucket) => `${bucket.label}:${bucket.text}`)).toEqual([
+      "Copy:the header stays Trigger",
+      "Do not build:a switcher",
+      "Implied:dark mode still works",
+      "Completes:the packet page shows the plate",
+      "Out of scope:approval workflow",
+    ]);
+    expect(parsed.images).toEqual([
+      { alt: "PKT-003 light", href: "../plates/pkt-003-open-ask-light.png" },
+      { alt: "PKT-003 dark", href: "../plates/pkt-003-open-ask-dark.png" },
+    ]);
+  });
+
+  it("treats None as no buckets and keeps linked images", () => {
+    const parsed = plateSection(`## Plates\n\nNone.\n\n![kept](../plates/pkt-001-click-attribution-light.png)\n`);
+    expect(parsed.bucketsAvailable).toBe(false);
+    expect(parsed.buckets.every((bucket) => bucket.text == null)).toBe(true);
+    expect(parsed.images).toEqual([{ alt: "kept", href: "../plates/pkt-001-click-attribution-light.png" }]);
+  });
+
+  it("does not invent buckets when ## Plates is missing", () => {
+    const parsed = plateSection("# PKT\n## Intended behavior\nStay.\n");
+    expect(parsed.bucketsAvailable).toBe(false);
+    expect(parsed.images).toEqual([]);
+  });
+
+  it("reads an html image tag", () => {
+    const parsed = plateSection(
+      `## Plates\n<img src="../plates/pkt-001-click-attribution-light.png" alt="html plate">\n`,
+    );
+    expect(parsed.images).toEqual([
+      { alt: "html plate", href: "../plates/pkt-001-click-attribution-light.png" },
+    ]);
+  });
+
+  it("constructs raw and blob URLs at the observed sha", () => {
+    expect(rawFileUrl("bywale-com/omcoda_tower", "abc123", "docs/factory/initiatives/exec-identity/plates/pkt-001.png")).toBe(
+      "https://raw.githubusercontent.com/bywale-com/omcoda_tower/abc123/docs/factory/initiatives/exec-identity/plates/pkt-001.png",
+    );
+    expect(blobFileUrl("bywale-com/omcoda_tower", "abc123", "docs/factory/initiatives/exec-identity/plates/pkt-001.png")).toBe(
+      "https://github.com/bywale-com/omcoda_tower/blob/abc123/docs/factory/initiatives/exec-identity/plates/pkt-001.png",
+    );
+  });
+
+  it("discovers committed files even when the note says None", async () => {
+    const root = copyFixtureWithPlates("## Plates\n\nNone.\n", [
+      { dir: "docs/factory/initiatives/exec-identity/plates", name: "pkt-001-click-attribution-light.png" },
+      { dir: "docs/factory/initiatives/exec-identity/plates", name: "pkt-001-click-attribution-dark.png" },
+      { dir: "docs/factory/initiatives/exec-identity/plates", name: "pkt-002-open-ask-cursor-light.png" },
+    ]);
+    const snapshot = await readFixture(root, "main");
+    const packet = snapshot.pages.find((page) => page.id === "pkt-001-click-attribution");
+    if (!packet || packet.type !== "Packet") throw new Error("packet");
+    expect(packet.plates.bucketsAvailable).toBe(false);
+    expect(packet.plates.images.map((image) => image.path)).toEqual([
+      "docs/factory/initiatives/exec-identity/plates/pkt-001-click-attribution-dark.png",
+      "docs/factory/initiatives/exec-identity/plates/pkt-001-click-attribution-light.png",
+    ]);
+    expect(packet.plates.images[0]?.imageUrl).toContain(`/${snapshot.sha}/docs/factory/initiatives/exec-identity/plates/`);
+    expect(packet.plates.images[0]?.artifactUrl).toContain(
+      `https://github.com/bywale-com/omcoda_tower/blob/${snapshot.sha}/`,
+    );
+    expect(packet.intendedBehavior).toContain("An email click advances the enrollment named on the outbound message.");
+  });
+
+  it("keeps markdown order and fills the five buckets", async () => {
+    const root = copyFixtureWithPlates(
+      `## Plates
+
+**Copy:** the header stays Trigger
+**Do not build:** a switcher
+**Implied:** dark mode still works
+**Completes:** the packet page shows the plate
+**Out of scope:** approval workflow
+
+![light](../plates/pkt-001-click-attribution-light.png)
+![dark](../plates/pkt-001-click-attribution-dark.png)
+`,
+      [
+        { dir: "docs/factory/initiatives/exec-identity/plates", name: "pkt-001-click-attribution-light.png" },
+        { dir: "docs/factory/initiatives/exec-identity/plates", name: "pkt-001-click-attribution-dark.png" },
+      ],
+    );
+    const snapshot = await readFixture(root, "main");
+    const packet = snapshot.pages.find((page) => page.id === "pkt-001-click-attribution");
+    if (!packet || packet.type !== "Packet") throw new Error("packet");
+    expect(packet.plates.bucketsAvailable).toBe(true);
+    expect(packet.plates.buckets.map((bucket) => bucket.text)).toEqual([
+      "the header stays Trigger",
+      "a switcher",
+      "dark mode still works",
+      "the packet page shows the plate",
+      "approval workflow",
+    ]);
+    expect(packet.plates.images.map((image) => image.alt)).toEqual(["light", "dark"]);
+    expect(platesVisible(packet.plates)).toBe(true);
+  });
+});

@@ -98,6 +98,8 @@ try {
   check("systems change not on glass", !packet.includes("This file is the systems-change packet."));
   check("release eligible not on glass", !packet.includes("Release eligible"));
   check("no completed collapse", !packet.includes("Completed yes"));
+  check("no plates heading on fixture", !packet.split("\n").includes("Plates"));
+  check("no plate approval", !packet.includes("Approve") && !packet.includes("Reject"));
   await page.screenshot({ path: "/tmp/desk-packet-light.png" });
 
   await clickText(page, "← Tower");
