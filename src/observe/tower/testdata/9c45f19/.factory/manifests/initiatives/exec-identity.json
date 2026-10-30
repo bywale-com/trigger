@@ -1,0 +1,27 @@
+{
+  "id": "exec-identity",
+  "title": "Which execution a result belongs to",
+  "module": "Agents and Automations",
+  "entry": "Operator → Configuration libraries → Agents and Automations. The investigated behavior is that one execution's result stays distinguishable from another's.",
+  "obligation": "Specify and, where a packet is released, implement the identity rules already locked on PR 135. Do not complete neighboring modules.",
+  "investigation": "investigating",
+  "mutation": "read-only-reference",
+  "source": {
+    "pr": 135,
+    "url": "https://github.com/bywale-com/omcoda_tower/pull/135",
+    "branch": "cursor/specification-mapping-4aea",
+    "sha": "1f6f43ab2dbe8b0e32b0a344990795bb998c8be3",
+    "specification": "docs/specification-pass/SPECIFICATION.md",
+    "journals": "docs/specification-pass/journal/001.md through 060.md",
+    "handoff": "docs/specification-pass/NEXT.md"
+  },
+  "packets": ["pkt-001-click-attribution"],
+  "requiredPackets": [],
+  "founderDecisions": [
+    "Who is placed on launch day.",
+    "Whether a later reactivation sends the first nurture again.",
+    "Whether a delayed delivery holds the next email.",
+    "What makes one pathway family's pass true."
+  ],
+  "notThisInitiative": ["launch-agent"]
+}

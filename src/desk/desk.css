@@ -1,0 +1,18 @@
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+  overflow-x: clip;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.ant-table-content {
+  overflow: visible !important;
+}
+
+.ant-table-cell {
+  white-space: normal;
+  overflow-wrap: break-word;
+}

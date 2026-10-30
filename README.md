@@ -1,12 +1,17 @@
 # Trigger
 
-Work repo. Product direction: [`docs/register/PRODUCT-OVERVIEW.md`](docs/register/PRODUCT-OVERVIEW.md). Seats follow the sitting protocol imported from [travis](https://github.com/bywale-com/travis). Architecture and implementation are not authorized.
+Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register/PRODUCT-DIRECTION-V1.md). Trigger is a read-only view of Tower. The October 19 overview stays as history: [`docs/register/PRODUCT-OVERVIEW.md`](docs/register/PRODUCT-OVERVIEW.md). The desk is planted on PR 4.
 
 ## Implementation
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
-- (none yet)
+- 2026-10-30 · change packet 004 · PR 4 — below 992px the desk is a compact shell of the same snapshot (wrapped header, dense work list, pan/pinch graph), because the founder reads Tower from a phone and 1440 must stay the approved table.
+- 2026-10-30 · change packet 003 · PR 4 — the packet page discovers factory UI plates on the observed SHA and shows the images with the five-bucket read, because an Architect plate should appear as soon as it is committed, without a release or an approval control.
+- 2026-10-30 · change packet 002 · PR 4 — the packet page follows named ledger SHAs onto GitHub (branch, PR, commits, checks, preview) and keeps six lifecycle facts, because the factory ledger is still the record and the founder should not hunt the working branch.
+- 2026-10-30 · PR 4 — the desk is at https://trigger-theta-cyan.vercel.app, because `/api/snapshot` is a Node function that reads the configured Tower branch.
+- 2026-10-29 · PR 4 — the desk observes Tower `cursor/factory-agents-scope-33ee` unless `TOWER_REF` is set, because the active factory is that branch and the branch must stay configurable.
+- 2026-10-29 · change packet 001 · PR 4 — the desk reads the current Tower branch and shows that commit, because the signed read is the factory tree and `9c45f19` is only the plate fixture.
 
 ## Seats
 
