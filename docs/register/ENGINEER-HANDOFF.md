@@ -24,7 +24,7 @@ Verification on the `9c45f19` fixture, 30 Oct 2026:
 - `scripts/walk-desk.mjs` at 1440: Pulse `inactive` / `unconfirmed` / `event`, header and borders, columns even, resize stops at the cap, table stays with the pane and scrolls sideways.
 - `scripts/walk-ixd.mjs`: split, expand, click-to-filter, crumb, graph ring, compact table row visible and tappable above the sheet, mode remembered.
 - `scripts/walk-mobile.mjs`: bordered table at 360–768, name column holds 220, board scrolls sideways, no page overflow, row visible above the sheet.
-- Vercel Deployment Check: not painted yet. After this hotfix is on `main`, that check is the deploy signal. Earlier Hobby `build-rate-limit` on `main` was 13:17 UTC 30 Oct 2026.
+- Vercel on `main` `2ee0a7e` — success. Deployment completed. Production https://trigger-theta-cyan.vercel.app is serving `index-Dy58HFo2.js` (last-modified 15:57 UTC 30 Oct 2026). The Deployment Check that runs the walks on that URL is the remaining signal; this seat did not sit in Vercel logs for it.
 
 Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays hold.
 
