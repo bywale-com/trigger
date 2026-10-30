@@ -7,6 +7,10 @@
     "api/snapshot.ts": {
       "maxDuration": 10,
       "includeFiles": "src/observe/**"
+    },
+    "api/tree-file.ts": {
+      "maxDuration": 10,
+      "includeFiles": "src/observe/**"
     }
   },
   "rewrites": [

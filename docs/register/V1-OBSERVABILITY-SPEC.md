@@ -205,3 +205,29 @@ Compact (`max-width: 991px`): wrapped header, dense work list (not cards, not a 
 ### After this packet
 
 The founder asked for the implementation on PR 4 and an update of the deployed desk. Wake is `sa`. This seat does not plant.
+
+---
+
+## 10. Packet 005 — Page text and visible plates
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-005-page-text-plates.md`](./PM-PACKET-005-page-text-plates.md)  
+**Test:** [`PM-PACKET-005-page-text-plates-TEST.md`](./PM-PACKET-005-page-text-plates-TEST.md)
+
+Packets 001–004 remain the desk. This section is how quoted factory files look, and how a plate paints when the observed tree has one.
+
+### What was read
+
+`main` `64989bb`. `Detail.tsx` `pre-wrap` on specification, journals, intended behavior. Live Tower `9a291f2`: no `docs/factory` image. Plate fixture raw URLs 404.
+
+### Face
+
+Specification, journal, intended behavior: Ant typography from the markdown, not source. Leading file H1 does not repeat the page title. Local/fixture plate `img` is `/api/tree-file` of that path; GitHub mode stays raw. Figures use Ant Image preview. `9c45f19` still has no plate.
+
+### File cut
+
+`src/desk/markdown.tsx`, `Detail.tsx`, `src/observe/tower/read.ts`, `src/observe/tree-file.ts`, `api/tree-file.ts`, Vite / serve / `vercel.json`.
+
+### After this packet
+
+The founder asked to see plates and left formatting to this seat. Wake is `sa`. This seat does not plant.

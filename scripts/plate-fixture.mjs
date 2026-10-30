@@ -1,5 +1,5 @@
 // Materialize a 9c45f19 copy with two packet plates and a filled ## Plates body.
-import { cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,7 +9,8 @@ if (!root) {
   process.exit(1);
 }
 
-const fixture = join(dirname(fileURLToPath(import.meta.url)), "../src/observe/tower/testdata/9c45f19");
+const here = dirname(fileURLToPath(import.meta.url));
+const fixture = join(here, "../src/observe/tower/testdata/9c45f19");
 cpSync(fixture, root, { recursive: true });
 const notePath = join(root, "docs/factory/initiatives/exec-identity/packets/PKT-001-click-attribution.md");
 const plates = `## Plates
@@ -26,10 +27,13 @@ const plates = `## Plates
 writeFileSync(notePath, `${readFileSync(notePath, "utf8").trimEnd()}\n\n${plates}\n`);
 const dir = join(root, "docs/factory/initiatives/exec-identity/plates");
 mkdirSync(dir, { recursive: true });
-const png = Buffer.from(
+const fallback = Buffer.from(
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
   "base64",
 );
-writeFileSync(join(dir, "pkt-001-click-attribution-light.png"), png);
-writeFileSync(join(dir, "pkt-001-click-attribution-dark.png"), png);
+for (const name of ["pkt-001-click-attribution-light.png", "pkt-001-click-attribution-dark.png"]) {
+  const source = join(here, "plate-images", name);
+  if (existsSync(source)) cpSync(source, join(dir, name));
+  else writeFileSync(join(dir, name), fallback);
+}
 console.log(root);

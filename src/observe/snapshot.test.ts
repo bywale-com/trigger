@@ -16,9 +16,10 @@ import {
   stageLabel,
   visiblePages,
   type Gathered,
+  type LedgerPacket,
   type Page,
 } from "./snapshot.ts";
-import { readFixture } from "./tower/read.ts";
+import { gatherPacketPlates, readFixture } from "./tower/read.ts";
 
 const fixture = join(import.meta.dirname, "tower/testdata/9c45f19");
 
@@ -357,7 +358,10 @@ Not a plate.
       "docs/factory/initiatives/exec-identity/plates/pkt-001-click-attribution-dark.png",
       "docs/factory/initiatives/exec-identity/plates/pkt-001-click-attribution-light.png",
     ]);
-    expect(packet.plates.images[0]?.imageUrl).toContain(`/${snapshot.sha}/docs/factory/initiatives/exec-identity/plates/`);
+    expect(packet.plates.images[0]?.imageUrl).toContain("/api/tree-file?path=");
+    expect(decodeURIComponent(packet.plates.images[0]?.imageUrl ?? "")).toContain(
+      "docs/factory/initiatives/exec-identity/plates",
+    );
     expect(packet.plates.images[0]?.artifactUrl).toContain(
       `https://github.com/bywale-com/omcoda_tower/blob/${snapshot.sha}/`,
     );
@@ -395,5 +399,30 @@ Not a plate.
     ]);
     expect(packet.plates.images.map((image) => image.alt)).toEqual(["light", "dark"]);
     expect(platesVisible(packet.plates)).toBe(true);
+  });
+
+  it("keeps GitHub raw image URLs when the tree is not on disk", async () => {
+    const packet = {
+      id: "pkt-001-click-attribution",
+      initiativeId: "exec-identity",
+    } as LedgerPacket;
+    const plates = await gatherPacketPlates(
+      {
+        ref: "main",
+        sha: "abc123",
+        local: false,
+        file: async () => null,
+        list: async (path) =>
+          path === "docs/factory/initiatives/exec-identity/plates" ? ["pkt-001-click-attribution-light.png"] : [],
+      },
+      packet,
+      "docs/factory/initiatives/exec-identity/packets",
+      "## Plates\nNone.\n",
+      null,
+      "bywale-com/omcoda_tower",
+    );
+    expect(plates.images[0]?.imageUrl).toBe(
+      "https://raw.githubusercontent.com/bywale-com/omcoda_tower/abc123/docs/factory/initiatives/exec-identity/plates/pkt-001-click-attribution-light.png",
+    );
   });
 });

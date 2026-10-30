@@ -28,11 +28,13 @@ import {
   type PacketPlates,
   type Snapshot,
 } from "../snapshot.ts";
+import { setTreeFileRoot, treeFileUrl } from "../tree-file.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
 
 export type TowerFiles = {
   ref: string;
   sha: string;
+  local?: boolean;
   file(path: string): Promise<string | null>;
   list(path: string): Promise<string[] | null>;
 };
@@ -120,9 +122,11 @@ async function ensureClone(dir: string, repo: string, ref: string): Promise<void
 }
 
 export function filesFromDirectory(root: string, ref: string, sha: string): TowerFiles {
+  setTreeFileRoot(root);
   return {
     ref,
     sha,
+    local: true,
     async file(path) {
       try {
         return await readFile(join(root, path), "utf8");
@@ -320,7 +324,7 @@ export async function gatherPacketPlates(
     byPath.set(path, {
       path,
       alt,
-      imageUrl: rawFileUrl(repo, tree.sha, path),
+      imageUrl: tree.local ? treeFileUrl(path) : rawFileUrl(repo, tree.sha, path),
       artifactUrl: blobFileUrl(repo, tree.sha, path),
     });
   }
@@ -382,9 +386,11 @@ export async function readGitHubRemote(): Promise<Snapshot> {
     const sha = await resolveGithubSha(repo, ref);
     const cache = new Map<string, Promise<string | null>>();
     const listCache = new Map<string, Promise<string[] | null>>();
+    setTreeFileRoot(null);
     const files: TowerFiles = {
       ref,
       sha,
+      local: false,
       async file(path) {
         const pending = cache.get(path);
         if (pending) return pending;

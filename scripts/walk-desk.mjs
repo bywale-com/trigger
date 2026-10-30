@@ -82,6 +82,13 @@ try {
   check("claim 3", initiative.includes("a completion belongs to the pursuit that asked for it"));
   check("outstanding", initiative.includes("Claims 4, 6, 7, and 8 have no packets."));
   check("journal", initiative.includes("2026-10-29"));
+  check("journal not source asterisks", !initiative.includes("**When:**"));
+  const spec = await page.$eval("[data-testid=specification-prose]", (node) => ({
+    lists: node.querySelectorAll("li").length,
+    sourceTitle: node.innerText.includes("# exec-identity"),
+  }));
+  check("specification list", spec.lists >= 3, String(spec.lists));
+  check("specification not source title", !spec.sourceTitle);
   check("depended on by", initiative.includes("launch-agent"));
   check("no founder decisions on glass", !initiative.includes("Who is placed on launch day."));
 
@@ -89,6 +96,12 @@ try {
   await page.waitForFunction(() => document.body.innerText.includes("Intended behavior"));
   const packet = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("intended", packet.includes("An email click advances the enrollment named on the outbound message."));
+  const intended = await page.$eval("[data-testid=intended-prose]", (node) => ({
+    paragraphs: node.querySelectorAll(".ant-typography, p").length,
+    sourceHeading: node.innerText.includes("## Intended behavior"),
+  }));
+  check("intended paragraphs", intended.paragraphs >= 1, String(intended.paragraphs));
+  check("intended not source heading", !intended.sourceHeading);
   check("checks", packet.includes("factory-check · pass · 40873984441") && packet.includes("verify:click-attribution · pass · 40873984426"));
   check("release draft", packet.includes("draft"));
   check("no integration sha", packet.includes("none"));

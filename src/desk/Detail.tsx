@@ -14,6 +14,7 @@ import {
   type Page,
 } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
+import { FactoryMarkdown } from "./markdown.tsx";
 
 const { Text, Title, Paragraph, Link } = Typography;
 const roles = ["Architect", "Analyst", "Engineer"] as const;
@@ -67,12 +68,12 @@ function ShaLink({ sha, repo }: { sha: string | null; repo?: string }) {
 
 function Plates({ plates }: { plates: PacketPlates }) {
   const { token } = theme.useToken();
-  const compact = useCompact();
   if (!platesVisible(plates)) return null;
   const frame = {
     display: "block" as const,
+    width: "100%",
+    height: "auto",
     maxWidth: "100%",
-    width: compact ? "100%" : undefined,
     borderRadius: 6,
     border: `1px solid ${token.colorSplit}`,
   };
@@ -82,11 +83,7 @@ function Plates({ plates }: { plates: PacketPlates }) {
       <div data-testid="plates">
         {plates.images.map((image) => (
           <div key={image.path} data-testid="plate-image" style={{ marginBottom: 16, width: "100%" }}>
-            {compact ? (
-              <Image src={image.imageUrl} alt={image.alt} style={frame} />
-            ) : (
-              <img src={image.imageUrl} alt={image.alt} style={frame} />
-            )}
+            <Image src={image.imageUrl} alt={image.alt} style={frame} />
             <Link href={image.artifactUrl} target="_blank" rel="noreferrer" style={{ overflowWrap: "anywhere" }}>
               {image.path}
             </Link>
@@ -253,7 +250,7 @@ export function Detail({
           <Title level={5}>Obligation</Title>
           <Paragraph>{page.obligation}</Paragraph>
           <Title level={5}>Specification</Title>
-          <Paragraph style={{ whiteSpace: "pre-wrap" }}>{page.specificationText}</Paragraph>
+          <FactoryMarkdown text={page.specificationText} testId="specification-prose" stripTitle />
           <Text type="secondary">{page.specificationPath}</Text>
           <Title level={5}>Outstanding</Title>
           {page.outstanding.length ? page.outstanding.map((line) => <Paragraph key={line}>{line}</Paragraph>) : <Paragraph>—</Paragraph>}
@@ -261,7 +258,7 @@ export function Detail({
           {page.journals.length ? (
             page.journals.map((journal) => (
               <div key={journal.path}>
-                <Paragraph style={{ whiteSpace: "pre-wrap" }}>{journal.text}</Paragraph>
+                <FactoryMarkdown text={journal.text} testId="journal-prose" />
                 <Text type="secondary">{journal.path}</Text>
               </div>
             ))
@@ -285,7 +282,7 @@ export function Detail({
       ) : (
         <>
           <Title level={5}>Intended behavior</Title>
-          <Paragraph style={{ whiteSpace: "pre-wrap" }}>{page.intendedBehavior}</Paragraph>
+          <FactoryMarkdown text={page.intendedBehavior} testId="intended-prose" />
           {page.intendedBehaviorPath ? <Text type="secondary">{page.intendedBehaviorPath}</Text> : null}
           <Plates plates={page.plates} />
           <Title level={5}>Verification</Title>
