@@ -45,11 +45,11 @@ No new store. Selection, split, hash, click-to-filter, crumb, sheet, expand, and
 
 **The page is a place.** Crumb: `← Tower / <initiative id> / <this packet id>` (initiative omits the third). Tower closes the pane. The initiative id opens that page. Ant tabs jump to sections already on the page (they do not hide facts). Packet tabs: Page, Intended, Lifecycle, Evidence, GitHub. Initiative tabs: Page, Specification, Journal, GitHub. Previous / Next walks packets inside the same initiative (initiatives walk other initiatives). Keyboard `j` / `k` is the same walk. Escape closes expand, then the pane. The URL is `#<page id>`. Refresh still does not kick you off it.
 
-**Compact is the same idea.** Below 992px the work list (or graph) stays. The page is a sheet over it, dimmed behind a backdrop. Side and bottom insets so the sheet does not brush the viewport. A grab dismisses (drag down). Backdrop click dismisses. 1440 stays the split pane, not the sheet.
+**Compact is the same idea.** Below 992px the work list (or graph) stays. The page is a sheet over it, dimmed behind a backdrop. The sheet is flush to the viewport (plate 05). Padding is inside the sheet so copy does not brush the card. A grab dismisses (drag down). Backdrop click dismisses. 1440 stays the split pane, not the sheet.
 
-**Expand.** An icon on the pane / sheet extends it to the full content width (desktop) or nearly the full viewport (compact, still inset). The same icon collapses. Do not regenerate plate 01; this control was asked after the plate.
+**Expand.** An icon on the pane / sheet extends it to the full content width (desktop) or nearly the full viewport (compact, still flush to the sides). The same icon collapses. Do not regenerate plate 01; this control was asked after the plate.
 
-**Gutters.** Content padding 24px desktop, 16px compact. Pane inner padding 16–20px. Sheet inset 16px from the viewport edges. Nothing flushes to a window border.
+**Gutters.** Content padding 24px desktop, 16px compact. Pane and sheet **inner** padding 16–20px. The compact sheet itself has no viewport margin.
 
 **Process / loading / live.** First snapshot: Ant Spin in the content. Later 60s reads: a small Spin next to the ledger while the fetch is in flight. Running execution already uses a processing tag; keep it and sit a small spinner next to that tag. Failed read stays the existing danger text and last rows. Light / dark is remembered in `localStorage` (`trigger-desk-mode`).
 

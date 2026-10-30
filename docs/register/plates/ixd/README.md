@@ -12,7 +12,8 @@ Not painted plates. Captured from the planted desk.
 - [built-graph-pane.png](./built-graph-pane.png) — graph keeps the map, selected ring
 - [built-expanded.png](./built-expanded.png) — expand fills the content width
 - [built-click-filter.png](./built-click-filter.png) — Stage tag minted `Stage is Verified`
-- [built-compact-sheet.png](./built-compact-sheet.png) — sheet over the list, inset from the sides  
+- [built-compact-sheet.png](./built-compact-sheet.png) — sheet over the list, flush to the sides, padding inside the card
+
 **Chrome lock:** live production https://trigger-theta-cyan.vercel.app at ledger revision 80, painted on 1440 (and 360 for compact). Header, Ant tokens, table, graph, and page body are the locked chrome. Only the pocket is painted.
 
 Founder ask:

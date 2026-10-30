@@ -137,18 +137,28 @@ try {
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
   check("compact list under sheet", Boolean(await page.$("[data-testid=work-list]")));
-  const inset = await page.$eval("[data-testid=page-sheet]", (node) => {
+  const sheet = await page.$eval("[data-testid=page-sheet]", (node) => {
     const box = node.getBoundingClientRect();
-    return { left: box.left, right: box.right, inner: window.innerWidth };
+    const style = getComputedStyle(node);
+    return {
+      left: box.left,
+      right: box.right,
+      top: box.top,
+      inner: window.innerWidth,
+      pad: Number.parseFloat(style.paddingLeft),
+    };
   });
-  check("compact sheet gutter", inset.left >= 15 && inset.right <= inset.inner - 15, JSON.stringify(inset));
+  check("compact sheet flush", sheet.left <= 1 && sheet.right >= sheet.inner - 1, JSON.stringify(sheet));
+  check("compact sheet inner pad", sheet.pad >= 16, JSON.stringify(sheet));
   await page.screenshot({ path: "/tmp/ixd-compact-sheet.png" });
-  await page.click("[data-testid=pane-expand]");
-  const grown = await page.$eval("[data-testid=page-sheet]", (node) => node.getBoundingClientRect().top);
-  check("compact expand grows", grown <= 20, String(grown));
-  await page.mouse.click(8, 8);
+  await page.mouse.click(sheet.inner / 2, Math.max(8, sheet.top / 2));
   await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
   check("backdrop dismisses", Boolean(await page.$("[data-testid=work-list]")));
+  await clickText(page, "An email click advances the enrollment stamped on the message");
+  await page.waitForSelector("[data-testid=page-sheet]");
+  await page.click("[data-testid=pane-expand]");
+  const grown = await page.$eval("[data-testid=page-sheet]", (node) => node.getBoundingClientRect().top);
+  check("compact expand grows", grown <= 8, String(grown));
 } finally {
   await browser.close();
 }

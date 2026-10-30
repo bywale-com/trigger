@@ -20,7 +20,7 @@ Verification at 8:55 AM ET on 30 Oct 2026:
 - `npm test`: vitest, 33 passed.
 - `npm run build`: tsc + vite, ok.
 - `scripts/walk-desk.mjs` at 1440 fixture: table stays with the pane, hash `#exec-identity`, Updated in view when the pane is closed.
-- `scripts/walk-ixd.mjs`: split, expand, click-to-filter, crumb, graph ring, compact sheet inset 16px, mode remembered.
+- `scripts/walk-ixd.mjs`: split, expand, click-to-filter, crumb, graph ring, compact sheet flush with inner padding, mode remembered.
 - `scripts/walk-mobile.mjs`: list stays under the sheet, no page overflow at 360–768.
 - `scripts/walk-plates.mjs`: two painted figures in the pane, `/api/tree-file` src, blob links, Ant preview.
 

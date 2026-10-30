@@ -22,8 +22,8 @@ The founder approved all five interaction-design plates, then locked side gutter
 - Click-to-filter writes the existing `DeskFilter` `{ field, value }` the Filter form already mints. Fields: Type, Module, Stage, Inside, Depends on. Stage value is `stageLabel`. Shared by table and graph.
 - Inside on the page opens that initiative. Lifecycle `basis` is a popover of the string already on the step.
 - Crumb, section jumps (not hiding sections), Previous / Next among packets of the same initiative (initiatives among initiatives). `j` / `k`. Escape: collapse expand, then close.
-- Expand icon on the pane/sheet. Full content width desktop; compact sheet grows toward the top and stays inset.
-- Gutters: content 24px desktop / 16px compact. Pane padded. Sheet inset 16px from the viewport. No flush-to-border body.
+- Expand icon on the pane/sheet. Full content width desktop; compact sheet grows toward the top and stays flush to the sides.
+- Gutters: content 24px desktop / 16px compact. Pane and sheet inner padding 16–20px. Compact sheet is flush to the viewport (no outer margin). Copy does not brush the card.
 - First load: Spin. Subsequent ticks: small Spin while the fetch is in flight. Running execution: processing tag plus a small spinner. No Stop. Mode remembered in `localStorage` key `trigger-desk-mode`.
 - Light and dark remain Ant `defaultAlgorithm` / `darkAlgorithm`, primary `#1677ff`, radius 6, font 14, controlHeight 32.
 - 60s refresh must not reset `view`, `filters`, `mode`, `pageId`, or expand.
@@ -83,7 +83,7 @@ Also:
 - Open packet: `[data-testid=database]` and `[data-testid=page-pane]` both present at 1440. Hash `#pkt-001-click-attribution`.
 - Expand: table not in layout; collapse restores it.
 - Click Stage Verified: chip `Stage is Verified`; 1 page on the fixture.
-- 360: `[data-testid=work-list]` and `[data-testid=page-sheet]` both present. Sheet `left >= 16`.
+- 360: `[data-testid=work-list]` and `[data-testid=page-sheet]` both present. Sheet `left` / `right` flush to the viewport. Inner padding ≥ 16.
 - Content padding desktop 24. No page overflow at 360.
 - No Run / Stop / Dispatch.
 

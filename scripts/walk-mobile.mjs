@@ -80,9 +80,16 @@ try {
   check("360 list stays under sheet", Boolean(await page.$("[data-testid=work-list]")) && Boolean(await page.$("[data-testid=page-sheet]")));
   const sheetBox = await page.$eval("[data-testid=page-sheet]", (node) => {
     const box = node.getBoundingClientRect();
-    return { left: box.left, right: box.right, inner: window.innerWidth };
+    const style = getComputedStyle(node);
+    return {
+      left: box.left,
+      right: box.right,
+      inner: window.innerWidth,
+      pad: Number.parseFloat(style.paddingLeft),
+    };
   });
-  check("360 sheet inset", sheetBox.left >= 15 && sheetBox.right <= sheetBox.inner - 15, JSON.stringify(sheetBox));
+  check("360 sheet flush", sheetBox.left <= 1 && sheetBox.right >= sheetBox.inner - 1, JSON.stringify(sheetBox));
+  check("360 sheet inner pad", sheetBox.pad >= 16, JSON.stringify(sheetBox));
   const initiative = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("360 initiative obligation", initiative.includes("Specify and, where a packet is released"));
   check("360 initiative spec", initiative.includes("a completion belongs to the pursuit that asked for it"));

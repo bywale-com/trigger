@@ -2,7 +2,6 @@ import { CloseOutlined, CompressOutlined, ExpandOutlined } from "@ant-design/ico
 import { Button, theme } from "antd";
 import { useRef, type ReactNode } from "react";
 import { useCompact } from "./compact.ts";
-import { SHEET_INSET } from "./place.ts";
 
 export function PagePane({
   expanded,
@@ -44,10 +43,6 @@ export function PagePane({
             background: token.colorBgContainer,
             color: token.colorText,
             boxShadow: token.boxShadowSecondary,
-            border: `1px solid ${token.colorSplit}`,
-            left: SHEET_INSET,
-            right: SHEET_INSET,
-            bottom: SHEET_INSET,
           }}
         >
           <div

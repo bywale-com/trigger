@@ -49,8 +49,8 @@ Walk this on the planted desk of PR 6. Packets 001–005 walks still have to pas
 
 ## Compact sheet
 
-1. At 360, the work list is present. Open the packet. The list is still in the DOM, dimmed. The page is a sheet (`[data-testid=page-sheet]`) inset from the sides (not flush). Grab or backdrop or `← Tower` dismisses. The list is still scrolled where it was.
-2. Expand on the sheet grows it toward the top, still inset.
+1. At 360, the work list is present. Open the packet. The list is still in the DOM, dimmed. The page is a sheet (`[data-testid=page-sheet]`) flush to the sides and bottom. Copy inside the sheet is padded (does not brush the card). Grab or backdrop or `← Tower` dismisses. The list is still scrolled where it was.
+2. Expand on the sheet grows it toward the top. Sides stay flush.
 3. At 1440 the sheet is not used.
 
 **I saw:**

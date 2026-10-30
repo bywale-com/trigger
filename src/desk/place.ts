@@ -8,7 +8,6 @@ export type WalkablePage = {
 
 export const PAGE_GUTTER_DESKTOP = 24;
 export const PAGE_GUTTER_COMPACT = 16;
-export const SHEET_INSET = 16;
 export const MODE_KEY = "trigger-desk-mode";
 
 export function pageFromHash(hash: string): string | null {

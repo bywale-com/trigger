@@ -249,7 +249,7 @@ Packets 001–005 remain the desk. This section is how the founder moves through
 
 ### Face
 
-Table stays; page is a pane (expand icon fills the content width). Graph keeps the map with a selected ring. Click Type / Stage / Module / Inside / Depends on mints the existing filter chip. Crumb `← Tower / initiative / packet`, section jumps, Previous / Next, `#page-id`. Compact: sheet over the list, inset. Gutters 24 / 16. First-load and refresh Spin. Mode in `localStorage`. Snapshot unchanged.
+Table stays; page is a pane (expand icon fills the content width). Graph keeps the map with a selected ring. Click Type / Stage / Module / Inside / Depends on mints the existing filter chip. Crumb `← Tower / initiative / packet`, section jumps, Previous / Next, `#page-id`. Compact: sheet over the list, flush to the viewport, padding inside the card. Gutters 24 / 16 on the desk. First-load and refresh Spin. Mode in `localStorage`. Snapshot unchanged.
 
 ### File cut
 
