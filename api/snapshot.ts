@@ -1,13 +1,15 @@
-import { currentSnapshot } from "../src/observe/refresh.ts";
-
-export default async function handler(
-  _request: unknown,
-  response: {
-    setHeader(name: string, value: string): void;
-    status(code: number): { end(body: string): void };
-  },
-) {
-  const body = await currentSnapshot();
-  response.setHeader("content-type", "application/json; charset=utf-8");
-  response.status(200).end(JSON.stringify(body));
+export default async function handler() {
+  try {
+    const { currentSnapshot } = await import("../src/observe/refresh.ts");
+    const body = await currentSnapshot();
+    return new Response(JSON.stringify(body), {
+      headers: { "content-type": "application/json; charset=utf-8" },
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "snapshot failed";
+    return new Response(JSON.stringify({ snapshot: null, readFailed: true, error: message }), {
+      status: 500,
+      headers: { "content-type": "application/json; charset=utf-8" },
+    });
+  }
 }

@@ -8,10 +8,11 @@
  */
 
 import { execFile } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import source from "./source.json" with { type: "json" };
+import { fileURLToPath } from "node:url";
 import {
   assemble,
   intendedSection,
@@ -42,7 +43,9 @@ const repoUrl = () => process.env.TOWER_REPO ?? "https://github.com/bywale-com/o
 const cloneDir = () => process.env.TOWER_CLONE ?? join(tmpdir(), "trigger-tower-read");
 
 export function configuredTowerRef(): string {
-  const ref = source.ref?.trim();
+  const file = fileURLToPath(new URL("./source.json", import.meta.url));
+  const parsed = JSON.parse(readFileSync(file, "utf8")) as { ref?: string };
+  const ref = parsed.ref?.trim();
   if (!ref) throw new Error("tower source ref missing");
   return ref;
 }
