@@ -4,7 +4,7 @@
 
 **Prior bind:** none.
 
-**Flag:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md). The October 19 overview stays historical. Do not paste either into the log. Packet 007 is `**Wake:** hold` — awaiting founder visual approval of the live-factory-state plates. Do not plant from this seat. Do not wake SA.
+**Flag:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md). The October 19 overview stays historical. Do not paste either into the log. Packet 007 is `**Wake:** hold` (founder rejected the text plates). Packet 008 is `**Wake:** sa` (Factory Pulse). Do not reopen 007 until the founder asks.
 
 **Seat:** Technical Architect. Inspect `src/` when it exists. Spec face + technical cut + file-level architecture. Keep the log. Do not plant. Catalog `pm` is not this seat.
 
@@ -25,7 +25,7 @@
 
 ## Next Architect job
 
-Packet 007 is `**Wake:** hold` on `cursor/live-factory-states-7b9a`. The founder reviews [`plates/live/README.md`](./plates/live/README.md) and [`plates/live/motion.html`](./plates/live/motion.html). This seat does not plant and does not flip Wake to `sa` until that approval. Packets 001–006 remain the planted desk.
+Packet 008 Pulse is on PR 7. Packet 007 stays hold. Compact sheet peek is 42%.
 
 ## Must-not
 

@@ -285,3 +285,21 @@ Live motion only when lifecycle Running = yes. Dispatched-not-live is a still gr
 ### After this packet
 
 The founder reviews the plates. Wake stays `hold`. This seat does not plant. Do not wake SA until that approval.
+
+---
+
+## 13. Packet 008 — Factory Pulse
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-008-factory-pulse.md`](./PM-PACKET-008-factory-pulse.md)  
+**Test:** [`PM-PACKET-008-factory-pulse-TEST.md`](./PM-PACKET-008-factory-pulse-TEST.md)
+
+Packet 007 stays hold. The founder rejected the text-heavy plates (ad-lib). Pulse is the next cut. Production missing 006 is a Vercel Hobby build-rate-limit on `main`, not a missing plant.
+
+### Face
+
+Pulse row: Spin on a live lease, `unconfirmed` when no live lease, factory `reason` tag, next wake `effect` if any, remaining dispatches, cadence from the factory workflow file, wait chips (id, factory reason, next effect, elapsed). Execution Spin only when lifecycle Running = yes. Compact open page is a bottom split so the list stays visible and tappable. No dimming backdrop.
+
+### File cut
+
+`src/observe/tower/pulse.ts`, `read.ts`, `snapshot.ts`, `src/desk/Pulse.tsx`, `App.tsx`, `TableView.tsx`, `GraphView.tsx`, `Detail.tsx`, `desk.css`.

@@ -1,6 +1,6 @@
-import { Tag, Typography, theme } from "antd";
+import { Spin, Tag, Typography, theme } from "antd";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { edges, stageColor, stageLabel, type DeskFilter, type Page } from "../observe/snapshot.ts";
+import { edges, pageIsLive, stageColor, stageLabel, type DeskFilter, type Page } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
 import { FilterBar, FilterChip } from "./TableView.tsx";
 
@@ -291,6 +291,7 @@ export function GraphView({
                 }}
               >
                 <span style={{ display: "flex", gap: 6, alignItems: "center" }}>
+                  {pageIsLive(page) ? <Spin size="small" /> : null}
                   <FilterChip
                     field="Type"
                     value={page.type}

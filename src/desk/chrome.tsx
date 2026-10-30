@@ -20,6 +20,7 @@ export function Chrome({
   scopeStatus,
   readFailed,
   refreshing,
+  fill,
   children,
 }: {
   mode: "light" | "dark";
@@ -33,6 +34,7 @@ export function Chrome({
   scopeStatus: string | null;
   readFailed: boolean;
   refreshing: boolean;
+  fill?: boolean;
   children: ReactNode;
 }) {
   const { token } = theme.useToken();
@@ -91,7 +93,7 @@ export function Chrome({
     </>
   );
   return (
-    <Layout style={{ minHeight: "100dvh" }} data-testid="desk">
+    <Layout style={{ minHeight: "100dvh" }} data-testid="desk" className={fill ? "desk-fill" : undefined}>
       <Header
         data-testid="desk-header"
         style={
@@ -153,7 +155,12 @@ export function Chrome({
           </>
         )}
       </Header>
-      <Content style={{ background: token.colorBgLayout, padding: gutter }}>{children}</Content>
+      <Content
+        className={fill ? "desk-content-fill" : undefined}
+        style={{ background: token.colorBgLayout, padding: fill ? `${gutter}px 0 0` : gutter }}
+      >
+        {children}
+      </Content>
     </Layout>
   );
 }

@@ -33,6 +33,11 @@ describe("revision 1 fixture", () => {
     expect(snapshot.scope.modules).toEqual([]);
     expect(snapshot.activation).toBe("inactive");
     expect(snapshot.dispatchPolicy).toBe("forbidden");
+    expect(snapshot.pulse.reason).toBe("inactive");
+    expect(snapshot.pulse.live).toEqual([]);
+    expect(snapshot.pulse.waits).toEqual([]);
+    expect(snapshot.pulse.controllerCadence).toBe("event");
+    expect(stageLabel("change_specified")).toBe("Change specified");
     expect(snapshot.pages.map((page) => page.id)).toEqual([
       "exec-identity",
       "pkt-001-click-attribution",

@@ -34,41 +34,38 @@ export function PagePane({
 
   if (compact) {
     return (
-      <>
-        <button type="button" className="desk-sheet-backdrop" data-testid="sheet-backdrop" aria-label="Close page" onClick={onClose} />
-        <aside
-          data-testid="page-sheet"
-          className={expanded ? "desk-sheet desk-sheet-expanded" : "desk-sheet"}
-          style={{
-            background: token.colorBgContainer,
-            color: token.colorText,
-            boxShadow: token.boxShadowSecondary,
+      <aside
+        data-testid="page-sheet"
+        className={expanded ? "desk-sheet desk-sheet-expanded" : "desk-sheet"}
+        style={{
+          background: token.colorBgContainer,
+          color: token.colorText,
+          boxShadow: token.boxShadowSecondary,
+        }}
+      >
+        <div
+          className="desk-sheet-grab"
+          data-testid="sheet-grab"
+          onPointerDown={(event) => {
+            drag.current = { y: event.clientY };
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }}
+          onPointerMove={(event) => {
+            if (!drag.current) return;
+            if (event.clientY - drag.current.y > 72) {
+              drag.current = null;
+              onClose();
+            }
+          }}
+          onPointerUp={() => {
+            drag.current = null;
           }}
         >
-          <div
-            className="desk-sheet-grab"
-            data-testid="sheet-grab"
-            onPointerDown={(event) => {
-              drag.current = { y: event.clientY };
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }}
-            onPointerMove={(event) => {
-              if (!drag.current) return;
-              if (event.clientY - drag.current.y > 72) {
-                drag.current = null;
-                onClose();
-              }
-            }}
-            onPointerUp={() => {
-              drag.current = null;
-            }}
-          >
-            <span style={{ background: token.colorTextQuaternary }} />
-          </div>
-          {bar}
-          <div className="desk-pane-body">{children}</div>
-        </aside>
-      </>
+          <span style={{ background: token.colorTextQuaternary }} />
+        </div>
+        {bar}
+        <div className="desk-pane-body">{children}</div>
+      </aside>
     );
   }
 

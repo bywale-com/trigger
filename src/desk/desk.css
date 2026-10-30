@@ -38,6 +38,27 @@ body,
   padding: 48px 24px;
 }
 
+.desk-content-fill {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.desk-body-open {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+.factory-pulse {
+  flex: 0 0 auto;
+}
+
 .desk-split {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 440px);
@@ -87,33 +108,19 @@ body,
   box-shadow: inset 3px 0 0 var(--ant-color-primary);
 }
 
-.desk-sheet-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: rgba(0, 0, 0, 0.35);
-  cursor: pointer;
-}
-
 .desk-sheet {
-  position: fixed;
-  z-index: 21;
-  top: 28%;
-  right: 0;
-  bottom: 0;
-  left: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border-radius: 12px 12px 0 0;
   padding: 0 16px 20px;
+  min-height: 0;
 }
 
 .desk-sheet-expanded {
-  top: 0;
+  position: fixed;
+  inset: 0;
+  z-index: 21;
   border-radius: 0;
 }
 
@@ -141,12 +148,43 @@ body,
 }
 
 @media (max-width: 991px) {
+  [data-testid="desk"].desk-fill {
+    height: 100dvh;
+  }
+
   .desk-split,
   .desk-split-expanded {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .desk-body-open .factory-pulse,
+  .desk-body-open .desk-main {
+    padding-inline: 16px;
+  }
+
+  .desk-body-open .desk-split {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .desk-body-open .desk-main {
+    flex: 1 1 42%;
+    min-height: 96px;
+    overflow: auto;
+  }
+
+  .desk-body-open .desk-sheet {
+    flex: 1 1 58%;
+    min-height: 200px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .desk-split-expanded .desk-main {
-    display: block;
+    display: none;
   }
 }

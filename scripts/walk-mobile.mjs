@@ -78,6 +78,21 @@ try {
   await clickText(page, "Which execution a result belongs to");
   await page.waitForSelector("[data-testid=detail]");
   check("360 list stays under sheet", Boolean(await page.$("[data-testid=work-list]")) && Boolean(await page.$("[data-testid=page-sheet]")));
+  const peek = await page.evaluate(() => {
+    const row = document.querySelector("[data-testid=row-exec-identity]");
+    const sheetNode = document.querySelector("[data-testid=page-sheet]");
+    if (!(row instanceof HTMLElement) || !(sheetNode instanceof HTMLElement)) return null;
+    const rowBox = row.getBoundingClientRect();
+    const sheetBox = sheetNode.getBoundingClientRect();
+    return {
+      visible: Math.max(0, Math.min(rowBox.bottom, sheetBox.top) - Math.max(rowBox.top, 0)),
+      rowTop: rowBox.top,
+      sheetTop: sheetBox.top,
+      blocked: Boolean(document.querySelector("[data-testid=sheet-backdrop]")),
+    };
+  });
+  check("360 list visible above sheet", Boolean(peek) && peek.visible >= 24 && peek.rowTop < peek.sheetTop, JSON.stringify(peek));
+  check("360 list not blocked", Boolean(peek) && peek.blocked === false, JSON.stringify(peek));
   const sheetBox = await page.$eval("[data-testid=page-sheet]", (node) => {
     const box = node.getBoundingClientRect();
     const style = getComputedStyle(node);

@@ -1,6 +1,6 @@
 # Systems Analyst — log
 
-**Current (read first, then the newest stamp at the bottom):** 12:42 UTC 2026-10-30 — change packet 006 is signed. No new table. Hash / pane / sheet / filter / spin are faces. Next packet number is `007`. Engineer plants on PR 6.
+**Current (read first, then the newest stamp at the bottom):** 13:51 UTC 2026-10-30 — change packet 008 is signed. Pulse is map-only from the ledger + factory-dispatch.yml. Next packet number is `009`. Engineer plants on PR 7.
 
 Append-only. Only Current moves in place. Quote stood-up truth from SQL and live ports. Never reuse a number.
 
@@ -143,3 +143,19 @@ Append-only. Only Current moves in place. Quote stood-up truth from SQL and live
 **Refused.** A Trigger table for the open page. Search. Command palette. Pin. Compare-two. Pause that looks like Stop. Writing to Tower.
 
 **Still open.** Engineer plant on PR 6, branch `cursor/ixd-plates-7b9a`. Next SA number is `007`.
+
+---
+
+## 13:51 UTC 2026-10-30 — packet 008 signed
+
+**Kind:** ascription. Pulse. No new table.
+
+**Stood up.** Ledger root `authorizedDispatches` / `usedDispatches` already on `.factory/state/ledger.json`. `controlStep` in `.factory/controller/queue.ts` returns factory reason strings (`inactive`, `analyst_open`, `architect_due`, `concurrency`, …). `factory-dispatch.yml` has no `schedule` (comment: There is no schedule). Packet lease `until` is on the work item. Trigger snapshot did not copy the counts or the control reason. `Detail.tsx` treated `execution.endsWith("· running")` as live.
+
+**Inventory delta.** Map-only `pulse` on the snapshot. Copy the two ledger counts. Parse the workflow file for cadence. Named silence: GitHub `FACTORY_CONTROLLER` var, checkpoint clocks, paraphrased next-action essays.
+
+**Signed.** [`SYSTEMS-CHANGE-PACKET-008-factory-pulse.md`](./SYSTEMS-CHANGE-PACKET-008-factory-pulse.md).
+
+**Refused.** A Trigger attention inbox. Importing the controller as an actuator. Countdown on `issuedAt`.
+
+**Still open.** Engineer plant on PR 7. Next SA number is `009`.

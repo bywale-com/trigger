@@ -2,6 +2,8 @@
 
 **Wake:** hold
 
+Founder 30 Oct 2026 9:43 AM America/Toronto: the ideas stand; the painted implementation (extra callout copy) does not. Stop ad-libbing. Pulse is packet 008, ahead of this one. This packet stays hold.
+
 **Direction:** [`PRODUCT-DIRECTION-V1.md`](./PRODUCT-DIRECTION-V1.md)  
 **Grain:** [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §12  
 **Test:** [`PM-PACKET-007-live-factory-states-TEST.md`](./PM-PACKET-007-live-factory-states-TEST.md)  

@@ -30,6 +30,7 @@ import {
 } from "../snapshot.ts";
 import { setTreeFileRoot, treeFileUrl } from "../tree-file.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
+import { projectPulse, workflowCadence } from "./pulse.ts";
 
 export type TowerFiles = {
   ref: string;
@@ -41,6 +42,8 @@ export type TowerFiles = {
 
 type LedgerFile = {
   stateRevision: number;
+  authorizedDispatches?: number | null;
+  usedDispatches?: number;
   scope: Snapshot["scope"];
   initiatives: Record<string, LedgerInitiative>;
   packets: Record<string, LedgerPacket>;
@@ -446,6 +449,20 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
   const ledger = JSON.parse(ledgerText) as LedgerFile;
   const factoryText = await tree.file(".factory/manifests/factory.json");
   const factory = factoryText ? (JSON.parse(factoryText) as { activation?: string; dispatch?: string }) : null;
+  const dispatchWorkflow = await tree.file(".github/workflows/factory-dispatch.yml");
+  const cadence = workflowCadence(dispatchWorkflow);
+  const pulse = projectPulse(
+    {
+      authorizedDispatches: ledger.authorizedDispatches ?? null,
+      usedDispatches: ledger.usedDispatches ?? 0,
+      scope: ledger.scope,
+      initiatives: ledger.initiatives,
+      packets: ledger.packets,
+    },
+    readAtNow(),
+    factory?.activation === "active" ? "active" : "inactive",
+    cadence,
+  );
   const initiatives = await Promise.all(
     Object.values(ledger.initiatives).map(async (raw) => {
       const specificationPath = `docs/factory/initiatives/${raw.id}/SPECIFICATION.md`;
@@ -513,5 +530,6 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
     repo: githubRepo(repoUrl()),
     initiatives,
     packets,
+    pulse,
   });
 }

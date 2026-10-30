@@ -41,6 +41,12 @@ try {
   check("header source", header.includes("Trigger") && header.includes("Tower") && header.includes("9c45f19"), header);
   check("header ledger", header.includes("Ledger revision 1") && header.includes("scope inactive"), header);
   check("light", header.includes("Light"));
+  check("pulse present", Boolean(await page.$("[data-testid=factory-pulse]")));
+  const pulseReason = await page.$eval("[data-testid=pulse-reason]", (node) => node.innerText.trim());
+  check("pulse reason", pulseReason === "inactive", pulseReason);
+  check("pulse unconfirmed", Boolean(await page.$("[data-testid=pulse-unconfirmed]")) && !(await page.$("[data-testid=pulse-live]")));
+  const pulseCadence = await page.$eval("[data-testid=pulse-cadence]", (node) => node.innerText.trim());
+  check("pulse cadence", pulseCadence === "event", pulseCadence);
 
   const table = await page.evaluate(() => document.body.innerText);
   check("three names", table.includes("Which execution a result belongs to") && table.includes("An email click advances") && table.includes("Launch Agent"));

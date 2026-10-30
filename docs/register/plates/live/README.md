@@ -2,7 +2,7 @@
 
 **Date:** 30 October 2026, 9:25 AM America/Toronto  
 **Seat:** Technical Architect  
-**Status:** Awaiting founder visual approval. Packet [`PM-PACKET-007-live-factory-states.md`](../PM-PACKET-007-live-factory-states.md) is `**Wake:** hold`. Do not plant. Do not wake SA.
+**Status:** Founder rejected the painted implementation (extra callout copy / ad-lib). Packet 007 stays `**Wake:** hold`. Pulse is packet 008.
 
 Motion prototype (inspectable): [`motion.html`](./motion.html)
 

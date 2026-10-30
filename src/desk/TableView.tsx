@@ -1,8 +1,9 @@
 import { FileTextOutlined, FilterOutlined } from "@ant-design/icons";
-import { Button, Select, Space, Table, Tag, Typography, theme } from "antd";
+import { Button, Select, Space, Spin, Table, Tag, Typography, theme } from "antd";
 import type { MouseEvent, ReactNode } from "react";
 import { useState } from "react";
 import {
+  pageIsLive,
   stageColor,
   stageLabel,
   updatedLabel,
@@ -15,6 +16,16 @@ import { withFilter } from "./place.ts";
 const { Text, Title } = Typography;
 
 const fields: DeskFilter["field"][] = ["Type", "Module", "Stage", "Inside", "Depends on"];
+
+function ExecutionCell({ page }: { page: Page }) {
+  if (!pageIsLive(page)) return page.execution;
+  return (
+    <span data-testid={`live-${page.id}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+      <Spin size="small" />
+      {page.execution}
+    </span>
+  );
+}
 
 export function FilterBar({
   pages,
@@ -253,7 +264,9 @@ function WorkList({
                 <FilterChip field="Type" value={page.type} color={page.type === "Initiative" ? "blue" : "default"} filters={filters} onFilter={onFilter} />
                 <FilterChip field="Stage" value={stageLabel(page.stage)} color={stageColor(page.stage)} filters={filters} onFilter={onFilter} />
               </span>
-              <Text style={{ fontSize: 12, textAlign: "right" }}>{page.execution}</Text>
+              <Text style={{ fontSize: 12, textAlign: "right" }}>
+                <ExecutionCell page={page} />
+              </Text>
               {page.evidenceError ? (
                 <Tag color="error" style={{ marginInlineEnd: 0 }}>
                   {page.evidence}
@@ -330,7 +343,12 @@ export function TableView({
                 <FilterChip field="Stage" value={stageLabel(stage)} color={stageColor(stage)} filters={filters} onFilter={onFilter} />
               ),
             },
-            { title: "Execution", dataIndex: "execution", width: 156 },
+            {
+              title: "Execution",
+              dataIndex: "execution",
+              width: 156,
+              render: (_: string, page: Page) => <ExecutionCell page={page} />,
+            },
             {
               title: "Evidence",
               dataIndex: "evidence",

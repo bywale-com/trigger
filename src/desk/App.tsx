@@ -2,6 +2,8 @@ import { ConfigProvider, Spin, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { mergeRead, REFRESH_MS, visiblePages, type DeskFilter, type Page, type SnapshotBody } from "../observe/snapshot.ts";
 import { Chrome } from "./chrome.tsx";
+import { useCompact } from "./compact.ts";
+import { FactoryPulseBar } from "./Pulse.tsx";
 import { Detail } from "./Detail.tsx";
 import { GraphView } from "./GraphView.tsx";
 import { PagePane } from "./Pane.tsx";
@@ -12,6 +14,7 @@ import { themeConfig } from "./theme.ts";
 const { Text } = Typography;
 
 export function App() {
+  const compact = useCompact();
   const [mode, setMode] = useState<"light" | "dark">(readMode);
   const [view, setView] = useState<"Table" | "Graph">("Table");
   const [pageId, setPageId] = useState<string | null>(() => pageFromHash(window.location.hash));
@@ -129,13 +132,16 @@ export function App() {
         scopeStatus={snapshot?.scope.status ?? null}
         readFailed={body?.readFailed ?? false}
         refreshing={refreshing}
+        fill={Boolean(open) && compact}
       >
         {!body ? (
           <div data-testid="desk-loading" className="desk-loading">
             <Spin />
           </div>
         ) : (
-          <div className={open ? (expanded ? "desk-split desk-split-expanded" : "desk-split") : undefined}>
+          <div className={open && compact ? "desk-body desk-body-open" : "desk-body"}>
+            {snapshot ? <FactoryPulseBar pulse={snapshot.pulse} readAt={snapshot.readAt} onOpen={openPage} /> : null}
+            <div className={open ? (expanded ? "desk-split desk-split-expanded" : "desk-split") : undefined}>
             <div className="desk-main">{main}</div>
             {open && snapshot ? (
               <PagePane expanded={expanded} onExpand={() => setExpanded((current) => !current)} onClose={closePage}>
@@ -151,6 +157,7 @@ export function App() {
                 />
               </PagePane>
             ) : null}
+          </div>
           </div>
         )}
         {!snapshot && body?.readFailed ? <Text type="secondary">No pages.</Text> : null}

@@ -1,7 +1,7 @@
 import { Alert, Button, Image, Popover, Space, Spin, Tabs, Tag, Typography, theme } from "antd";
 import type { ReactNode } from "react";
 import {
-  leaseActive,
+  pageIsLive,
   platesVisible,
   shortSha,
   stageColor,
@@ -20,7 +20,6 @@ import { neighbors, withFilter } from "./place.ts";
 import { FilterChip } from "./TableView.tsx";
 
 const { Text, Title, Paragraph, Link } = Typography;
-const roles = ["Architect", "Analyst", "Engineer"] as const;
 
 function Property({ label, children }: { label: string; children: ReactNode }) {
   const compact = useCompact();
@@ -182,7 +181,6 @@ function jumpTo(key: string) {
 export function Detail({
   page,
   pages,
-  readAt,
   repo,
   onBack,
   onOpen,
@@ -199,8 +197,7 @@ export function Detail({
   filters: DeskFilter[];
 }) {
   const { token } = theme.useToken();
-  const running = page.execution.endsWith("· running");
-  const runningRole = roles.find((role) => page.execution.startsWith(`${role} · running`));
+  const running = pageIsLive(page);
   const walk = neighbors(pages, page);
   const packetTabs = [
     { key: "page", label: "Page" },
@@ -316,16 +313,6 @@ export function Detail({
             <Property label="Label">{page.dispatch.label}</Property>
           </>
         ) : null}
-        {running
-          ? roles
-              .filter((role) => role !== runningRole)
-              .filter((role) => !roleLeased(page, role, readAt))
-              .map((role) => (
-                <Property key={role} label={role}>
-                  No open lease
-                </Property>
-              ))
-          : null}
         {page.type === "Initiative" && page.blockedReason ? <Property label="Packets">{String(page.packetIds.length)}</Property> : null}
       </div>
       {page.type === "Initiative" && page.blockedReason ? (
@@ -426,9 +413,4 @@ export function Detail({
       )}
     </div>
   );
-}
-
-function roleLeased(page: Page, role: (typeof roles)[number], readAt: string): boolean {
-  if (page.type !== "Packet" || !page.lease) return false;
-  return page.lease.role === role.toLowerCase() && leaseActive(page.lease, readAt);
 }

@@ -3,6 +3,8 @@
  * Display strings are derived here, once. This file has no Tower paths and no rendering.
  */
 
+import { projectPulse, type FactoryPulse } from "./tower/pulse.ts";
+
 export const REFRESH_MS = 60_000;
 
 export type DispatchRecord = {
@@ -56,6 +58,12 @@ export type LedgerPacket = {
   hold?: boolean;
   blockerId: string | null;
   lease: Lease | null;
+  revision?: string;
+  attempts?: number;
+  lastFailureFingerprint?: string | null;
+  dispatchedSaRevision?: string | null;
+  dispatchedEngineerRevision?: string | null;
+  dispatchedRepairFingerprint?: string | null;
   releaseEligible?: boolean;
   candidateSha: string | null;
   verifiedSha: string | null;
@@ -207,6 +215,7 @@ export type Snapshot = {
   dispatchPolicy: string | null;
   repo: string;
   factoryPull: FactoryPull | null;
+  pulse: FactoryPulse;
   pages: Page[];
 };
 
@@ -240,6 +249,7 @@ export type Gathered = {
   repo: string;
   initiatives: GatheredInitiative[];
   packets: GatheredPacket[];
+  pulse?: FactoryPulse;
 };
 
 export type SnapshotBody = {
@@ -292,7 +302,8 @@ export function shortSha(sha: string): string {
 
 export function stageLabel(stage: string): string {
   if (!stage) return stage;
-  return stage.charAt(0).toUpperCase() + stage.slice(1);
+  const spaced = stage.replace(/_/g, " ");
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
 }
 
 export function stageColor(stage: string): "success" | "processing" | "error" | "default" {
@@ -469,6 +480,10 @@ export function plateSection(markdown: string): { buckets: PlateBucket[]; bucket
 
 export function leaseActive(lease: Lease | null, readAt: string): boolean {
   return Boolean(lease && lease.until > readAt);
+}
+
+export function pageIsLive(page: Page): boolean {
+  return page.lifecycle.some((step) => step.id === "running" && step.presence === "yes");
 }
 
 export const DEFAULT_TOWER_REPO = "bywale-com/omcoda_tower";
@@ -733,6 +748,50 @@ export function assemble(gathered: Gathered): Snapshot {
   }
   for (const packet of orphans) pages.push(toPacket(packet, "", gathered.readAt, repo));
 
+  const pulse =
+    gathered.pulse ??
+    projectPulse(
+      {
+        authorizedDispatches: null,
+        usedDispatches: 0,
+        scope: gathered.scope,
+        initiatives: Object.fromEntries(
+          gathered.initiatives.map((item) => [
+            item.raw.id,
+            {
+              id: item.raw.id,
+              queue: item.raw.queue,
+              session: item.raw.session,
+              dispatch: item.raw.dispatch,
+              updatedAt: item.raw.updatedAt,
+            },
+          ]),
+        ),
+        packets: Object.fromEntries(
+          gathered.packets.map((item) => [
+            item.raw.id,
+            {
+              id: item.raw.id,
+              stage: item.raw.stage,
+              wake: item.raw.wake,
+              hold: item.raw.hold,
+              blockerId: item.raw.blockerId,
+              lease: item.raw.lease,
+              revision: item.raw.revision,
+              attempts: item.raw.attempts,
+              lastFailureFingerprint: item.raw.lastFailureFingerprint,
+              dispatchedSaRevision: item.raw.dispatchedSaRevision,
+              dispatchedEngineerRevision: item.raw.dispatchedEngineerRevision,
+              dispatchedRepairFingerprint: item.raw.dispatchedRepairFingerprint,
+              dispatch: item.raw.dispatch,
+            },
+          ]),
+        ),
+      },
+      gathered.readAt,
+      gathered.activation === "active" ? "active" : "inactive",
+    );
+
   return {
     ref: gathered.ref,
     sha: gathered.sha,
@@ -743,6 +802,7 @@ export function assemble(gathered: Gathered): Snapshot {
     dispatchPolicy: gathered.dispatchPolicy,
     repo,
     factoryPull: null,
+    pulse,
     pages,
   };
 }

@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 13:26 UTC 2026-10-30 — packet 007 is `**Wake:** hold`. Live-factory-state plates filed. Awaiting founder visual approval. Do not wake SA. Do not plant. Next PM number is 008.
+**Current (read first, then the newest stamp at the bottom):** 13:51 UTC 2026-10-30 — packet 008 is `**Wake:** sa`. Factory Pulse. Packet 007 stays hold (founder rejected the text plates). Compact open page keeps the list visible. Production 006 blocked by Vercel Hobby rate-limit. Next PM number is 009.
 
 **How we maintain this log**
 
@@ -651,3 +651,32 @@ Refused for this round: search, command palette, pin, compare-two, React Flow, a
 **Kind:** packet filed, held for founder visual approval. Not a get-go.
 
 **What changed.** [`PM-PACKET-007-live-factory-states.md`](./PM-PACKET-007-live-factory-states.md) is `**Wake:** hold`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §12 is the grain. Next PM number is 008. No `src/` from this seat. Do not wake SA. Do not plant.
+
+---
+
+## 13:48 UTC 2026-10-30 — founder rejects 007 implementation; Pulse first
+
+**Kind:** founder correction. Type B.
+
+**Founder wording:**
+
+> I like the ideas im not a fan of the implementstkon.
+>
+> stop adlibing.
+> use spinners and loading animations not more text
+>
+> I'd make this the next Trigger priority, ahead of the interaction-design packet.
+> Call it Factory Pulse & Next-Action Observability.
+> get all of these done
+
+**What changed.** 007 stays hold. 008 is Pulse. Compact sheet 42% peek. Production 006 missing because Vercel Hobby `build-rate-limit` on `main` at 13:17 UTC.
+
+**Ask:** none.
+
+---
+
+## 13:51 UTC 2026-10-30 — packet 008 Wake sa
+
+**Kind:** founder go: Pulse, spinners not copy, 006 sheet visible.
+
+**What changed.** [`PM-PACKET-008-factory-pulse.md`](./PM-PACKET-008-factory-pulse.md) is `**Wake:** sa`. Test sheet. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §13. Next PM number is 009.

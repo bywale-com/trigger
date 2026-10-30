@@ -134,6 +134,7 @@ try {
 
   await page.setViewport({ width: 360, height: 800, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   await page.goto(base, { waitUntil: "networkidle0" });
+  check("compact pulse", Boolean(await page.$("[data-testid=factory-pulse]")));
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
   check("compact list under sheet", Boolean(await page.$("[data-testid=work-list]")));
@@ -150,10 +151,36 @@ try {
   });
   check("compact sheet flush", sheet.left <= 1 && sheet.right >= sheet.inner - 1, JSON.stringify(sheet));
   check("compact sheet inner pad", sheet.pad >= 16, JSON.stringify(sheet));
+  const peek = await page.evaluate(() => {
+    const list = document.querySelector("[data-testid=work-list]");
+    const sheetNode = document.querySelector("[data-testid=page-sheet]");
+    const row = list?.querySelector("[data-testid=row-exec-identity]");
+    if (!(list instanceof HTMLElement) || !(sheetNode instanceof HTMLElement) || !(row instanceof HTMLElement)) {
+      return null;
+    }
+    const listBox = list.getBoundingClientRect();
+    const sheetBox = sheetNode.getBoundingClientRect();
+    const rowBox = row.getBoundingClientRect();
+    const visible = Math.max(0, Math.min(rowBox.bottom, sheetBox.top) - Math.max(rowBox.top, 0));
+    return {
+      listTop: listBox.top,
+      listBottom: listBox.bottom,
+      sheetTop: sheetBox.top,
+      rowTop: rowBox.top,
+      rowBottom: rowBox.bottom,
+      visible,
+      blocked: Boolean(document.querySelector("[data-testid=sheet-backdrop]")),
+    };
+  });
+  check("compact list visible above sheet", Boolean(peek) && peek.visible >= 24 && peek.rowTop < peek.sheetTop, JSON.stringify(peek));
+  check("compact list not dimmed", Boolean(peek) && peek.blocked === false, JSON.stringify(peek));
   await page.screenshot({ path: "/tmp/ixd-compact-sheet.png" });
-  await page.mouse.click(sheet.inner / 2, Math.max(8, sheet.top / 2));
+  await clickText(page, "Which execution a result belongs to");
+  await page.waitForFunction(() => window.location.hash === "#exec-identity");
+  check("compact list stays tappable", Boolean(await page.$("[data-testid=page-sheet]")));
+  await page.click("[data-testid=pane-close]");
   await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
-  check("backdrop dismisses", Boolean(await page.$("[data-testid=work-list]")));
+  check("compact close restores list", Boolean(await page.$("[data-testid=work-list]")));
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
   await page.click("[data-testid=pane-expand]");
