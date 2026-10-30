@@ -85,7 +85,22 @@ try {
     await page.goto(base, { waitUntil: "networkidle0" });
     await page.waitForSelector("[data-testid=desk-header]");
     const header = await page.$eval("[data-testid=desk-header]", (node) => node.innerText);
-    check(`${width} header`, header.includes("Trigger") && header.includes("Tower") && header.includes("9c45f19") && header.includes("Light"), header.replaceAll("\n", " | "));
+    check(
+      `${width} header`,
+      header.includes("Trigger") && header.includes("Light") && !header.includes("Tower") && !header.includes("Ledger revision"),
+      header.replaceAll("\n", " | "),
+    );
+    await page.click("[data-testid=header-details]");
+    const opened = await page.$eval("[data-testid=desk-header]", (node) => node.innerText);
+    check(
+      `${width} header details`,
+      opened.includes("Tower") && opened.includes("9c45f19") && opened.includes("Ledger revision 1") && opened.includes("scope inactive"),
+      opened.replaceAll("\n", " | "),
+    );
+    await page.click("[data-testid=header-details]");
+    const closed = await page.$eval("[data-testid=desk-header]", (node) => node.innerText);
+    check(`${width} header details close`, !closed.includes("Ledger revision"), closed.replaceAll("\n", " | "));
+    check(`${width} pulse minimized`, !(await page.$("[data-testid=pulse-detail]")));
     const box = await overflow(page);
     check(`${width} no page overflow`, box.scroll <= box.inner + 1, JSON.stringify(box));
     const list = await page.$("[data-testid=work-list]");
@@ -150,6 +165,56 @@ try {
     };
   });
   check("360 sheet flush", sheetBox.left <= 1 && sheetBox.right >= sheetBox.inner - 1, JSON.stringify(sheetBox));
+  check("360 sheet has no enlarge", !(await page.$("[data-testid=page-sheet] [data-testid=pane-expand]")) && Boolean(await page.$("[data-testid=sheet-grab]")));
+  const preview = await page.$eval("[data-testid=page-sheet]", (node) => {
+    const box = node.getBoundingClientRect();
+    return { height: box.height, top: box.top };
+  });
+  check("360 preview taller", preview.height >= 380 && preview.top < 460 && preview.top > 280, JSON.stringify(preview));
+  const beforeTop = preview.top;
+  await page.evaluate(() => {
+    const node = document.querySelector("[data-testid=sheet-grab]");
+    if (!(node instanceof HTMLElement)) return;
+    const rect = node.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const start = rect.top + rect.height / 2;
+    const end = start - 90;
+    const fire = (type, y) =>
+      node.dispatchEvent(
+        new PointerEvent(type, { pointerId: 1, pointerType: "mouse", clientX: x, clientY: y, bubbles: true, cancelable: true, buttons: 1 }),
+      );
+    fire("pointerdown", start);
+    for (let step = 1; step <= 6; step += 1) fire("pointermove", start + ((end - start) * step) / 6);
+    fire("pointerup", end);
+  });
+  const nudged = await page.$eval("[data-testid=page-sheet]", (node, before) => {
+    const box = node.getBoundingClientRect();
+    return { before, top: box.top, height: box.height };
+  }, beforeTop);
+  check(
+    "360 lip drags the preview",
+    Boolean(nudged) && nudged.top < nudged.before - 40 && nudged.top > 8,
+    JSON.stringify(nudged),
+  );
+  await page.evaluate(() => {
+    const node = document.querySelector("[data-testid=sheet-grab]");
+    if (!(node instanceof HTMLElement)) return;
+    const rect = node.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const start = rect.top + rect.height / 2;
+    const fire = (type, y) =>
+      node.dispatchEvent(
+        new PointerEvent(type, { pointerId: 1, pointerType: "mouse", clientX: x, clientY: y, bubbles: true, cancelable: true, buttons: 1 }),
+      );
+    fire("pointerdown", start);
+    for (let step = 1; step <= 8; step += 1) fire("pointermove", start + ((4 - start) * step) / 8);
+    fire("pointerup", 4);
+  });
+  const grown = await page.$eval("[data-testid=page-sheet]", (node) => node.getBoundingClientRect().top);
+  check("360 lip fills the screen", grown <= 8, String(grown));
+  await page.keyboard.press("Escape");
+  const rested = await page.$eval("[data-testid=page-sheet]", (node) => node.getBoundingClientRect().top);
+  check("360 escape restores the preview", rested > 80, String(rested));
   check("360 sheet inner pad", sheetBox.pad >= 16, JSON.stringify(sheetBox));
   const initiative = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("360 initiative obligation", initiative.includes("Specify and, where a packet is released"));
@@ -261,6 +326,7 @@ try {
     await page.setViewport({ width: 360, height: 800, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
     await page.goto(live, { waitUntil: "networkidle0" });
     await page.waitForSelector("[data-testid=desk-header]");
+    await page.click("[data-testid=header-details]");
     const liveHeader = await page.$eval("[data-testid=desk-header]", (node) => node.innerText);
     check("360 live header", liveHeader.includes("Trigger") && liveHeader.includes("cursor/factory-agents-scope-33ee") && /PR \d+/.test(liveHeader), liveHeader.replaceAll("\n", " | "));
     const liveOverflow = await overflow(page);

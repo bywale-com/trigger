@@ -4,7 +4,7 @@
 
 ## Where we stopped
 
-Hotfix 001 is PR 8 (`cursor/table-board-scroll-71ee`): the Tower board is one bordered table at every width. Columns keep their designed widths (Name 220 through Updated 84). A header border drags that whole column, clamped to 85–115% of the designed width. The board scrolls sideways inside itself. The compact work list is gone. `data-testid="database"` is the board on the phone and on the desktop.
+Hotfix 002 is the open cut: on the phone the header shows Trigger until the lip reveals the branch and the ledger. The running strip is one line until its lip reveals the rows. The page lip drags the preview and fills the screen; the enlarge button stays on the desktop only. Plates are in `docs/register/plates/hotfix-002/`. Hotfix 001 is on main as PR 8. The Tower board is one bordered table at every width. Columns keep their designed widths (Name 220 through Updated 84). A header border drags that whole column, clamped to 85–115% of the designed width. The board scrolls sideways inside itself. The compact work list is gone. `data-testid="database"` is the board on the phone and on the desktop.
 
 Packets 001–006 are on `main`. Packet 007 stays hold. Packet 008 (Factory Pulse) plants on PR 7, branch `cursor/live-factory-states-7b9a`. Do not reopen PR 4. Do not bring the work list back.
 
@@ -21,15 +21,16 @@ Verification on the `9c45f19` fixture, 30 Oct 2026:
 
 - `npm test` — pass, including `columnLimit`.
 - `npm run build` — pass.
-- `scripts/walk-desk.mjs` at 1440: Pulse `inactive` / `unconfirmed` / `event`, header and borders, columns even, resize stops at the cap, table stays with the pane and scrolls sideways.
-- `scripts/walk-ixd.mjs`: split, expand, click-to-filter, crumb, graph ring, compact table row visible and tappable above the sheet, mode remembered.
-- `scripts/walk-mobile.mjs`: bordered table at 360–768, name column holds 220, board scrolls sideways, no page overflow, row visible above the sheet.
-- Vercel on `main` `2ee0a7e` — success. Deployment completed. Production https://trigger-theta-cyan.vercel.app is serving `index-Dy58HFo2.js` (last-modified 15:57 UTC 30 Oct 2026). The Deployment Check that runs the walks on that URL is the remaining signal; this seat did not sit in Vercel logs for it.
+- `scripts/walk-desk.mjs` at 1440: Pulse `inactive` / `unconfirmed` / `event`, header still shows the branch and the ledger, columns even, table stays with the pane.
+- `scripts/walk-ixd.mjs`: desktop enlarge still hides the table. On the phone the sheet has no enlarge button, and the lip fills the screen.
+- `scripts/walk-mobile.mjs`: header details open and close, pulse detail stays shut, preview is taller, a short lip drag raises the sheet, a long drag fills the screen, Escape restores the preview, the row stays visible above the sheet.
+- Vercel for hotfix 002 is not painted yet. Hotfix 001 is on production from `2ee0a7e`. After this cut is on `main`, that deploy is the signal.
 
 Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays hold.
 
 ## Founder locks (keep)
 
+- On the phone, the branch and the ledger stay behind the header lip. The running rows stay behind the strip lip. The page lip drags the preview. The enlarge button is desktop only.
 - The board is a normal table: header, borders, one width per column, sideways scroll inside the board. A column border moves a little, and the whole column moves with it.
 - Create / in-the-room / seated stay three moments.
 - Do not append the Architect or SA logs.
@@ -43,4 +44,4 @@ Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays 
 
 ## Paste — new Engineer
 
-You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Do not replant 001–006. Do not bring back the compact work list.
+You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Hotfix 002 is the phone drawers. Do not replant 001–006. Do not bring back the compact work list. Do not put the branch line back on the closed phone header.

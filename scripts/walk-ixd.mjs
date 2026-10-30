@@ -183,9 +183,23 @@ try {
   check("compact close restores table", Boolean(await page.$("[data-testid=database]")));
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
-  await page.click("[data-testid=pane-expand]");
+  check("compact sheet has no enlarge", !(await page.$("[data-testid=page-sheet] [data-testid=pane-expand]")));
+  await page.evaluate(() => {
+    const node = document.querySelector("[data-testid=sheet-grab]");
+    if (!(node instanceof HTMLElement)) return;
+    const rect = node.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const start = rect.top + rect.height / 2;
+    const fire = (type, y) =>
+      node.dispatchEvent(
+        new PointerEvent(type, { pointerId: 1, pointerType: "mouse", clientX: x, clientY: y, bubbles: true, cancelable: true, buttons: 1 }),
+      );
+    fire("pointerdown", start);
+    for (let step = 1; step <= 8; step += 1) fire("pointermove", start + ((4 - start) * step) / 8);
+    fire("pointerup", 4);
+  });
   const grown = await page.$eval("[data-testid=page-sheet]", (node) => node.getBoundingClientRect().top);
-  check("compact expand grows", grown <= 8, String(grown));
+  check("compact lip fills the screen", grown <= 8, String(grown));
 } finally {
   await browser.close();
 }

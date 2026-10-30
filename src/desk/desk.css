@@ -190,21 +190,39 @@ body.desk-col-resizing * {
   min-height: 0;
 }
 
+.desk-drawer-grab,
 .desk-sheet-grab {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 auto;
-  min-height: 28px;
+  width: 100%;
+  min-height: 22px;
+  margin: 0;
+  padding: 6px 0 2px;
+  border: none;
+  background: none;
+  color: inherit;
   cursor: grab;
   touch-action: none;
 }
 
+.desk-sheet-grab {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0;
+}
+
+.desk-drawer-grab span,
 .desk-sheet-grab span {
   display: block;
   width: 40px;
   height: 4px;
   border-radius: 2px;
+}
+
+.desk-sheet-top {
+  position: relative;
+  flex: 0 0 auto;
 }
 
 @media (max-width: 991px) {
@@ -232,14 +250,14 @@ body.desk-col-resizing * {
   }
 
   .desk-body-open .desk-main {
-    flex: 1 1 42%;
-    min-height: 96px;
+    flex: 1 1 40%;
+    min-height: 140px;
     overflow: auto;
   }
 
   .desk-body-open .desk-sheet {
-    flex: 1 1 58%;
-    min-height: 200px;
+    flex: 1 1 60%;
+    min-height: 0;
     width: 100%;
     max-width: 100%;
   }

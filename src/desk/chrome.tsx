@@ -1,6 +1,6 @@
 import { BulbOutlined } from "@ant-design/icons";
 import { Layout, Segmented, Space, Spin, Switch, Typography, theme } from "antd";
-import type { ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { shortSha, type FactoryPull } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
 import { PAGE_GUTTER_COMPACT, PAGE_GUTTER_DESKTOP } from "./place.ts";
@@ -40,6 +40,9 @@ export function Chrome({
   const { token } = theme.useToken();
   const compact = useCompact();
   const gutter = compact ? PAGE_GUTTER_COMPACT : PAGE_GUTTER_DESKTOP;
+  const [details, setDetails] = useState(false);
+  const pull = useRef<{ y: number; moved: boolean } | null>(null);
+  const suppress = useRef(false);
   const source =
     refName && sha ? `Tower · ${refName} ${shortSha(sha)}` : refName ? `Tower · ${refName}` : "Tower";
   const ledger =
@@ -85,11 +88,6 @@ export function Chrome({
         </Text>
       ) : null}
       {live}
-      {readFailed ? (
-        <Text type="danger" data-testid="read-failed">
-          read failed
-        </Text>
-      ) : null}
     </>
   );
   return (
@@ -127,9 +125,53 @@ export function Chrome({
               <Text strong style={{ fontSize: 16 }}>
                 Trigger
               </Text>
+              {readFailed ? (
+                <Text type="danger" data-testid="read-failed">
+                  read failed
+                </Text>
+              ) : null}
               <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8 }}>{controls}</div>
             </div>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 12px" }}>{identity}</div>
+            <button
+              type="button"
+              className="desk-drawer-grab"
+              data-testid="header-details"
+              aria-expanded={details}
+              aria-label="Details"
+              onPointerDown={(event) => {
+                pull.current = { y: event.clientY, moved: false };
+                try {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                } catch {
+                  /* a synthetic pointer has nothing to capture */
+                }
+              }}
+              onPointerMove={(event) => {
+                if (!pull.current) return;
+                const delta = event.clientY - pull.current.y;
+                if (Math.abs(delta) > 8) pull.current.moved = true;
+                if (delta > 28) setDetails(true);
+                if (delta < -28) setDetails(false);
+              }}
+              onPointerUp={() => {
+                if (pull.current?.moved) suppress.current = true;
+                pull.current = null;
+              }}
+              onClick={() => {
+                if (suppress.current) {
+                  suppress.current = false;
+                  return;
+                }
+                setDetails((current) => !current);
+              }}
+            >
+              <span style={{ background: token.colorTextQuaternary }} />
+            </button>
+            {details ? (
+              <div data-testid="header-meta" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "4px 12px" }}>
+                {identity}
+              </div>
+            ) : null}
           </>
         ) : (
           <>
