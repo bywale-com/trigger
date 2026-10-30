@@ -4,6 +4,10 @@
 
 ## Where we stopped
 
+Hotfix 003 (`cursor/factory-source-71ee`) makes the desk follow Tower’s operating factory. `TOWER_REF` still selects a branch. When it is unset, Trigger reads `refs/factory/operating` (`.factory/operating.json`) if Tower has published it, and the successful `factory-dispatch` runs, and uses the ref whose commit subject is `factory ledger N` with the greatest N. The same revision prefers the pointer. `src/observe/tower/source.json` (`cursor/factory-agents-scope-33ee`) is only the fallback. The branch choice is cached for five minutes; the ledger tip is read on every snapshot. No factory-state branch was added. Tower’s controller still writes the ledger only onto the pull-request head (`FACTORY_LEDGER_BRANCH`); two factory PRs do not share a concurrency group. Trigger does not push onto that branch.
+
+Verified locally against Tower on 30 Oct 2026: the read resolves `cursor/execution-architecture-74f7`, ledger revision 160, scope active, 41 of 50. Header check for the old factory remains revision 122, scope suspended, 31 of 50.
+
 External read is PR 10 (`cursor/external-read-mcp-71ee`), on `main` through `a9ba798`. `GET /api/v1` and `POST /api/mcp` classify the same snapshot the desk shows. Tools: `get_factory_status`, `list_initiatives`, `get_initiative`, `list_packets`, `get_packet`, `get_execution`, `get_next_actions`, `get_plates`. Auth is `TRIGGER_READ_TOKEN` or OAuth code + PKCE that stops for that token. Write scopes are not issued. `GET /api/snapshot` and `GET /api/tree-file` stay open because the page fetches them. Connection steps: `docs/register/EXTERNAL-READ.md`. MCP `GET` returns 405. Responses are JSON on POST so a Vercel function can finish.
 
 The preview `trigger-git-cursor-external-read-9dd405-wale-omotayos-projects.vercel.app` serves `/api/v1` and `/api/mcp` as `503` until `TRIGGER_READ_TOKEN` is set. OAuth routes on that preview crash. `a9ba798` pins them to `nodejs20.x`. Vercel refused that build (rate limit, retry in 24 hours, 30 Oct 2026 1:44 PM America/Toronto). Production `/api/v1` was still 404. This seat could not write the Vercel team env. ChatGPT and Claude were not logged in.
@@ -12,13 +16,13 @@ Hotfix 002 is PR 9 (`cursor/compact-drawers-71ee`): on the phone the header show
 
 Packets 001–006 are on `main`. Packet 007 stays hold. Packet 008 (Factory Pulse) plants on PR 7, branch `cursor/live-factory-states-7b9a`. Do not reopen PR 4. Do not bring the work list back.
 
-`TOWER_REF` / `src/observe/tower/source.json` remain the factory source. Fixture `9c45f19` still has no plate. Walk plates with `scripts/plate-fixture.mjs` then `scripts/walk-plates.mjs`. Walk prose with `scripts/walk-desk.mjs`. Walk interaction with `scripts/walk-ixd.mjs`. Compact with `scripts/walk-mobile.mjs`.
+`TOWER_REF` selects a branch. Unset, the desk follows the operating factory; `source.json` is the fallback. Fixture `9c45f19` still has no plate. Walk plates with `scripts/plate-fixture.mjs` then `scripts/walk-plates.mjs`. Walk prose with `scripts/walk-desk.mjs`. Walk interaction with `scripts/walk-ixd.mjs`. Compact with `scripts/walk-mobile.mjs`.
 
 How to run:
 
 - `npm run dev` — Vite. `GET /api/snapshot` reads the configured factory branch. Fixture/local plate images are `GET /api/tree-file?path=`. `GET /api/v1` and `POST /api/mcp` are the authenticated read. Set `TRIGGER_READ_TOKEN`.
 - `node scripts/walk-mcp.mjs` — official MCP client. `MCP_URL` defaults to `http://127.0.0.1:4173/api/mcp`.
-- `TOWER_REF` selects another branch. `TOWER_FIXTURE` reads a tree and skips GitHub. `TOWER_FAIL_FLAG` contents `1` fails the read and keeps the last snapshot.
+- `TOWER_REF` selects another branch and skips operating-factory resolution. `TOWER_SOURCE=configured` reads `source.json` only. `TOWER_FIXTURE` reads a tree and skips GitHub. `TOWER_FAIL_FLAG` contents `1` fails the read and keeps the last snapshot.
 - `TOWER_READ=github` uses GitHub file fetches (Vercel does this). GitHub plate `img` src stays raw.githubusercontent.com.
 - `npm run build`, then `npm start`. `PORT` defaults to 4173.
 
@@ -56,4 +60,4 @@ Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays 
 
 ## Paste — new Engineer
 
-You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Hotfix 002 is PR 9. External read is the authenticated `/api/v1` and `/api/mcp` on the same snapshot. Do not replant 001–006. Do not bring back the compact work list. Do not put the branch line back on the closed phone header. Do not add a write tool on the read scope.
+You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Hotfix 002 is PR 9. Hotfix 003 follows the operating factory instead of pinning `source.json`. External read is the authenticated `/api/v1` and `/api/mcp` on the same snapshot. Do not replant 001–006. Do not bring back the compact work list. Do not put the branch line back on the closed phone header. Do not add a write tool on the read scope. Do not pin the factory to a development branch or a commit sha.

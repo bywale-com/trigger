@@ -3,8 +3,10 @@
  * Does not import the controller and does not call decide.
  *
  * The reference tree at 9c45f19 is a fixture for the approved plates.
- * The factory branch comes from TOWER_REF, or from source.json when that is unset.
- * The desk records the commit that branch resolved to. It does not pin a sha.
+ * TOWER_REF selects a branch. When it is unset, the desk follows the operating
+ * factory (published pointer, or the factory-dispatch run that advanced the
+ * ledger). source.json is the fallback. The desk records the commit that ref
+ * resolved to. It does not pin a sha.
  */
 
 import { execFile } from "node:child_process";
@@ -30,6 +32,7 @@ import {
 } from "../snapshot.ts";
 import { setTreeFileRoot, treeFileUrl } from "../tree-file.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
+import { resolveFactoryRef } from "./operating.ts";
 import { projectPulse, workflowCadence } from "./pulse.ts";
 
 export type TowerFiles = {
@@ -64,6 +67,53 @@ export function resolveTowerRef(env: NodeJS.ProcessEnv = process.env): string {
   const fromEnv = env.TOWER_REF?.trim();
   if (fromEnv) return fromEnv;
   return configuredTowerRef();
+}
+
+const SOURCE_FRESH_MS = 5 * 60 * 1000;
+const SOURCE_MISS_MS = 60 * 1000;
+let sourceCache: { ref: string; until: number } | null = null;
+
+async function githubJson(url: string): Promise<{ status: number; json: unknown }> {
+  const load = async (auth: boolean) => {
+    const headers: Record<string, string> = {
+      "user-agent": "trigger-observe",
+      accept: "application/vnd.github+json",
+    };
+    if (auth) {
+      const token = githubToken();
+      if (token) headers.authorization = `Bearer ${token}`;
+    }
+    const response = await fetch(url, { headers, signal: AbortSignal.timeout(8_000) });
+    let json: unknown = null;
+    try {
+      json = await response.json();
+    } catch {
+      json = null;
+    }
+    return { status: response.status, json };
+  };
+  const first = await load(true);
+  if ((first.status === 401 || first.status === 403) && githubToken()) return load(false);
+  return first;
+}
+
+/** Explicit TOWER_REF, else the operating factory, else source.json. */
+export async function operatingTowerRef(env: NodeJS.ProcessEnv = process.env): Promise<string> {
+  const explicit = env.TOWER_REF?.trim();
+  if (explicit) return explicit;
+  if (env.TOWER_SOURCE === "configured" || env.TOWER_FIXTURE) return configuredTowerRef();
+  const now = Date.now();
+  if (sourceCache && now < sourceCache.until) return sourceCache.ref;
+  const configured = configuredTowerRef();
+  try {
+    const ref = await resolveFactoryRef({ configured, repo: githubRepo(env.TOWER_REPO), get: githubJson });
+    sourceCache = { ref, until: now + (ref === configured ? SOURCE_MISS_MS : SOURCE_FRESH_MS) };
+    return ref;
+  } catch {
+    const ref = sourceCache?.ref ?? configured;
+    sourceCache = { ref, until: now + SOURCE_MISS_MS };
+    return ref;
+  }
 }
 
 export function githubRepo(url = repoUrl()): string {
@@ -156,7 +206,7 @@ export async function readFixture(root: string, ref = repoRef()): Promise<Snapsh
 async function readGitRemote(): Promise<Snapshot> {
   return exclusive(async () => {
     const dir = cloneDir();
-    const ref = repoRef();
+    const ref = await operatingTowerRef();
     await ensureClone(dir, repoUrl(), ref);
     const sha = (await git(["-C", dir, "rev-parse", "HEAD"])).trim();
     return snapshotFromFiles(filesFromDirectory(dir, ref, sha));
@@ -384,7 +434,7 @@ export async function resolveGithubSha(repo: string, ref: string): Promise<strin
 
 export async function readGitHubRemote(): Promise<Snapshot> {
   return exclusive(async () => {
-    const ref = repoRef();
+    const ref = await operatingTowerRef();
     const repo = githubRepo();
     const sha = await resolveGithubSha(repo, ref);
     const cache = new Map<string, Promise<string | null>>();

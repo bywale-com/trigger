@@ -328,7 +328,15 @@ try {
     await page.waitForSelector("[data-testid=desk-header]");
     await page.click("[data-testid=header-details]");
     const liveHeader = await page.$eval("[data-testid=desk-header]", (node) => node.innerText);
-    check("360 live header", liveHeader.includes("Trigger") && liveHeader.includes("cursor/factory-agents-scope-33ee") && /PR \d+/.test(liveHeader), liveHeader.replaceAll("\n", " | "));
+    const expectRef = process.env.EXPECT_REF ?? "";
+    check(
+      "360 live header",
+      liveHeader.includes("Trigger") &&
+        liveHeader.includes("Tower ·") &&
+        /Ledger revision \d+/.test(liveHeader) &&
+        (!expectRef || liveHeader.includes(expectRef)),
+      liveHeader.replaceAll("\n", " | "),
+    );
     const liveOverflow = await overflow(page);
     check("360 live overflow", liveOverflow.scroll <= liveOverflow.inner + 1, JSON.stringify(liveOverflow));
     const liveBody = await page.evaluate(() => document.body.innerText);
