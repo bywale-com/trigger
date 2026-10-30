@@ -1,6 +1,6 @@
-import type { IncomingMessage, ServerResponse } from "node:http";
-import { handleProtectedResource } from "../../src/observe/external/oauth.ts";
+import { nodeHandler } from "../../src/observe/external/node-handler.ts";
 
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  return handleProtectedResource(req, res);
-}
+export default nodeHandler(async () => {
+  const { handleProtectedResource } = await import("../../src/observe/external/oauth.ts");
+  return handleProtectedResource;
+});

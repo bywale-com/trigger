@@ -1,8 +1,8 @@
-import type { IncomingMessage, ServerResponse } from "node:http";
-import { handleAuthorize } from "../../src/observe/external/oauth.ts";
+import { nodeHandler } from "../../src/observe/external/node-handler.ts";
 
 export const config = { api: { bodyParser: false } };
 
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  return handleAuthorize(req, res);
-}
+export default nodeHandler(async () => {
+  const { handleAuthorize } = await import("../../src/observe/external/oauth.ts");
+  return handleAuthorize;
+});

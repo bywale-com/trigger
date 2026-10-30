@@ -19,7 +19,12 @@
     "api/v1/[...path].ts": {
       "maxDuration": 30,
       "includeFiles": "src/observe/**"
-    }
+    },
+    "api/oauth/authorize.ts": { "runtime": "nodejs20.x", "maxDuration": 10 },
+    "api/oauth/token.ts": { "runtime": "nodejs20.x", "maxDuration": 10 },
+    "api/oauth/register.ts": { "runtime": "nodejs20.x", "maxDuration": 10 },
+    "api/oauth/protected-resource.ts": { "runtime": "nodejs20.x", "maxDuration": 10 },
+    "api/oauth/authorization-server.ts": { "runtime": "nodejs20.x", "maxDuration": 10 }
   },
   "rewrites": [
     { "source": "/.well-known/oauth-protected-resource", "destination": "/api/oauth/protected-resource" },

@@ -1,8 +1,8 @@
-import type { IncomingMessage, ServerResponse } from "node:http";
-import { handleToken } from "../../src/observe/external/oauth.ts";
+import { nodeHandler } from "../../src/observe/external/node-handler.ts";
 
 export const config = { api: { bodyParser: false } };
 
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  return handleToken(req, res);
-}
+export default nodeHandler(async () => {
+  const { handleToken } = await import("../../src/observe/external/oauth.ts");
+  return handleToken;
+});
