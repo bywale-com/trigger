@@ -14,6 +14,7 @@ describe("factory branch", () => {
   it("uses GitHub on Vercel and git locally", () => {
     expect(githubRepo("https://github.com/bywale-com/omcoda_tower.git")).toBe("bywale-com/omcoda_tower");
     expect(towerReadMode({ VERCEL: "1" })).toBe("github");
+    expect(towerReadMode({ TOWER_READ: "git", VERCEL: "1" })).toBe("git");
     expect(towerReadMode({ TOWER_READ: "github" })).toBe("github");
     expect(towerReadMode({ TOWER_FIXTURE: "/tmp/fixture", VERCEL: "1" })).toBe("fixture");
     expect(towerReadMode({})).toBe("git");

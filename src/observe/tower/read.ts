@@ -9,7 +9,7 @@
 
 import { execFile } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -64,7 +64,9 @@ export function githubRepo(url = repoUrl()): string {
 
 export function towerReadMode(env: NodeJS.ProcessEnv = process.env): "fixture" | "github" | "git" {
   if (env.TOWER_FIXTURE) return "fixture";
-  if (env.TOWER_READ === "github" || env.VERCEL === "1") return "github";
+  if (env.TOWER_READ === "github") return "github";
+  if (env.TOWER_READ === "git") return "git";
+  if (env.VERCEL === "1") return "github";
   return "git";
 }
 
@@ -191,35 +193,34 @@ export async function resolveGithubSha(repo: string, ref: string): Promise<strin
   return sha;
 }
 
-async function unpackGithubTree(repo: string, sha: string): Promise<string> {
-  const dir = join(tmpdir(), "trigger-tower-github", sha);
-  try {
-    await access(join(dir, ".factory/state/ledger.json"));
-    return dir;
-  } catch {
-    /* unpack */
-  }
-  await mkdir(dir, { recursive: true });
-  const response = await githubFetch(`https://codeload.github.com/${repo}/tar.gz/${sha}`);
-  if (!response.ok) throw new Error(`github archive ${response.status}`);
-  const tgz = join(tmpdir(), `trigger-tower-${sha}.tgz`);
-  await writeFile(tgz, Buffer.from(await response.arrayBuffer()));
-  await new Promise<void>((resolve, reject) => {
-    execFile("tar", ["-xzf", tgz, "-C", dir, "--strip-components=1"], (error) => {
-      if (error) reject(error);
-      else resolve();
-    });
-  });
-  return dir;
-}
-
 export async function readGitHubRemote(): Promise<Snapshot> {
   return exclusive(async () => {
     const ref = repoRef();
     const repo = githubRepo();
     const sha = await resolveGithubSha(repo, ref);
-    const dir = await unpackGithubTree(repo, sha);
-    return snapshotFromFiles(filesFromDirectory(dir, ref, sha));
+    const files: TowerFiles = {
+      ref,
+      sha,
+      async file(path) {
+        const response = await githubFetch(`https://raw.githubusercontent.com/${repo}/${sha}/${path}`);
+        if (response.status === 404) return null;
+        if (!response.ok) throw new Error(`github file ${response.status} ${path}`);
+        return response.text();
+      },
+      async list(path) {
+        const names: string[] = [];
+        if (path.endsWith("/journal")) {
+          for (let n = 1; n <= 99; n++) {
+            const name = `${String(n).padStart(3, "0")}.md`;
+            const text = await files.file(`${path}/${name}`);
+            if (text == null) break;
+            names.push(name);
+          }
+        }
+        return names;
+      },
+    };
+    return snapshotFromFiles(files);
   });
 }
 
@@ -276,9 +277,11 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
       : null;
     const noteDir = `docs/factory/initiatives/${raw.initiativeId}/packets`;
     const noteNames = (await tree.list(noteDir)) ?? [];
-    const noteName = noteNames.find((name) => name.replace(/\.md$/i, "").toLowerCase() === raw.id.toLowerCase());
-    const intendedBehaviorPath = noteName ? `${noteDir}/${noteName}` : null;
-    const note = intendedBehaviorPath ? await tree.file(intendedBehaviorPath) : null;
+    const noteName =
+      noteNames.find((name) => name.replace(/\.md$/i, "").toLowerCase() === raw.id.toLowerCase()) ??
+      (raw.id.replace(/^pkt-/, "PKT-") + ".md");
+    const intendedBehaviorPath = `${noteDir}/${noteName}`;
+    const note = await tree.file(intendedBehaviorPath);
     const systemsChangePath = manifest?.systemsChange ?? null;
     packets.push({
       raw,
