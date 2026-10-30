@@ -16,6 +16,41 @@ function check(name, ok, detail = "") {
   console.log(`${ok ? "ok" : "FAIL"} ${name}${detail ? ` — ${detail}` : ""}`);
 }
 
+async function board(page) {
+  return page.evaluate(() => {
+    const scroller = document.querySelector(".desk-board .ant-table-content");
+    const headerNodes = [...document.querySelectorAll(".desk-board .ant-table-thead th")];
+    const headers = headerNodes.map((node) => node.innerText.trim()).filter(Boolean);
+    const rows = [...document.querySelectorAll("[data-testid^=row-]")];
+    const widths = (row) => [...row.querySelectorAll("td")].map((cell) => Math.round(cell.getBoundingClientRect().width));
+    const first = rows[0] ? widths(rows[0]) : [];
+    const last = rows.length ? widths(rows[rows.length - 1]) : [];
+    const head = headerNodes.map((node) => Math.round(node.getBoundingClientRect().width));
+    const even =
+      first.length >= 9 &&
+      first.length === last.length &&
+      first.every((value, index) => Math.abs(value - last[index]) <= 1) &&
+      head.length >= first.length &&
+      first.every((value, index) => Math.abs(value - head[index]) <= 2);
+    const sample = rows[0]?.querySelector("td");
+    const style = sample ? getComputedStyle(sample) : null;
+    const border = style ? Math.max(parseFloat(style.borderRightWidth) || 0, parseFloat(style.borderBottomWidth) || 0) : 0;
+    const doc = document.documentElement;
+    return {
+      headers,
+      even,
+      border,
+      name: first[0] ?? 0,
+      scrollWidth: scroller?.scrollWidth ?? 0,
+      clientWidth: scroller?.clientWidth ?? 0,
+      pageScroll: doc.scrollWidth,
+      inner: window.innerWidth,
+      first,
+      head,
+    };
+  });
+}
+
 async function clickText(page, value) {
   await page.waitForFunction((text) => {
     const nodes = [...document.querySelectorAll("button, a, td, span, div, label, h1, h2, h4")];
@@ -55,23 +90,31 @@ try {
   check("execution", table.includes("Idle · no dispatch") && table.includes("Manual · not live"));
   check("inside and depends", table.includes("exec-identity") && table.split("exec-identity").length > 2);
   check("page count", table.includes("3 pages"));
-  const columns = await page.evaluate(() => {
-    const headers = [...document.querySelectorAll(".ant-table-thead th")].map((node) => {
-      const box = node.getBoundingClientRect();
-      return { text: node.innerText.trim(), left: box.left, right: box.right };
-    });
-    const clipped = [...document.querySelectorAll(".ant-table-cell")]
-      .filter((node) => node.scrollWidth > node.clientWidth + 2 || node.scrollHeight > node.clientHeight + 2)
-      .map((node) => node.innerText.replace(/\s+/g, " ").trim().slice(0, 60));
-    return { headers, clipped, width: window.innerWidth };
-  });
-  const updated = columns.headers.find((item) => item.text === "Updated");
+  const columns = await board(page);
   check(
-    "updated column in view",
-    Boolean(updated) && updated.left >= 0 && updated.right <= columns.width + 1,
-    JSON.stringify(columns.headers),
+    "table header",
+    columns.headers.join("|") === "Name|Type|Module|Stage|Execution|Evidence|Inside|Depends on|Updated",
+    columns.headers.join("|"),
   );
-  check("cells wrap", columns.clipped.length === 0, columns.clipped.join(" | "));
+  check("column borders", columns.border >= 1, String(columns.border));
+  check("columns even", columns.even, JSON.stringify({ first: columns.first, head: columns.head }));
+  check("name holds its width", columns.name >= 200, String(columns.name));
+  check("page does not scroll sideways", columns.pageScroll <= columns.inner + 1, JSON.stringify(columns));
+  const resize = await page.$('[aria-label="Resize Name"]');
+  const before = resize ? Number(await page.$eval('[aria-label="Resize Name"]', (node) => node.getAttribute("aria-valuenow"))) : 0;
+  const max = resize ? Number(await page.$eval('[aria-label="Resize Name"]', (node) => node.getAttribute("aria-valuemax"))) : 0;
+  const handle = resize ? await resize.boundingBox() : null;
+  if (handle) {
+    await page.mouse.move(handle.x + handle.width / 2, handle.y + handle.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(handle.x + handle.width / 2 + 200, handle.y + handle.height / 2, { steps: 8 });
+    await page.mouse.up();
+  }
+  const after = Number(await page.$eval('[aria-label="Resize Name"]', (node) => node.getAttribute("aria-valuenow")));
+  check("column resize stays near the limit", after === max && max > before && max - before <= 40, `${before} -> ${after} max ${max}`);
+  const resized = await board(page);
+  check("resized column stays even", resized.even, JSON.stringify({ first: resized.first, head: resized.head }));
+  check("page still does not scroll sideways", resized.pageScroll <= resized.inner + 1, JSON.stringify(resized));
   await page.screenshot({ path: "/tmp/desk-table-light.png" });
   const buttons = await page.$$eval("button", (nodes) => nodes.map((node) => node.innerText.trim()));
   check(
@@ -83,6 +126,13 @@ try {
   await clickText(page, "Which execution a result belongs to");
   await page.waitForSelector("[data-testid=detail]");
   check("table stays with pane", Boolean(await page.$("[data-testid=database]")) && Boolean(await page.$("[data-testid=page-pane]")));
+  const withPane = await board(page);
+  check(
+    "pane table scrolls sideways",
+    withPane.scrollWidth > withPane.clientWidth + 8,
+    JSON.stringify({ scrollWidth: withPane.scrollWidth, clientWidth: withPane.clientWidth }),
+  );
+  check("pane columns even", withPane.even, JSON.stringify({ first: withPane.first, head: withPane.head }));
   const hash = await page.evaluate(() => window.location.hash);
   check("page hash", hash === "#exec-identity", hash);
   const initiative = await page.$eval("[data-testid=detail]", (node) => node.innerText);

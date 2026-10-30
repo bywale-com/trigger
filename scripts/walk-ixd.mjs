@@ -137,7 +137,7 @@ try {
   check("compact pulse", Boolean(await page.$("[data-testid=factory-pulse]")));
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
-  check("compact list under sheet", Boolean(await page.$("[data-testid=work-list]")));
+  check("compact table under sheet", Boolean(await page.$("[data-testid=database]")));
   const sheet = await page.$eval("[data-testid=page-sheet]", (node) => {
     const box = node.getBoundingClientRect();
     const style = getComputedStyle(node);
@@ -152,7 +152,7 @@ try {
   check("compact sheet flush", sheet.left <= 1 && sheet.right >= sheet.inner - 1, JSON.stringify(sheet));
   check("compact sheet inner pad", sheet.pad >= 16, JSON.stringify(sheet));
   const peek = await page.evaluate(() => {
-    const list = document.querySelector("[data-testid=work-list]");
+    const list = document.querySelector("[data-testid=database]");
     const sheetNode = document.querySelector("[data-testid=page-sheet]");
     const row = list?.querySelector("[data-testid=row-exec-identity]");
     if (!(list instanceof HTMLElement) || !(sheetNode instanceof HTMLElement) || !(row instanceof HTMLElement)) {
@@ -180,7 +180,7 @@ try {
   check("compact list stays tappable", Boolean(await page.$("[data-testid=page-sheet]")));
   await page.click("[data-testid=pane-close]");
   await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
-  check("compact close restores list", Boolean(await page.$("[data-testid=work-list]")));
+  check("compact close restores table", Boolean(await page.$("[data-testid=database]")));
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=page-sheet]");
   await page.click("[data-testid=pane-expand]");

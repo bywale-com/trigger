@@ -8,13 +8,73 @@ body,
   text-size-adjust: 100%;
 }
 
-.ant-table-content {
-  overflow: visible !important;
+.desk-board {
+  max-width: 100%;
+  min-width: 0;
 }
 
-.ant-table-cell {
+.desk-board .ant-table-wrapper,
+.desk-board .ant-table-container,
+.desk-board .ant-table-content {
+  max-width: 100%;
+}
+
+.desk-board .ant-table-content {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.desk-board .ant-table-thead > tr > th {
+  position: relative;
+}
+
+.desk-board .ant-table-cell {
   white-space: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.desk-name {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.desk-name-copy {
+  min-width: 0;
+}
+
+.desk-name-title,
+.desk-name-id {
+  display: block;
+}
+
+.desk-board .ant-table-content::-webkit-scrollbar {
+  height: 8px;
+}
+
+.desk-board .ant-table-content::-webkit-scrollbar-thumb {
+  background: var(--ant-color-text-quaternary);
+  border-radius: 4px;
+}
+
+.desk-col-resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 12px;
+  height: 100%;
+  transform: translateX(50%);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+body.desk-col-resizing,
+body.desk-col-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
 }
 
 .page-prose li {

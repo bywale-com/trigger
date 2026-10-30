@@ -18,6 +18,38 @@ function check(name, ok, detail = "") {
   console.log(`${ok ? "ok" : "FAIL"} ${name}${detail ? ` — ${detail}` : ""}`);
 }
 
+async function board(page) {
+  return page.evaluate(() => {
+    const scroller = document.querySelector(".desk-board .ant-table-content");
+    const headerNodes = [...document.querySelectorAll(".desk-board .ant-table-thead th")];
+    const headers = headerNodes.map((node) => node.innerText.trim()).filter(Boolean);
+    const rows = [...document.querySelectorAll("[data-testid^=row-]")];
+    const widths = (row) => [...row.querySelectorAll("td")].map((cell) => Math.round(cell.getBoundingClientRect().width));
+    const first = rows[0] ? widths(rows[0]) : [];
+    const last = rows.length ? widths(rows[rows.length - 1]) : [];
+    const head = headerNodes.map((node) => Math.round(node.getBoundingClientRect().width));
+    const even =
+      first.length >= 9 &&
+      first.length === last.length &&
+      first.every((value, index) => Math.abs(value - last[index]) <= 1) &&
+      head.length >= first.length &&
+      first.every((value, index) => Math.abs(value - head[index]) <= 2);
+    const sample = rows[0]?.querySelector("td");
+    const style = sample ? getComputedStyle(sample) : null;
+    const border = style ? Math.max(parseFloat(style.borderRightWidth) || 0, parseFloat(style.borderBottomWidth) || 0) : 0;
+    return {
+      headers,
+      even,
+      border,
+      name: first[0] ?? 0,
+      scrollWidth: scroller?.scrollWidth ?? 0,
+      clientWidth: scroller?.clientWidth ?? 0,
+      first,
+      head,
+    };
+  });
+}
+
 async function clickText(page, value) {
   await page.waitForFunction((text) => {
     const nodes = [...document.querySelectorAll("button, a, td, span, div, label, h1, h2, h4")];
@@ -58,12 +90,26 @@ try {
     check(`${width} no page overflow`, box.scroll <= box.inner + 1, JSON.stringify(box));
     const list = await page.$("[data-testid=work-list]");
     const table = await page.$("[data-testid=database]");
-    check(`${width} work list not table`, Boolean(list) && !table);
+    check(`${width} table board`, Boolean(table) && !list);
+    const shape = await board(page);
+    check(
+      `${width} table header`,
+      shape.headers.join("|") === "Name|Type|Module|Stage|Execution|Evidence|Inside|Depends on|Updated",
+      shape.headers.join("|"),
+    );
+    check(`${width} column borders`, shape.border >= 1, String(shape.border));
+    check(`${width} columns even`, shape.even, JSON.stringify({ first: shape.first, head: shape.head }));
+    check(`${width} name holds its width`, shape.name >= 200, String(shape.name));
+    check(
+      `${width} board scrolls sideways`,
+      shape.scrollWidth > shape.clientWidth + 8,
+      JSON.stringify({ scrollWidth: shape.scrollWidth, clientWidth: shape.clientWidth }),
+    );
     const body = await page.evaluate(() => document.body.innerText);
     check(`${width} three names`, body.includes("Which execution a result belongs to") && body.includes("An email click advances") && body.includes("Launch Agent"));
     check(`${width} execution`, body.includes("Idle · no dispatch") && body.includes("Manual · not live"));
     check(`${width} evidence`, body.includes("1 verified · not integrated") && body.includes("Blocked reason"));
-    const rowBox = await page.$eval("[data-testid=work-list] button", (node) => node.getBoundingClientRect().height);
+    const rowBox = await page.$eval("[data-testid=row-exec-identity]", (node) => node.getBoundingClientRect().height);
     check(`${width} dense rows`, rowBox < 140, String(rowBox));
     const buttons = await page.$$eval("button", (nodes) => nodes.map((node) => node.innerText.trim()));
     check(
@@ -77,7 +123,7 @@ try {
   await page.goto(base, { waitUntil: "networkidle0" });
   await clickText(page, "Which execution a result belongs to");
   await page.waitForSelector("[data-testid=detail]");
-  check("360 list stays under sheet", Boolean(await page.$("[data-testid=work-list]")) && Boolean(await page.$("[data-testid=page-sheet]")));
+  check("360 table stays under sheet", Boolean(await page.$("[data-testid=database]")) && Boolean(await page.$("[data-testid=page-sheet]")));
   const peek = await page.evaluate(() => {
     const row = document.querySelector("[data-testid=row-exec-identity]");
     const sheetNode = document.querySelector("[data-testid=page-sheet]");
@@ -114,12 +160,12 @@ try {
 
   await clickText(page, "← Tower");
   await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
-  await page.waitForSelector("[data-testid=work-list]");
-  check("360 back to list", Boolean(await page.$("[data-testid=work-list]")));
+  await page.waitForSelector("[data-testid=database]");
+  check("360 back to table", Boolean(await page.$("[data-testid=database]")));
 
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=detail]");
-  check("360 packet sheet", Boolean(await page.$("[data-testid=page-sheet]")) && Boolean(await page.$("[data-testid=work-list]")));
+  check("360 packet sheet", Boolean(await page.$("[data-testid=page-sheet]")) && Boolean(await page.$("[data-testid=database]")));
   const packet = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("360 packet intended", packet.includes("An email click advances the enrollment named on the outbound message."));
   check("360 packet lifecycle", packet.includes("Dispatched no") && packet.includes("Verified yes"));
@@ -174,7 +220,7 @@ try {
   check("360 dark header", darkBg === "rgb(20, 20, 20)", darkBg);
   await shot(page, "desk-mobile-360-graph-dark");
   await clickText(page, "Table");
-  await page.waitForSelector("[data-testid=work-list]");
+  await page.waitForSelector("[data-testid=database]");
   await shot(page, "desk-mobile-360-table-dark");
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=detail]");
@@ -184,19 +230,10 @@ try {
   await page.goto(base, { waitUntil: "networkidle0" });
   await page.waitForSelector("[data-testid=database]");
   check("1440 still table", Boolean(await page.$("[data-testid=database]")) && !(await page.$("[data-testid=work-list]")));
-  const updated = await page.evaluate(() => {
-    const headers = [...document.querySelectorAll(".ant-table-thead th")].map((node) => {
-      const box = node.getBoundingClientRect();
-      return { text: node.innerText.trim(), left: box.left, right: box.right };
-    });
-    const col = headers.find((item) => item.text === "Updated");
-    return { col, width: window.innerWidth };
-  });
-  check(
-    "1440 updated in view",
-    Boolean(updated.col) && updated.col.left >= 0 && updated.col.right <= updated.width + 1,
-    JSON.stringify(updated),
-  );
+  const wide = await board(page);
+  check("1440 columns even", wide.even, JSON.stringify({ first: wide.first, head: wide.head }));
+  check("1440 name holds its width", wide.name >= 200, String(wide.name));
+  check("1440 header includes Updated", wide.headers.includes("Updated"), wide.headers.join("|"));
 
   if (plates) {
     await page.setViewport({ width: 360, height: 800, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });

@@ -138,17 +138,38 @@ function choicesFor(pages: Page[], field: DeskFilter["field"]): string[] {
   return [...values];
 }
 
+export const COLUMN_BASE = {
+  name: 220,
+  type: 100,
+  module: 196,
+  stage: 112,
+  execution: 156,
+  evidence: 188,
+  inside: 140,
+  depends: 140,
+  updated: 84,
+} as const;
+
+export type BoardColumn = keyof typeof COLUMN_BASE;
+
+/** Drag stays near the designed width. The whole column uses that one width. */
+export function columnLimit(base: number, width: number): number {
+  const min = Math.round(base * 0.85);
+  const max = Math.round(base * 1.15);
+  return Math.min(max, Math.max(min, Math.round(width)));
+}
+
 function NameCell({ page }: { page: Page }) {
   return (
-    <Space size={8}>
-      <FileTextOutlined style={{ color: "var(--ant-color-text-secondary)" }} />
-      <div>
-        <div>{page.name}</div>
-        <Text type="secondary" style={{ fontSize: 12 }}>
+    <span className="desk-name">
+      <FileTextOutlined style={{ color: "var(--ant-color-text-secondary)", flex: "0 0 auto" }} />
+      <span className="desk-name-copy">
+        <span className="desk-name-title">{page.name}</span>
+        <Text type="secondary" className="desk-name-id" style={{ fontSize: 12 }}>
           {page.id}
         </Text>
-      </div>
-    </Space>
+      </span>
+    </span>
   );
 }
 
@@ -180,7 +201,7 @@ function FilterText({
         color: token.colorPrimary,
         cursor: "pointer",
         textAlign: "left",
-        overflowWrap: "anywhere",
+        font: "inherit",
       }}
     >
       {value}
@@ -188,99 +209,57 @@ function FilterText({
   );
 }
 
-function WorkList({
-  pages,
-  selectedId,
-  filters,
-  onFilter,
-  onOpen,
+function ColumnTitle({
+  label,
+  column,
+  width,
+  onWidth,
 }: {
-  pages: Page[];
-  selectedId: string | null;
-  filters: DeskFilter[];
-  onFilter: (filters: DeskFilter[]) => void;
-  onOpen: (id: string) => void;
+  label: string;
+  column: BoardColumn;
+  width: number;
+  onWidth: (column: BoardColumn, next: number) => void;
 }) {
-  const { token } = theme.useToken();
+  const base = COLUMN_BASE[column];
+  const min = Math.round(base * 0.85);
+  const max = Math.round(base * 1.15);
   return (
-    <div data-testid="work-list" style={{ borderTop: `1px solid ${token.colorSplit}` }}>
-      {pages.map((page) => {
-        const meta = [
-          page.module || null,
-          page.inside ? `Inside ${page.inside}` : page.type === "Packet" ? "Inside —" : null,
-          page.dependsOn.length ? `Depends ${page.dependsOn.join(", ")}` : null,
-          page.updatedAt ? updatedLabel(page.updatedAt) : null,
-        ]
-          .filter(Boolean)
-          .join(" · ");
-        const selected = page.id === selectedId;
-        return (
-          <button
-            key={page.id}
-            type="button"
-            data-testid={`row-${page.id}`}
-            onClick={() => onOpen(page.id)}
-            className={selected ? "work-row-selected" : undefined}
-            style={{
-              display: "grid",
-              gridTemplateColumns: "18px minmax(0, 1fr) auto",
-              gap: 8,
-              width: "100%",
-              minHeight: 52,
-              margin: 0,
-              padding: "8px 8px",
-              border: "none",
-              borderBottom: `1px solid ${token.colorSplit}`,
-              borderLeft: selected ? `3px solid ${token.colorPrimary}` : "3px solid transparent",
-              background: selected ? token.colorPrimaryBg : "transparent",
-              color: token.colorText,
-              textAlign: "left",
-              cursor: "pointer",
-            }}
-          >
-            <FileTextOutlined style={{ color: token.colorTextSecondary, marginTop: 3 }} />
-            <div style={{ minWidth: 0 }}>
-              <div
-                style={{
-                  fontWeight: 500,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {page.name}
-              </div>
-              <Text type="secondary" style={{ fontSize: 12, display: "block" }}>
-                {page.id}
-              </Text>
-              {meta ? (
-                <Text type="secondary" style={{ fontSize: 12, display: "block", overflowWrap: "anywhere" }}>
-                  {meta}
-                </Text>
-              ) : null}
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, minWidth: 0 }}>
-              <span style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                <FilterChip field="Type" value={page.type} color={page.type === "Initiative" ? "blue" : "default"} filters={filters} onFilter={onFilter} />
-                <FilterChip field="Stage" value={stageLabel(page.stage)} color={stageColor(page.stage)} filters={filters} onFilter={onFilter} />
-              </span>
-              <Text style={{ fontSize: 12, textAlign: "right" }}>
-                <ExecutionCell page={page} />
-              </Text>
-              {page.evidenceError ? (
-                <Tag color="error" style={{ marginInlineEnd: 0 }}>
-                  {page.evidence}
-                </Tag>
-              ) : (
-                <Text type="secondary" style={{ fontSize: 12, textAlign: "right" }}>
-                  {page.evidence}
-                </Text>
-              )}
-            </div>
-          </button>
-        );
-      })}
-    </div>
+    <>
+      {label}
+      <span
+        className="desk-col-resize"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label={`Resize ${label}`}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-valuenow={width}
+        tabIndex={0}
+        onPointerDown={(event) => {
+          if (event.button !== 0) return;
+          event.preventDefault();
+          event.stopPropagation();
+          const startX = event.clientX;
+          const startW = width;
+          document.body.classList.add("desk-col-resizing");
+          const move = (ev: PointerEvent) => onWidth(column, columnLimit(base, startW + ev.clientX - startX));
+          const end = () => {
+            document.body.classList.remove("desk-col-resizing");
+            window.removeEventListener("pointermove", move);
+            window.removeEventListener("pointerup", end);
+            window.removeEventListener("pointercancel", end);
+          };
+          window.addEventListener("pointermove", move);
+          window.addEventListener("pointerup", end);
+          window.addEventListener("pointercancel", end);
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+          event.preventDefault();
+          onWidth(column, columnLimit(base, width + (event.key === "ArrowRight" ? 8 : -8)));
+        }}
+      />
+    </>
   );
 }
 
@@ -297,73 +276,85 @@ export function TableView({
   onFilter: (filters: DeskFilter[]) => void;
   onOpen: (id: string) => void;
 }) {
-  const compact = useCompact();
+  const [widths, setWidths] = useState(COLUMN_BASE);
+  const setWidth = (column: BoardColumn, next: number) => {
+    setWidths((current) => (current[column] === next ? current : { ...current, [column]: next }));
+  };
+  const scrollX = (Object.keys(COLUMN_BASE) as BoardColumn[]).reduce((sum, column) => sum + widths[column], 0);
+  const title = (label: string, column: BoardColumn) => (
+    <ColumnTitle label={label} column={column} width={widths[column]} onWidth={setWidth} />
+  );
   return (
     <>
       <Title level={4} style={{ margin: 0 }}>
         Tower
       </Title>
       <FilterBar pages={pages} filters={filters} onChange={onFilter} />
-      {compact ? (
-        <WorkList pages={pages} selectedId={selectedId} filters={filters} onFilter={onFilter} onOpen={onOpen} />
-      ) : (
+      <div className="desk-board" data-testid="database">
         <Table
           size="small"
+          bordered
           pagination={false}
           dataSource={pages}
           rowKey="id"
           tableLayout="fixed"
-          data-testid="database"
+          scroll={{ x: scrollX }}
           rowClassName={(page) => (page.id === selectedId ? "desk-row-selected" : "")}
           onRow={(page) => ({
             onClick: () => onOpen(page.id),
             style: { cursor: "pointer" },
+            "data-testid": `row-${page.id}`,
           })}
           columns={[
-            { title: "Name", dataIndex: "name", width: 220, render: (_, page) => <NameCell page={page} /> },
             {
-              title: "Type",
+              title: title("Name", "name"),
+              dataIndex: "name",
+              width: widths.name,
+              render: (_, page) => <NameCell page={page} />,
+            },
+            {
+              title: title("Type", "type"),
               dataIndex: "type",
-              width: 100,
+              width: widths.type,
               render: (type: Page["type"]) => (
                 <FilterChip field="Type" value={type} color={type === "Initiative" ? "blue" : "default"} filters={filters} onFilter={onFilter} />
               ),
             },
             {
-              title: "Module",
+              title: title("Module", "module"),
               dataIndex: "module",
-              width: 196,
+              width: widths.module,
               render: (module: string) => <FilterText field="Module" value={module} filters={filters} onFilter={onFilter} />,
             },
             {
-              title: "Stage",
+              title: title("Stage", "stage"),
               dataIndex: "stage",
-              width: 112,
+              width: widths.stage,
               render: (stage: string) => (
                 <FilterChip field="Stage" value={stageLabel(stage)} color={stageColor(stage)} filters={filters} onFilter={onFilter} />
               ),
             },
             {
-              title: "Execution",
+              title: title("Execution", "execution"),
               dataIndex: "execution",
-              width: 156,
+              width: widths.execution,
               render: (_: string, page: Page) => <ExecutionCell page={page} />,
             },
             {
-              title: "Evidence",
+              title: title("Evidence", "evidence"),
               dataIndex: "evidence",
-              width: 188,
+              width: widths.evidence,
               render: (value: string, page) => (page.evidenceError ? <Tag color="error">{value}</Tag> : value),
             },
             {
-              title: "Inside",
+              title: title("Inside", "inside"),
               dataIndex: "inside",
-              width: 140,
+              width: widths.inside,
               render: (value: string | null) => <FilterText field="Inside" value={value} filters={filters} onFilter={onFilter} />,
             },
             {
-              title: "Depends on",
-              width: 140,
+              title: title("Depends on", "depends"),
+              width: widths.depends,
               render: (_, page) =>
                 page.dependsOn.length ? (
                   <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
@@ -376,14 +367,14 @@ export function TableView({
                 ),
             },
             {
-              title: "Updated",
+              title: title("Updated", "updated"),
               dataIndex: "updatedAt",
-              width: 84,
+              width: widths.updated,
               render: (value: string | null) => <Text type="secondary">{updatedLabel(value)}</Text>,
             },
           ]}
         />
-      )}
+      </div>
       <Text type="secondary" style={{ display: "block", marginTop: 8 }} data-testid="page-count">
         {pages.length} pages
       </Text>
