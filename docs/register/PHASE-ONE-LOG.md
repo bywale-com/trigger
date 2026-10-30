@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:48 UTC 2026-10-30 — packet 004 is Wake sa. Compact shell below 992px. 1440 is unchanged. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 12:04 UTC 2026-10-30 — packet 005 is Wake sa. Page prose is a markdown pass. A local/fixture plate must paint. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -469,3 +469,51 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 > Complete the implementation on PR #4 and update the deployed Trigger application.
 
 **What changed.** [`PM-PACKET-004-mobile-desk.md`](./PM-PACKET-004-mobile-desk.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §9 is the grain. Next PM number is 005. No `src/` from this seat.
+
+---
+
+## 11:55 UTC 2026-10-30 — page text and a painted plate
+
+**Kind:** founder ask. New packet after PR 4 merged to `main`.
+
+**Founder wording:**
+
+> New packet. I think page text formatting can be substantially improved...also I would like to see one plate where a page contains a plate(s). I want to see how our ui renders that.
+>
+> for the text formatting....anyway, ill leave it up to you. Let me see the platss
+
+**What hangs.** `Detail.tsx` `Paragraph` `whiteSpace: "pre-wrap"` on specification, journals, intended behavior. Live Tower `9a291f2` has no `docs/factory` image. Plate fixture `imageUrl` is GitHub raw, so the PNG never paints.
+
+**Ask:** none. The founder left the formatting cut to this seat and asked to see plates.
+
+---
+
+## 12:00 UTC 2026-10-30 — what the page actually shows
+
+**Kind:** inspection. `main` `64989bb`.
+
+**What hangs.** Initiative specification starts with `# exec-identity specification` in a pre dump. Journal 001 shows `**When:**`. Intended behavior is a long pre block. `systemsChangeText` is fetched and not rendered — packet 001 locked that. `Plates` omits correctly on `9c45f19` and on live `None.` packets. `docs/register` blueprint PNGs exist on Tower and must stay undiscovered.
+
+**What changed.** Nothing in `src/`. This stamp is the raw-markup face the markdown pass has to replace.
+
+---
+
+## 12:02 UTC 2026-10-30 — face of packet 005
+
+**Kind:** face. Same founder ask.
+
+**Founder wording:**
+
+> I would like to see one plate where a page contains a plate(s). I want to see how our ui renders that.
+
+**What changed.** Specification, journal, intended behavior become Ant typography from the same strings. Leading file H1 does not repeat the page title. Plates that exist are figures with preview, not 1-pixel 404s. Local/fixture trees serve `/api/tree-file`. Production GitHub raw stays. `9c45f19` still has no plate. 1440 table and header stay.
+
+**Ask:** none.
+
+---
+
+## 12:04 UTC 2026-10-30 — packet 005 Wake sa
+
+**Kind:** founder go: leave formatting to this seat, show plates, new packet.
+
+**What changed.** [`PM-PACKET-005-page-text-plates.md`](./PM-PACKET-005-page-text-plates.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §10 is the grain. Next PM number is 006. No `src/` from this seat.

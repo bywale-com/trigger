@@ -47,6 +47,10 @@ try {
 
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=plates]");
+  await page.waitForFunction(() => {
+    const images = [...document.querySelectorAll("[data-testid=plate-image] img")];
+    return images.length >= 2 && images.every((image) => image.complete && image.naturalWidth > 10);
+  });
   const packet = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("intended first", packet.indexOf("Intended behavior") < packet.indexOf("Plates"));
   check("plates before verification", packet.indexOf("Plates") < packet.indexOf("Verification"));
@@ -57,13 +61,23 @@ try {
   check("out of scope", packet.includes("approval workflow"));
   check("no approval control", !packet.includes("Approve") && !packet.includes("Reject"));
   const images = await page.$$eval("[data-testid=plate-image] img", (nodes) =>
-    nodes.map((node) => ({ src: node.getAttribute("src"), alt: node.getAttribute("alt") })),
+    nodes.map((node) => ({
+      src: node.getAttribute("src"),
+      alt: node.getAttribute("alt"),
+      width: node.getBoundingClientRect().width,
+      height: node.getBoundingClientRect().height,
+    })),
   );
   check("two images", images.length === 2, String(images.length));
   check(
-    "raw urls",
-    images.every((image) => image.src?.includes("raw.githubusercontent.com/bywale-com/omcoda_tower/")),
+    "tree-file urls",
+    images.every((image) => image.src?.includes("/api/tree-file?path=")),
     images.map((image) => image.src).join(" | "),
+  );
+  check(
+    "painted plates",
+    images.every((image) => image.width > 200 && image.height > 80),
+    images.map((image) => `${image.width}x${image.height}`).join(" | "),
   );
   const links = await page.$$eval("[data-testid=plate-image] a", (nodes) => nodes.map((node) => node.getAttribute("href")));
   check(
@@ -71,6 +85,10 @@ try {
     links.length === 2 && links.every((href) => href?.includes("github.com/bywale-com/omcoda_tower/blob/")),
     links.join(" | "),
   );
+  await page.click("[data-testid=plate-image] img");
+  await page.waitForSelector(".ant-image-preview, .ant-image-preview-root", { timeout: 5_000 });
+  check("preview opens", true);
+  await page.keyboard.press("Escape");
   await page.screenshot({ path: "/tmp/desk-plates-light.png" });
 
   await page.click(".ant-switch");

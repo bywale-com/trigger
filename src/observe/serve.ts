@@ -3,6 +3,7 @@ import { access } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { currentSnapshot } from "./refresh.ts";
+import { treeFileResult } from "./tree-file.ts";
 
 const port = Number(process.env.PORT ?? 4173);
 const host = process.env.HOST ?? "127.0.0.1";
@@ -22,6 +23,14 @@ const server = createServer(async (request, response) => {
     const body = await currentSnapshot();
     response.writeHead(200, { "content-type": "application/json; charset=utf-8" });
     response.end(JSON.stringify(body));
+    return;
+  }
+  if (url.pathname === "/api/tree-file") {
+    const result = await treeFileResult(url.searchParams.get("path"));
+    const headers: Record<string, string> = { "content-type": result.contentType };
+    if (result.cacheControl) headers["cache-control"] = result.cacheControl;
+    response.writeHead(result.status, headers);
+    response.end(result.body);
     return;
   }
   const pathname = url.pathname === "/" ? "/index.html" : url.pathname;

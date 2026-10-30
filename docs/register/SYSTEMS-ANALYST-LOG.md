@@ -1,6 +1,6 @@
 # Systems Analyst — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:50 UTC 2026-10-30 — change packet 004 is signed. Compact is a shell of the same snapshot. Next packet number is `005`. Engineer plants on PR 4.
+**Current (read first, then the newest stamp at the bottom):** 12:05 UTC 2026-10-30 — change packet 005 is signed. Page prose is the same snapshot strings. Next packet number is `006`. Engineer plants on a new PR off `main`.
 
 Append-only. Only Current moves in place. Quote stood-up truth from SQL and live ports. Never reuse a number.
 
@@ -95,3 +95,25 @@ Append-only. Only Current moves in place. Quote stood-up truth from SQL and live
 **Refused.** A second store. Restyling 1440. Giant cards. Bottom navigation. Dropping GitHub or plates to fit.
 
 **Still open.** Engineer plant on PR 4. Next SA number is `005`.
+
+---
+
+## 12:05 UTC 2026-10-30 — packet 005 signed
+
+**Kind:** founder asked for better page text and to see a plate on a page that has one, then sit Architect → SA → Engineer in this chat. No build automation.
+
+**Founder wording:**
+
+> I think page text formatting can be substantially improved...also I would like to see one plate where a page contains a plate(s). I want to see how our ui renders that.
+>
+> Let me see the platss
+
+**Stood up.** Trigger has no SQL. `Detail.tsx` renders specification / journal / intended behavior as `pre-wrap` source. `systemsChangeText` is on the snapshot and is not a section (packet 001). `gatherPacketPlates` sets `imageUrl` to `rawFileUrl`. `filesFromDirectory.file` is utf8. Live Tower `9a291f20b0e0de19d4d9939150e786e53236b961` recursive tree: `docs/factory` images `[]`; `docs/register` blueprint PNGs exist and packet 003 forbids them. Fixture `9c45f19` PKT-001 has no plate. Vite and `api/snapshot.ts` have no tree-file route.
+
+**Inventory delta.** Materialized: none new. Map-only: markdown pass of existing snapshot strings; `/api/tree-file` as a byte read of an on-disk tree path already listed for plates. Named silence: Trigger blob store, blueprint discovery, systems-change section, production fixture switcher.
+
+**Signed.** [`SYSTEMS-CHANGE-PACKET-005-page-text-plates.md`](./SYSTEMS-CHANGE-PACKET-005-page-text-plates.md). Not planted.
+
+**Refused.** A Trigger image table. Proxying GitHub PNGs. Discovering `docs/register`. Pinning production to the plate fixture. Adding systems-change to the packet page.
+
+**Still open.** Engineer plant on a new PR off `main`. Next SA number is `006`.

@@ -16,3 +16,18 @@ body,
   white-space: normal;
   overflow-wrap: break-word;
 }
+
+.page-prose li {
+  overflow-wrap: anywhere;
+}
+
+.page-prose code {
+  white-space: nowrap;
+}
+
+[data-testid="plate-image"] .ant-image,
+[data-testid="plate-image"] .ant-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
