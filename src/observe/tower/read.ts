@@ -8,10 +8,10 @@
  */
 
 import { execFile } from "node:child_process";
-import { readFileSync } from "node:fs";
 import { access, mkdir, readdir, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import source from "./source.json" with { type: "json" };
 import {
   assemble,
   intendedSection,
@@ -42,9 +42,7 @@ const repoUrl = () => process.env.TOWER_REPO ?? "https://github.com/bywale-com/o
 const cloneDir = () => process.env.TOWER_CLONE ?? join(tmpdir(), "trigger-tower-read");
 
 export function configuredTowerRef(): string {
-  const file = join(import.meta.dirname, "source.json");
-  const parsed = JSON.parse(readFileSync(file, "utf8")) as { ref?: string };
-  const ref = parsed.ref?.trim();
+  const ref = source.ref?.trim();
   if (!ref) throw new Error("tower source ref missing");
   return ref;
 }
@@ -53,6 +51,22 @@ export function resolveTowerRef(env: NodeJS.ProcessEnv = process.env): string {
   const fromEnv = env.TOWER_REF?.trim();
   if (fromEnv) return fromEnv;
   return configuredTowerRef();
+}
+
+export function githubRepo(url = repoUrl()): string {
+  const match = /github\.com[:/]([^/]+)\/([^/.]+)/.exec(url);
+  if (!match) throw new Error("tower repo is not GitHub");
+  return `${match[1]}/${match[2]}`;
+}
+
+export function towerReadMode(env: NodeJS.ProcessEnv = process.env): "fixture" | "github" | "git" {
+  if (env.TOWER_FIXTURE) return "fixture";
+  if (env.TOWER_READ === "github" || env.VERCEL === "1") return "github";
+  return "git";
+}
+
+function githubToken(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  return env.TOWER_GITHUB_TOKEN || env.GITHUB_TOKEN;
 }
 
 const repoRef = () => resolveTowerRef();
@@ -126,6 +140,57 @@ async function readGitRemote(): Promise<Snapshot> {
   });
 }
 
+async function githubGet(path: string): Promise<Response> {
+  const headers: Record<string, string> = {
+    accept: "application/vnd.github+json",
+    "user-agent": "trigger-observe",
+  };
+  const token = githubToken();
+  if (token) headers.authorization = `Bearer ${token}`;
+  const response = await fetch(`https://api.github.com${path}`, { headers });
+  if (!response.ok) throw new Error(`github ${response.status} ${path}`);
+  return response;
+}
+
+export async function readGitHubRemote(): Promise<Snapshot> {
+  const ref = repoRef();
+  const repo = githubRepo();
+  const commit = (await (await githubGet(`/repos/${repo}/commits/${encodeURIComponent(ref)}`)).json()) as {
+    sha?: string;
+  };
+  const sha = commit.sha;
+  if (!sha) throw new Error("github commit missing");
+  const files: TowerFiles = {
+    ref,
+    sha,
+    async file(path) {
+      const headers: Record<string, string> = { "user-agent": "trigger-observe" };
+      const token = githubToken();
+      if (token) headers.authorization = `Bearer ${token}`;
+      const response = await fetch(`https://raw.githubusercontent.com/${repo}/${sha}/${path}`, { headers });
+      if (response.status === 404) return null;
+      if (!response.ok) throw new Error(`github file ${response.status} ${path}`);
+      return response.text();
+    },
+    async list(path) {
+      try {
+        const listed = (await (await githubGet(`/repos/${repo}/contents/${path}?ref=${encodeURIComponent(sha)}`)).json()) as
+          | { name?: string }[]
+          | { message?: string };
+        if (!Array.isArray(listed)) return null;
+        const names: string[] = [];
+        for (const item of listed) {
+          if (item.name && !item.name.startsWith(".")) names.push(item.name);
+        }
+        return names.sort();
+      } catch {
+        return null;
+      }
+    },
+  };
+  return snapshotFromFiles(files);
+}
+
 export async function readTower(): Promise<Snapshot> {
   const flag = process.env.TOWER_FAIL_FLAG;
   if (flag) {
@@ -136,7 +201,9 @@ export async function readTower(): Promise<Snapshot> {
       if (error instanceof Error && error.message === "read failed") throw error;
     }
   }
-  if (process.env.TOWER_FIXTURE) return readFixture(process.env.TOWER_FIXTURE);
+  const mode = towerReadMode();
+  if (mode === "fixture") return readFixture(process.env.TOWER_FIXTURE as string);
+  if (mode === "github") return readGitHubRemote();
   return readGitRemote();
 }
 
