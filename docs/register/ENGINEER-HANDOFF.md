@@ -24,7 +24,7 @@ Verification on the `9c45f19` fixture, 30 Oct 2026:
 - `scripts/walk-desk.mjs` at 1440: Pulse `inactive` / `unconfirmed` / `event`, header still shows the branch and the ledger, columns even, table stays with the pane.
 - `scripts/walk-ixd.mjs`: desktop enlarge still hides the table. On the phone the sheet has no enlarge button, and the lip fills the screen.
 - `scripts/walk-mobile.mjs`: header details open and close, pulse detail stays shut, preview is taller, a short lip drag raises the sheet, a long drag fills the screen, Escape restores the preview, the row stays visible above the sheet.
-- Vercel for hotfix 002 is not painted yet. Hotfix 001 is on production from `2ee0a7e`. After this cut is on `main`, that deploy is the signal.
+- Vercel on `main` `557b4aa` — success. Production https://trigger-theta-cyan.vercel.app is serving `index-BV7mBNrp.js`. The Deployment Check that runs the walks on that URL is the remaining signal; this seat did not sit in Vercel logs for it.
 
 Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays hold.
 
