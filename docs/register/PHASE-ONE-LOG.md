@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 12:04 UTC 2026-10-30 — packet 005 is Wake sa. Page prose is a markdown pass. A local/fixture plate must paint. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 12:18 UTC 2026-10-30 — interaction-design plates are a recommendation. Not a packet. Waiting on which pockets the founder marks. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -517,3 +517,47 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 **Kind:** founder go: leave formatting to this seat, show plates, new packet.
 
 **What changed.** [`PM-PACKET-005-page-text-plates.md`](./PM-PACKET-005-page-text-plates.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §10 is the grain. Next PM number is 006. No `src/` from this seat.
+
+---
+
+## 12:12 UTC 2026-10-30 — interaction design, as plates
+
+**Kind:** founder ask. Recommendation only.
+
+**Founder wording:**
+
+> Ok I want you to ideate avenues and areas to implement interaction design in trigger....produce yiur recommednatiom in plates...once approved you can turn them into packets snd move from there
+
+**Ask:** which of the five pockets are the go. This seat does not packet until that mark.
+
+---
+
+## 12:14 UTC 2026-10-30 — what the desk actually does with a click
+
+**Kind:** inspection. Live production, ledger revision 80. `src/` read-only.
+
+**What hangs.** `App.tsx` replaces Table/Graph with Detail when `pageId` is set. `changeView` clears `pageId`. Filter is field + value + Add. Inside is a relation cell, not a navigation control on the page. Graph node click leaves the map. Back is `← Tower`. No URL for the open page. Refresh is silent. Compact list tap also replaces the list.
+
+**What changed.** Nothing in `src/`. Chrome-lock shots: [`plates/ixd/00-now-table.png`](./plates/ixd/00-now-table.png), [`00-now-graph.png`](./plates/ixd/00-now-graph.png), [`00-now-page.png`](./plates/ixd/00-now-page.png).
+
+---
+
+## 12:16 UTC 2026-10-30 — five pockets, one rule
+
+**Kind:** face. Same founder ask. Type B (how the founder moves through the locked leaves). Not Type A.
+
+**What changed.** The rule: interaction is how records already on the snapshot are reached. It is not a control of Tower.
+
+Order recommended: stay with the work → graph keeps the map → click what you see → the page is a place → compact sheet.
+
+Refused for this round: search, command palette, pin, compare-two, React Flow, a pause that looks like Stop.
+
+---
+
+## 12:18 UTC 2026-10-30 — plates filed, wake hold
+
+**Kind:** plates. Not a packet.
+
+**What changed.** [`plates/ixd/README.md`](./plates/ixd/README.md) and plates 01–05. Chrome locked from production. Pocket painted only. Next PM number stays 006 until a plate is approved and cut.
+
+**Ask:** mark which plates become packets. This seat will not invent a sixth.
