@@ -2,9 +2,23 @@
 
 Trigger’s desk, `GET /api/v1`, and the MCP tools read one snapshot. This surface does not dispatch, write the ledger, or invent a next run time.
 
+## Deployment state
+
+The read API and MCP server were built on the preview deployment:
+
+`https://trigger-git-cursor-external-read-9dd405-wale-omotayos-projects.vercel.app`
+
+There, `GET /api/v1/factory` and `POST /api/mcp` return `503` `read_token_unconfigured` until `TRIGGER_READ_TOKEN` is set. `GET /api/snapshot` still returns the live Tower snapshot. The desk assets on production stayed `index-BV7mBNrp.js`.
+
+The OAuth routes on that preview crash (`FUNCTION_INVOCATION_FAILED`). The follow-up on `main` (`a9ba798`) pins those routes to the Node.js runtime. Vercel then refused the build: “Deployment rate limited — retry in 24 hours” (30 Oct 2026, 1:44 PM America/Toronto). Production `https://trigger-theta-cyan.vercel.app/api/v1` was still `404` after that, so the production alias is the previous desk deploy.
+
+This seat could not set `TRIGGER_READ_TOKEN`. The Vercel token here cannot access team `wale-omotayos-projects`.
+
+After the limit resets, redeploy `main` and set `TRIGGER_READ_TOKEN` on Production. `GET /api/v1/factory` should then be `401` without a bearer and `200` with one. ChatGPT and Claude were not signed in from this seat.
+
 ## Endpoints
 
-Production host: `https://trigger-theta-cyan.vercel.app`
+Production host, once that deploy is current: `https://trigger-theta-cyan.vercel.app`
 
 | Surface | URL |
 | --- | --- |
