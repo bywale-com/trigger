@@ -21,12 +21,12 @@ How to run:
 
 Verification at 6:15 PM ET on 29 Oct 2026:
 
-- `npm test` / `npm run test:preflight`: vitest, 8 passed. Preflight stays the unit suite. This repo has no phone-face walks.
+- `npm test` / `npm run test:preflight`: vitest, 9 passed. Preflight stays the unit suite. This repo has no phone-face walks.
 - `scripts/walk-desk.mjs` against the fixture (`TOWER_REF=main`): the revision-1 walk, including dark mode and a failed read that keeps the rows.
 - `scripts/check-active-branch.mts`: the configured branch, sha matches `git ls-remote`, scope active, revision 25, the seven pages above.
 - `scripts/walk-active-branch.mjs` at 1440: header `Tower · cursor/factory-agents-scope-33ee fe51760`, ledger revision 25, scope active, the seven pages, packet integrated SHA, graph of 7 nodes with 5 contains edges and 1 depends edge, `Type is Initiative` leaves 2 nodes and the depends edge, dark header `rgb(20, 20, 20)`.
 
-Deployment: no public URL. The Vercel token in this environment cannot list or create projects. The API answers that the scope `wale-omotayos-projects` needs re-authentication. `npm start` is the process a host would run. Tower was not modified.
+Deployment: https://trigger-theta-cyan.vercel.app. Vercel project `trigger` (`prj_Uz8tASbR4GNNPVNOQFmxiJ51B0XW`). `GET /api/snapshot` is `api/snapshot.ts` ending on the Node `res` object and bundling `src/observe`. On Vercel the reader uses GitHub file fetches, not `git`. Checked at 6:45 AM ET on 30 Oct 2026: production snapshot `readFailed` false, ref `cursor/factory-agents-scope-33ee`, sha `f3ec0ca6de2d918bdefe4790455c4f91d48b6276`, ledger revision 41, scope active, seven pages. Tower was not modified.
 
 Nothing else in this correction is open. Do not open a second PR. Do not append the Architect or SA logs.
 
