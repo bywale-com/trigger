@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trigger — live factory motion language</title>
+    <style>
+      :root {
+        --primary: #1677ff;
+        --primary-bg: #e6f4ff;
+        --primary-border: #91caff;
+        --error: #ff4d4f;
+        --error-bg: #fff2f0;
+        --error-border: #ffa39e;
+        --warning-bg: #fffbe6;
+        --warning-border: #ffe58f;
+        --warning-text: #ad6800;
+        --text: rgba(0, 0, 0, 0.88);
+        --secondary: rgba(0, 0, 0, 0.45);
+        --border: #d9d9d9;
+        --split: #f0f0f0;
+        --bg: #fff;
+        --radius: 6px;
+        --font: 14px;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font: var(--font)/22px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--text);
+        background: #f5f5f5;
+      }
+      main { max-width: 920px; margin: 0 auto; padding: 32px 24px 80px; }
+      h1 { font-size: 20px; margin: 0 0 8px; }
+      h2 { font-size: 16px; margin: 28px 0 8px; }
+      p, li { color: var(--text); }
+      .lede { color: var(--secondary); margin: 0 0 24px; }
+      .card {
+        background: var(--bg);
+        border: 1px solid var(--split);
+        border-radius: var(--radius);
+        padding: 16px;
+        margin: 12px 0;
+      }
+      .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+      .sample {
+        display: flex; align-items: center; gap: 8px;
+        min-width: 240px; padding: 8px 0;
+      }
+      .label { color: var(--secondary); font-size: 12px; width: 140px; flex: 0 0 140px; }
+      .dot {
+        width: 8px; height: 8px; border-radius: 50%; background: var(--primary);
+        animation: pulse 1.4s ease-out infinite;
+      }
+      .dot.wait { background: #8c8c8c; animation: none; }
+      .dot.attention { background: var(--error); animation: pulse-attention 1.8s ease-out infinite; }
+      .spin {
+        width: 12px; height: 12px; border-radius: 50%;
+        border: 2px solid var(--primary-border); border-top-color: var(--primary);
+        animation: spin 0.8s linear infinite;
+      }
+      .tag {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: var(--radius);
+        border: 1px solid var(--border); background: #fafafa;
+      }
+      .tag.processing { color: var(--primary); background: var(--primary-bg); border-color: var(--primary-border); }
+      .tag.success { color: #389e0d; background: #f6ffed; border-color: #b7eb8f; }
+      .tag.error { color: #cf1322; background: var(--error-bg); border-color: var(--error-border); }
+      .tag.stage { color: var(--primary); background: var(--primary-bg); border-color: var(--primary-border); }
+      .pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; line-height: 20px; padding: 0 8px; border-radius: var(--radius);
+        border: 1px solid var(--border);
+      }
+      .pill.stale { background: var(--warning-bg); border-color: var(--warning-border); color: var(--warning-text); }
+      .pill.fail { background: var(--error-bg); border-color: var(--error-border); color: #cf1322; }
+      .node {
+        width: 280px; padding: 8px 10px; border: 1px solid var(--border);
+        border-radius: var(--radius); background: #fff;
+      }
+      .node.live { outline: 2px solid var(--primary); box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.18); }
+      .node.blocked { outline: 2px solid var(--error); }
+      .edge {
+        width: 80px; border-top: 1.5px dashed var(--primary); margin: 0 8px;
+      }
+      button {
+        font: inherit; border: 1px solid var(--border); background: #fff;
+        border-radius: var(--radius); padding: 4px 12px; cursor: pointer;
+      }
+      button[aria-pressed="true"] { border-color: var(--primary); color: var(--primary); }
+      code { font-size: 12px; background: #f5f5f5; padding: 1px 4px; border-radius: 4px; }
+      table { border-collapse: collapse; width: 100%; font-size: 13px; }
+      th, td { text-align: left; padding: 8px; border-bottom: 1px solid var(--split); vertical-align: top; }
+      th { color: var(--secondary); font-weight: 500; }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(22, 119, 255, 0.55); }
+        70% { transform: scale(0.92); opacity: 0.75; box-shadow: 0 0 0 7px rgba(22, 119, 255, 0); }
+      }
+      @keyframes pulse-attention {
+        0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.45); }
+        70% { transform: scale(0.92); opacity: 0.8; box-shadow: 0 0 0 7px rgba(255, 77, 79, 0); }
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      html.reduce .dot,
+      html.reduce .dot.attention,
+      html.reduce .spin { animation: none; }
+      @media (prefers-reduced-motion: reduce) {
+        .dot, .dot.attention, .spin { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Trigger — live factory motion language</h1>
+      <p class="lede">
+        Inspectable prototype for packet 007. Ant tokens. Primary <code>#1677ff</code>, radius 6, 14px.
+        Motion is evidence, not decoration. Open this file in a browser.
+      </p>
+      <p>
+        <button id="reduce" type="button" aria-pressed="false">prefers-reduced-motion: off</button>
+      </p>
+
+      <h2>Four languages that must not look the same</h2>
+      <div class="card">
+        <div class="sample"><span class="label">Active</span><span class="dot"></span><span class="spin"></span><span class="tag processing">Engineer · running</span></div>
+        <div class="sample"><span class="label">Transitional</span><span class="tag">Pane opens 220ms ease</span></div>
+        <div class="sample"><span class="label">Loading (Trigger)</span><span class="spin"></span><span class="pill">Refreshing</span></div>
+        <div class="sample"><span class="label">Attention</span><span class="dot attention"></span><span class="pill fail">Founder attention</span></div>
+      </div>
+
+      <h2>Active worker — only when lifecycle Running = yes</h2>
+      <div class="card">
+        <div class="sample"><span class="label">Live</span><span class="dot"></span><span class="spin"></span><span class="tag processing">Architect · running</span><span class="lede" style="margin:0">lease or GitHub in_progress</span></div>
+        <div class="sample"><span class="label">Dispatched, not live</span><span class="dot wait"></span><span class="tag processing">Architect · dispatched</span><span class="lede" style="margin:0">session running + dispatch, Running unknown</span></div>
+        <div class="sample"><span class="label">Idle</span><span class="tag">Idle · no dispatch</span></div>
+        <div class="sample"><span class="label">Stage (never pulses)</span><span class="tag stage">Investigating</span><span class="tag stage">Change specified</span><span class="tag success">Accepted</span></div>
+      </div>
+
+      <h2>Graph — activity on the node, not the edge</h2>
+      <div class="card row">
+        <div class="node live"><span class="dot"></span> <span class="tag stage">Candidate</span><div>Opening an ask…</div></div>
+        <div class="edge" title="depends — still"></div>
+        <div class="node"><span class="dot wait"></span> <span class="tag stage">Investigating</span><div>Which execution…</div></div>
+        <div class="node blocked"><span class="tag error">Blocked</span><div>Launch Agent</div></div>
+      </div>
+      <p class="lede">Edges stay still. A waiting dependency is a still grey dot. A live node is one primary ring. Blocked is the error edge already on the subject.</p>
+
+      <h2>Trigger fetch is not factory live</h2>
+      <div class="card row">
+        <span class="pill"><span class="spin"></span>Refreshing</span>
+        <span class="pill stale">Snapshot 2m ago</span>
+        <span class="pill fail">read failed · last rows kept</span>
+      </div>
+      <p class="lede">Header only. Table, selection, hash, and graph camera stay. First load may skeleton the content; the 60s tick never does.</p>
+
+      <h2>Verification</h2>
+      <div class="card">
+        <div class="sample"><span class="label">Running</span><span class="spin"></span><span class="tag processing">factory-check · in_progress</span></div>
+        <div class="sample"><span class="label">Pass</span><span class="tag success">verify:click-attribution · pass</span></div>
+        <div class="sample"><span class="label">Fail</span><span class="tag error">verify:identity-rules · failure</span></div>
+      </div>
+      <p class="lede">A green check is not Integrated. Ledger <code>verifiedSha</code> remains the Verified fact. Fail is not a Stop control.</p>
+
+      <h2>Timing</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Kind</th><th>Duration</th><th>Easing</th><th>Repeat</th><th>Stops when</th></tr></thead>
+          <tbody>
+            <tr><td>Live pulse</td><td>1.4s</td><td>ease-out</td><td>infinite</td><td>Running ≠ yes</td></tr>
+            <tr><td>Live spinner</td><td>0.8s</td><td>linear</td><td>infinite</td><td>Running ≠ yes</td></tr>
+            <tr><td>Refresh spinner</td><td>0.8s</td><td>linear</td><td>while fetch</td><td>read settles</td></tr>
+            <tr><td>Attention pulse</td><td>1.8s</td><td>ease-out</td><td>infinite</td><td>no attention subjects</td></tr>
+            <tr><td>Pane / sheet</td><td>220ms</td><td>ease</td><td>once</td><td>open or closed</td></tr>
+            <tr><td>Reduced motion</td><td>—</td><td>—</td><td>none</td><td>still dot / still tag</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <script>
+      const button = document.getElementById("reduce");
+      button.addEventListener("click", () => {
+        const on = document.documentElement.classList.toggle("reduce");
+        button.setAttribute("aria-pressed", String(on));
+        button.textContent = "prefers-reduced-motion: " + (on ? "on" : "off");
+      });
+    </script>
+  </body>
+</html>

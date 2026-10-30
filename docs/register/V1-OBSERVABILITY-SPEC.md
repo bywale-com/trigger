@@ -258,3 +258,30 @@ Table stays; page is a pane (expand icon fills the content width). Graph keeps t
 ### After this packet
 
 The founder asked to packet, specify, and build all five plates plus gutters, expand, and load/live spin. Wake is `sa`. This seat does not plant.
+
+---
+
+## 12. Packet 007 — Live factory states
+
+**Date:** October 30, 2026  
+**Held:** [`PM-PACKET-007-live-factory-states.md`](./PM-PACKET-007-live-factory-states.md) — `**Wake:** hold` until founder visual approval  
+**Test:** [`PM-PACKET-007-live-factory-states-TEST.md`](./PM-PACKET-007-live-factory-states-TEST.md)  
+**Plates:** [`plates/live/README.md`](./plates/live/README.md)
+
+Packets 001–006 remain the desk. This section is how recorded factory activity is shown on that desk. Trigger still does not write to Tower.
+
+### What was read
+
+Planted `src/` on `main` `bfd09cc`. Live production ledger revisions 105 then 107, ref `cursor/factory-agents-scope-33ee`. `packetLifecycle` already distinguishes dispatch from Running. `Detail.tsx` still treats `execution.endsWith("· running")` as live, so an Architect session with a dispatch pulses while Running is `unknown`. GitHub was unavailable at capture. Initiatives have no lease. Ledger `authorizedDispatches` / `usedDispatches` are not on the snapshot. Checkpoints are not observed.
+
+### Face
+
+Live motion only when lifecycle Running = yes. Dispatched-not-live is a still grey dot. Stage tags never pulse. Trigger refresh is a header Spin and must not wipe the desk. Attention is blockers, authorization exhaustion, or a failed read — not idle, not Running unknown. Reduced motion stills infinite animation. No progress percentages.
+
+### File cut
+
+`src/observe/snapshot.ts`, `src/observe/tower/read.ts` (authorized counts once ascribed), `src/desk/Detail.tsx`, `TableView.tsx`, `GraphView.tsx`, `chrome.tsx`, `App.tsx`, `desk.css`.
+
+### After this packet
+
+The founder reviews the plates. Wake stays `hold`. This seat does not plant. Do not wake SA until that approval.

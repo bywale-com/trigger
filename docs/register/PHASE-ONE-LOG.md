@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 12:40 UTC 2026-10-30 — packet 006 is `**Wake:** sa`. All five ixd plates plus gutters, pane expand, and load/live spinners. Next PM number is 007. No `src/` from this seat.
+**Current (read first, then the newest stamp at the bottom):** 13:26 UTC 2026-10-30 — packet 007 is `**Wake:** hold`. Live-factory-state plates filed. Awaiting founder visual approval. Do not wake SA. Do not plant. Next PM number is 008.
 
 **How we maintain this log**
 
@@ -599,3 +599,55 @@ Refused for this round: search, command palette, pin, compare-two, React Flow, a
 **Kind:** founder go: do all, packet, specify, build. Sequential Architect → SA → Engineer in this chat.
 
 **What changed.** [`PM-PACKET-006-interaction-desk.md`](./PM-PACKET-006-interaction-desk.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §11 is the grain. Next PM number is 007. No `src/` from this seat.
+
+---
+
+## 13:20 UTC 2026-10-30 — live factory states, investigation
+
+**Kind:** founder ask. Type B (how recorded factory activity is shown on the locked desk). Not Type A. Not a plant.
+
+**Founder wording:**
+
+> The next design objective is to make the factory's activity immediately understandable through interaction design, motion, visual states, and feedback.
+>
+> A recorded dispatch must not be mistaken for proof that the worker is running.
+>
+> Distinguish the factory working from Trigger fetching information.
+>
+> Trigger should not make routine factory operations look like emergencies.
+>
+> The objective is not to make Trigger more animated.
+>
+> Founder approval is mandatory before implementation of this interaction-design packet.
+
+**What was read.** Planted `src/` on `main` `bfd09cc`. Live production https://trigger-theta-cyan.vercel.app ledger revision 105, then 107. `exec-identity` at 105: session running, dispatch `wake_architect` issued 13:15 UTC, lifecycle Running unknown, GitHub unavailable. `Detail.tsx` pulses `execution.endsWith("· running")`. Graph has no live language. Ledger `authorizedDispatches` / `usedDispatches` not on the snapshot. Checkpoints not observed.
+
+**Ask:** none yet. Plates next.
+
+---
+
+## 13:22 UTC 2026-10-30 — face of packet 007
+
+**Kind:** face. Same founder ask.
+
+**What changed.** Live motion only when lifecycle Running = yes. Dispatched-not-live is a still grey dot. Stage never pulses. Graph: node pulse, still edges. Trigger fetch is header-only; first load may skeleton; 60s tick does not wipe. Verification spinner only on in-progress checks. Attention is blockers, auth exhaustion, or failed empty read. Reduced motion stills infinite animation. No percentages. No factory controls.
+
+**Ask:** none.
+
+---
+
+## 13:24 UTC 2026-10-30 — live plates filed, wake hold
+
+**Kind:** plates. Packet held.
+
+**What changed.** [`plates/live/README.md`](./plates/live/README.md), plates 01–10 plus dark table, first-load skeleton, chrome-lock `00-now-*`, inspectable [`plates/live/motion.html`](./plates/live/motion.html). Illustrative overlays labeled. Production chrome at capture is pre-006; 006 layout is not reopened.
+
+**Ask:** founder visual approval. This seat will not flip Wake to `sa` until that mark.
+
+---
+
+## 13:26 UTC 2026-10-30 — packet 007 Wake hold
+
+**Kind:** packet filed, held for founder visual approval. Not a get-go.
+
+**What changed.** [`PM-PACKET-007-live-factory-states.md`](./PM-PACKET-007-live-factory-states.md) is `**Wake:** hold`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §12 is the grain. Next PM number is 008. No `src/` from this seat. Do not wake SA. Do not plant.

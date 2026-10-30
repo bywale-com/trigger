@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-10-30T13:25:00Z",
+  "base": "https://trigger-theta-cyan.vercel.app",
+  "chromeLock": {
+    "ledgerRevision": "105 then 107 during recapture",
+    "ref": "cursor/factory-agents-scope-33ee",
+    "note": "Production chrome at capture is pre-packet-006 (page replaces table; back is ← Tower). Packet 006 is on main. Live-state overlays sit on the same records. Illustrative overlays are labeled in captions."
+  }
+}
