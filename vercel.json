@@ -6,7 +6,7 @@
   "functions": {
     "api/snapshot.ts": {
       "maxDuration": 10,
-      "includeFiles": "src/observe/tower/source.json"
+      "includeFiles": "src/observe/tower/**"
     }
   },
   "rewrites": [
