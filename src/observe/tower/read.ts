@@ -178,17 +178,40 @@ export function shaFromUploadPack(body: string, ref: string): string | null {
 }
 
 async function githubFetch(url: string, accept?: string): Promise<Response> {
-  const headers: Record<string, string> = { "user-agent": "git/2.45 trigger-observe" };
+  const headers: Record<string, string> = { "user-agent": "trigger-observe" };
   if (accept) headers.accept = accept;
   const token = githubToken();
   if (token) headers.authorization = `Bearer ${token}`;
-  return fetch(url, { headers });
+  return fetch(url, { headers, signal: AbortSignal.timeout(4_000) });
+}
+
+function shaFromText(text: string): string | null {
+  const trimmed = text.trim();
+  if (/^[0-9a-f]{40}$/.test(trimmed)) return trimmed;
+  try {
+    const parsed = JSON.parse(trimmed) as { sha?: string };
+    if (parsed.sha && /^[0-9a-f]{40}$/.test(parsed.sha)) return parsed.sha;
+  } catch {
+    /* html */
+  }
+  return /commit\/([0-9a-f]{40})/.exec(text)?.[1] ?? null;
 }
 
 export async function resolveGithubSha(repo: string, ref: string): Promise<string> {
-  const response = await githubFetch(`https://github.com/${repo}.git/info/refs?service=git-upload-pack`);
-  if (!response.ok) throw new Error(`github refs ${response.status}`);
-  const sha = shaFromUploadPack(await response.text(), ref);
+  const encoded = encodeURIComponent(ref);
+  const api = await githubFetch(`https://api.github.com/repos/${repo}/commits/${encoded}`, "application/vnd.github.sha");
+  if (api.ok) {
+    const sha = shaFromText(await api.text());
+    if (sha) return sha;
+  }
+  const page = await githubFetch(`https://github.com/${repo}/commits/${encoded}`);
+  if (page.ok) {
+    const sha = shaFromText(await page.text());
+    if (sha) return sha;
+  }
+  const pack = await githubFetch(`https://github.com/${repo}.git/info/refs?service=git-upload-pack`);
+  if (!pack.ok) throw new Error(`github refs ${pack.status}`);
+  const sha = shaFromUploadPack(await pack.text(), ref);
   if (!sha) throw new Error(`github ref missing ${ref}`);
   return sha;
 }
@@ -198,24 +221,33 @@ export async function readGitHubRemote(): Promise<Snapshot> {
     const ref = repoRef();
     const repo = githubRepo();
     const sha = await resolveGithubSha(repo, ref);
+    const cache = new Map<string, Promise<string | null>>();
     const files: TowerFiles = {
       ref,
       sha,
       async file(path) {
-        const response = await githubFetch(`https://raw.githubusercontent.com/${repo}/${sha}/${path}`);
-        if (response.status === 404) return null;
-        if (!response.ok) throw new Error(`github file ${response.status} ${path}`);
-        return response.text();
+        const pending = cache.get(path);
+        if (pending) return pending;
+        const request = githubFetch(`https://raw.githubusercontent.com/${repo}/${sha}/${path}`).then(async (response) => {
+          if (response.status === 404) return null;
+          if (!response.ok) throw new Error(`github file ${response.status} ${path}`);
+          return response.text();
+        });
+        cache.set(path, request);
+        return request;
       },
       async list(path) {
+        if (!path.endsWith("/journal")) return [];
+        const probed = await Promise.all(
+          Array.from({ length: 8 }, (_, index) => {
+            const name = `${String(index + 1).padStart(3, "0")}.md`;
+            return files.file(`${path}/${name}`).then((text) => (text == null ? null : name));
+          }),
+        );
         const names: string[] = [];
-        if (path.endsWith("/journal")) {
-          for (let n = 1; n <= 99; n++) {
-            const name = `${String(n).padStart(3, "0")}.md`;
-            const text = await files.file(`${path}/${name}`);
-            if (text == null) break;
-            names.push(name);
-          }
+        for (const name of probed) {
+          if (!name) break;
+          names.push(name);
         }
         return names;
       },
@@ -246,53 +278,60 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
   const ledger = JSON.parse(ledgerText) as LedgerFile;
   const factoryText = await tree.file(".factory/manifests/factory.json");
   const factory = factoryText ? (JSON.parse(factoryText) as { activation?: string; dispatch?: string }) : null;
-  const initiatives: GatheredInitiative[] = [];
-  for (const raw of Object.values(ledger.initiatives)) {
-    const manifestText = await tree.file(`.factory/manifests/initiatives/${raw.id}.json`);
-    const manifest = manifestText
-      ? (JSON.parse(manifestText) as { founderDecisions?: string[] })
-      : null;
-    const specificationPath = `docs/factory/initiatives/${raw.id}/SPECIFICATION.md`;
-    const journalDir = `docs/factory/initiatives/${raw.id}/journal`;
-    const journalNames = (await tree.list(journalDir)) ?? [];
-    const journals = [];
-    for (const name of journalNames) {
-      if (!name.toLowerCase().endsWith(".md")) continue;
-      const path = `${journalDir}/${name}`;
-      journals.push({ path, text: await tree.file(path) });
-    }
-    initiatives.push({
-      raw,
-      founderDecisions: manifest?.founderDecisions ?? [],
-      specificationPath,
-      specificationText: await tree.file(specificationPath),
-      journals,
-    });
-  }
-  const packets: GatheredPacket[] = [];
-  for (const raw of Object.values(ledger.packets)) {
-    const manifestText = await tree.file(`.factory/manifests/packets/${raw.id}.json`);
-    const manifest = manifestText
-      ? (JSON.parse(manifestText) as { title?: string; release?: string; systemsChange?: string })
-      : null;
-    const noteDir = `docs/factory/initiatives/${raw.initiativeId}/packets`;
-    const noteNames = (await tree.list(noteDir)) ?? [];
-    const noteName =
-      noteNames.find((name) => name.replace(/\.md$/i, "").toLowerCase() === raw.id.toLowerCase()) ??
-      (raw.id.replace(/^pkt-/, "PKT-") + ".md");
-    const intendedBehaviorPath = `${noteDir}/${noteName}`;
-    const note = await tree.file(intendedBehaviorPath);
-    const systemsChangePath = manifest?.systemsChange ?? null;
-    packets.push({
-      raw,
-      title: manifest?.title ?? null,
-      release: manifest?.release ?? null,
-      intendedBehavior: note ? intendedSection(note) : null,
-      intendedBehaviorPath,
-      systemsChangePath,
-      systemsChangeText: systemsChangePath ? await tree.file(systemsChangePath) : null,
-    });
-  }
+  const initiatives = await Promise.all(
+    Object.values(ledger.initiatives).map(async (raw) => {
+      const specificationPath = `docs/factory/initiatives/${raw.id}/SPECIFICATION.md`;
+      const journalDir = `docs/factory/initiatives/${raw.id}/journal`;
+      const [manifestText, specificationText, journalNames] = await Promise.all([
+        tree.file(`.factory/manifests/initiatives/${raw.id}.json`),
+        tree.file(specificationPath),
+        tree.list(journalDir),
+      ]);
+      const journals = await Promise.all(
+        (journalNames ?? [])
+          .filter((name) => name.toLowerCase().endsWith(".md"))
+          .map(async (name) => {
+            const path = `${journalDir}/${name}`;
+            return { path, text: await tree.file(path) };
+          }),
+      );
+      const manifest = manifestText ? (JSON.parse(manifestText) as { founderDecisions?: string[] }) : null;
+      return {
+        raw,
+        founderDecisions: manifest?.founderDecisions ?? [],
+        specificationPath,
+        specificationText,
+        journals,
+      };
+    }),
+  );
+  const packets = await Promise.all(
+    Object.values(ledger.packets).map(async (raw) => {
+      const noteDir = `docs/factory/initiatives/${raw.initiativeId}/packets`;
+      const intendedBehaviorPath = `${noteDir}/${raw.id.replace(/^pkt-/, "PKT-")}.md`;
+      const [manifestText, note, listed] = await Promise.all([
+        tree.file(`.factory/manifests/packets/${raw.id}.json`),
+        tree.file(intendedBehaviorPath),
+        tree.list(noteDir),
+      ]);
+      const fallbackName = listed?.find((name) => name.replace(/\.md$/i, "").toLowerCase() === raw.id.toLowerCase());
+      const resolvedPath = note || !fallbackName ? intendedBehaviorPath : `${noteDir}/${fallbackName}`;
+      const resolvedNote = note ?? (fallbackName ? await tree.file(resolvedPath) : null);
+      const manifest = manifestText
+        ? (JSON.parse(manifestText) as { title?: string; release?: string; systemsChange?: string })
+        : null;
+      const systemsChangePath = manifest?.systemsChange ?? null;
+      return {
+        raw,
+        title: manifest?.title ?? null,
+        release: manifest?.release ?? null,
+        intendedBehavior: resolvedNote ? intendedSection(resolvedNote) : null,
+        intendedBehaviorPath: resolvedPath,
+        systemsChangePath,
+        systemsChangeText: systemsChangePath ? await tree.file(systemsChangePath) : null,
+      };
+    }),
+  );
   return assemble({
     ref: tree.ref,
     sha: tree.sha,
