@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 12:18 UTC 2026-10-30 — interaction-design plates are a recommendation. Not a packet. Waiting on which pockets the founder marks. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 12:40 UTC 2026-10-30 — packet 006 is `**Wake:** sa`. All five ixd plates plus gutters, pane expand, and load/live spinners. Next PM number is 007. No `src/` from this seat.
 
 **How we maintain this log**
 
@@ -561,3 +561,41 @@ Refused for this round: search, command palette, pin, compare-two, React Flow, a
 **What changed.** [`plates/ixd/README.md`](./plates/ixd/README.md) and plates 01–05. Chrome locked from production. Pocket painted only. Next PM number stays 006 until a plate is approved and cut.
 
 **Ask:** mark which plates become packets. This seat will not invent a sixth.
+
+---
+
+## 12:37 UTC 2026-10-30 — all five plates, plus gutters, expand, spin
+
+**Kind:** founder go.
+
+**Founder wording:**
+
+> Yes all of this are good. Do all. Ensure ensure you always maintain proper margins on the sides. Content shouldn't be brushing on the borders.
+>
+> also for the side pop up, it should also have the option to fully expand. Don't worry don't regenerate the plate. The fix is simple. An icon that can extend the popover.
+>
+> lastly, where there are opportunities for spinners and other interaction components specifically around process, loading, real time e.t.c implement.
+>
+> after implementation is complete, id like to see some screenshots of these revisions.
+>
+> Go ahead and packet, specify and build
+
+**Ask:** none. All five pockets. Expand is an icon, not a sixth plate. Screenshots after the plant.
+
+---
+
+## 12:39 UTC 2026-10-30 — face of packet 006
+
+**Kind:** face. Same founder ask. Type B (how the founder moves through the locked leaves).
+
+**What changed.** Table stays, page is a pane; graph keeps the map; click-to-filter; crumb + jumps + Previous/Next + hash; compact sheet. Gutters 24/16. Expand icon on the pane. First-load and refresh Spin. Mode remembered. Snapshot unchanged.
+
+**Ask:** none.
+
+---
+
+## 12:40 UTC 2026-10-30 — packet 006 Wake sa
+
+**Kind:** founder go: do all, packet, specify, build. Sequential Architect → SA → Engineer in this chat.
+
+**What changed.** [`PM-PACKET-006-interaction-desk.md`](./PM-PACKET-006-interaction-desk.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §11 is the grain. Next PM number is 007. No `src/` from this seat.

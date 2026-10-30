@@ -76,6 +76,9 @@ try {
 
   await clickText(page, "Which execution a result belongs to");
   await page.waitForSelector("[data-testid=detail]");
+  check("table stays with pane", Boolean(await page.$("[data-testid=database]")) && Boolean(await page.$("[data-testid=page-pane]")));
+  const hash = await page.evaluate(() => window.location.hash);
+  check("page hash", hash === "#exec-identity", hash);
   const initiative = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("obligation", initiative.includes("Specify and, where a packet is released, implement the identity rules already locked on PR 135."));
   check("not manifest obligation", !initiative.includes("Do not complete neighboring modules."));

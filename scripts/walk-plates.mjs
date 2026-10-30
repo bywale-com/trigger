@@ -88,7 +88,11 @@ try {
   await page.click("[data-testid=plate-image] img");
   await page.waitForSelector(".ant-image-preview, .ant-image-preview-root", { timeout: 5_000 });
   check("preview opens", true);
-  await page.keyboard.press("Escape");
+  const closer = await page.$(".ant-image-preview-close, .ant-image-preview-operations-operation");
+  if (closer) await closer.click();
+  else await page.keyboard.press("Escape");
+  await page.waitForFunction(() => !document.querySelector(".ant-image-preview-img"));
+  await page.waitForSelector("[data-testid=plates]");
   await page.screenshot({ path: "/tmp/desk-plates-light.png" });
 
   await page.click(".ant-switch");

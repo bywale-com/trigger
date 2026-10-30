@@ -2,7 +2,17 @@
 
 **Date:** 30 October 2026, 8:16 AM America/Toronto  
 **Seat:** Technical Architect  
-**Status:** Recommendation. Not a packet. Do not plant. Do not wake SA.  
+**Status:** Approved and planted on PR 6. Packet [`PM-PACKET-006-interaction-desk.md`](../PM-PACKET-006-interaction-desk.md). Expand icon, gutters, and load/live spin were locked after these plates; do not regenerate them.
+
+## Built (after packet 006)
+
+Not painted plates. Captured from the planted desk.
+
+- [built-table-pane.png](./built-table-pane.png) — table stays, page is a pane, selected row, expand icon, gutters
+- [built-graph-pane.png](./built-graph-pane.png) — graph keeps the map, selected ring
+- [built-expanded.png](./built-expanded.png) — expand fills the content width
+- [built-click-filter.png](./built-click-filter.png) — Stage tag minted `Stage is Verified`
+- [built-compact-sheet.png](./built-compact-sheet.png) — sheet over the list, inset from the sides  
 **Chrome lock:** live production https://trigger-theta-cyan.vercel.app at ledger revision 80, painted on 1440 (and 360 for compact). Header, Ant tokens, table, graph, and page body are the locked chrome. Only the pocket is painted.
 
 Founder ask:
@@ -26,7 +36,7 @@ No new store is required for any plate below. Selection, split, hash, and click-
 
 ## Recommendation (order)
 
-Ship **1**, then **2** as the same pattern on the graph, then **4** (cheap), then **3**, then **5** as the compact of 1. Do not packet until the founder marks which of these are the go.
+Ship **1**, then **2** as the same pattern on the graph, then **4** (cheap), then **3**, then **5** as the compact of 1. Founder marked all five. Packet 006.
 
 Out of this round: search, a command palette, pinning, compare-two, a pause-refresh control that looks like a factory stop, React Flow.
 
