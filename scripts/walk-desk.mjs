@@ -93,8 +93,12 @@ try {
   check("release draft", packet.includes("draft"));
   check("no integration sha", packet.includes("none"));
   check("manual", packet.includes("Manual · not live"));
+  check("lifecycle fixture", packet.includes("Dispatched no") && packet.includes("Running no") && packet.includes("Committed yes") && packet.includes("Verified yes") && packet.includes("Integrated no") && packet.includes("Accepted no"));
+  check("github fixture unavailable", packet.includes("unavailable"));
   check("systems change not on glass", !packet.includes("This file is the systems-change packet."));
   check("release eligible not on glass", !packet.includes("Release eligible"));
+  check("no completed collapse", !packet.includes("Completed yes"));
+  await page.screenshot({ path: "/tmp/desk-packet-light.png" });
 
   await clickText(page, "← Tower");
   await clickText(page, "Launch Agent");
@@ -142,6 +146,10 @@ try {
   });
   await page.waitForFunction(() => document.body.innerText.includes("3 pages"));
   await page.screenshot({ path: "/tmp/desk-table-dark.png" });
+  await clickText(page, "An email click advances the enrollment stamped on the message");
+  await page.waitForSelector("[data-testid=detail]");
+  await page.screenshot({ path: "/tmp/desk-packet-dark.png" });
+  await clickText(page, "← Tower");
 
   const flag = process.env.TOWER_FAIL_FLAG;
   if (flag) {

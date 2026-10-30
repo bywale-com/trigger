@@ -1,10 +1,10 @@
 import { BulbOutlined } from "@ant-design/icons";
 import { Layout, Segmented, Space, Switch, Typography, theme } from "antd";
 import type { ReactNode } from "react";
-import { shortSha } from "../observe/snapshot.ts";
+import { shortSha, type FactoryPull } from "../observe/snapshot.ts";
 
 const { Header, Content } = Layout;
-const { Text } = Typography;
+const { Text, Link } = Typography;
 
 export function Chrome({
   mode,
@@ -13,6 +13,7 @@ export function Chrome({
   onView,
   refName,
   sha,
+  factoryPull,
   revision,
   scopeStatus,
   readFailed,
@@ -24,6 +25,7 @@ export function Chrome({
   onView: (view: "Table" | "Graph") => void;
   refName: string | null;
   sha: string | null;
+  factoryPull: FactoryPull | null;
   revision: number | null;
   scopeStatus: string | null;
   readFailed: boolean;
@@ -51,6 +53,11 @@ export function Chrome({
           Trigger
         </Text>
         <Text type="secondary">{source}</Text>
+        {factoryPull ? (
+          <Link href={factoryPull.url} target="_blank" rel="noreferrer" data-testid="factory-pr">
+            PR {factoryPull.number}
+          </Link>
+        ) : null}
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16 }}>
           {ledger ? <Text type="secondary">{ledger}</Text> : null}
           {readFailed ? (

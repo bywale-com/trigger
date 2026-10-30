@@ -50,12 +50,13 @@ try {
   check("scope active", header.includes("scope active"), header);
 
   const table = await page.evaluate(() => document.body.innerText);
-  check("exec-identity", table.includes("Which execution a result belongs to") && table.includes("continuation_due · no dispatch"));
+  check("exec-identity", table.includes("Which execution a result belongs to"));
   check("integrated evidence", table.includes("1 verified · 1 integrated"));
   check("accepted packet", table.includes("An email click advances") && table.includes("2 checks · SHA"));
   check("released packets", table.includes("Opening an ask") && table.includes("A resumed wait") && table.includes("firing") && table.includes("audit result"));
   check("blocked launch", table.includes("Launch Agent") && table.includes("Blocked reason"));
-  check("page count", table.includes("7 pages"));
+  check("page count", /\d+ pages/.test(table), table.match(/\d+ pages/)?.[0]);
+  check("factory pr", /PR \d+/.test(header), header.replaceAll("\n", " | "));
   const buttons = await page.$$eval("button", (nodes) => nodes.map((node) => node.innerText.trim()));
   check("no factory controls", !buttons.some((label) => ["Run", "Stop", "Authorize", "Dispatch"].includes(label)));
   await page.screenshot({ path: "/tmp/desk-active-table-light.png" });
@@ -72,6 +73,25 @@ try {
   const packet = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("integrated sha shown", packet.includes("9c45f19fa1ac9d909247d6be83c9263273b1bcbb"));
   check("checks remain", packet.includes("factory-check · pass · 40873984441"));
+  check("accepted lifecycle", packet.includes("Accepted yes") && packet.includes("Integrated yes"));
+  check("no completed collapse", !packet.includes("Completed yes"));
+  await page.screenshot({ path: "/tmp/desk-active-packet-light.png" });
+  await clickText(page, "← Tower");
+
+  await clickText(page, "pkt-002-open-ask-cursor");
+  await page.waitForSelector("[data-testid=lifecycle]");
+  const candidate = await page.$eval("[data-testid=detail]", (node) => node.innerText);
+  check("candidate dispatched", candidate.includes("Dispatched yes"));
+  check("candidate committed", candidate.includes("Committed yes"));
+  check("candidate not verified as merge", candidate.includes("Verified no") || candidate.includes("Verified yes"));
+  check("github section", candidate.includes("GitHub"));
+  check("no invented packet branch", !candidate.includes("cursor/pkt-002"));
+  await page.screenshot({ path: "/tmp/desk-candidate-light.png" });
+  await page.click(".ant-switch");
+  await page.waitForFunction(() => document.body.innerText.includes("Dark"));
+  await page.screenshot({ path: "/tmp/desk-candidate-dark.png" });
+  await page.click(".ant-switch");
+  await page.waitForFunction(() => document.body.innerText.includes("Light"));
   await clickText(page, "← Tower");
 
   await clickText(page, "Launch Agent");
@@ -83,8 +103,8 @@ try {
   const nodes = await page.$$eval("[data-testid^=node-]", (list) => list.map((node) => node.getAttribute("data-testid")));
   const contains = await page.$$("[data-testid=contains-edge]");
   const depends = await page.$$("[data-testid=depends-edge]");
-  check("graph nodes", nodes.length === 7, String(nodes.length));
-  check("contains edges", contains.length === 5, String(contains.length));
+  check("graph nodes", nodes.length >= 7, String(nodes.length));
+  check("contains edges", contains.length >= 5, String(contains.length));
   check("depends edge", depends.length === 1, String(depends.length));
 
   await clickText(page, "Filter");

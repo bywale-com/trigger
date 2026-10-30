@@ -60,12 +60,19 @@ export function App() {
         onView={changeView}
         refName={snapshot?.ref ?? null}
         sha={snapshot?.sha ?? null}
+        factoryPull={snapshot?.factoryPull ?? null}
         revision={snapshot?.stateRevision ?? null}
         scopeStatus={snapshot?.scope.status ?? null}
         readFailed={body?.readFailed ?? false}
       >
         {open && snapshot ? (
-          <Detail page={open} readAt={snapshot.readAt} onBack={() => setPageId(null)} onOpen={openPage} />
+          <Detail
+            page={open}
+            readAt={snapshot.readAt}
+            repo={snapshot.repo}
+            onBack={() => setPageId(null)}
+            onOpen={openPage}
+          />
         ) : view === "Graph" ? (
           <GraphView allPages={pages} pages={shown} filters={filters} onFilter={setFilters} onOpen={openPage} />
         ) : (

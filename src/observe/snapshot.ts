@@ -11,6 +11,8 @@ export type DispatchRecord = {
   prHead: string;
   effect: "wake_sa" | "wake_engineer" | "wake_repair" | "wake_architect";
   label: string;
+  issuedAt?: string;
+  workerExecution?: "ran" | "absent";
 };
 
 export type Lease = {
@@ -60,7 +62,69 @@ export type LedgerPacket = {
   integratedSha: string | null;
   reconciliationId: string | null;
   dispatch: DispatchRecord | null;
+  dispatchHistory?: DispatchRecord[];
   execution: { mode: "manual" | "automatic"; checks: CheckEvidence[] } | null;
+};
+
+export type EvidencePresence = "yes" | "no" | "unknown";
+
+export type LifecycleId = "dispatched" | "running" | "committed" | "verified" | "integrated" | "accepted";
+
+export type LifecycleStep = {
+  id: LifecycleId;
+  label: string;
+  presence: EvidencePresence;
+  basis: string;
+};
+
+export type GithubPull = {
+  number: number;
+  url: string;
+  state: string;
+  merged: boolean | null;
+  branch: string | null;
+  headSha: string | null;
+  title: string | null;
+};
+
+export type GithubCommit = {
+  sha: string;
+  url: string;
+  message: string | null;
+};
+
+export type GithubCheck = {
+  name: string;
+  runId: string | null;
+  outcome: string | null;
+  url: string | null;
+  source: "ledger" | "github";
+};
+
+export type GithubPreview = {
+  url: string;
+  environment: string | null;
+  sha: string | null;
+};
+
+export type GithubEvidence = {
+  available: boolean;
+  unavailableReason: string | null;
+  workingBranch: string | null;
+  pull: GithubPull | null;
+  latestSha: string | null;
+  commits: GithubCommit[];
+  checks: GithubCheck[];
+  preview: GithubPreview | null;
+  merge: { merged: boolean | null; sha: string | null; url: string | null };
+};
+
+export type FactoryPull = {
+  number: number;
+  url: string;
+  state: string;
+  branch: string | null;
+  headSha: string | null;
 };
 
 export type PageBase = {
@@ -95,6 +159,8 @@ export type InitiativePage = PageBase & {
   specificationText: string | null;
   journals: { path: string; text: string | null }[];
   dependedOnBy: string[];
+  lifecycle: LifecycleStep[];
+  github: GithubEvidence;
 };
 
 export type PacketPage = PageBase & {
@@ -113,10 +179,13 @@ export type PacketPage = PageBase & {
   reconciliationId: string | null;
   checks: CheckEvidence[];
   dispatch: DispatchRecord | null;
+  dispatchHistory: DispatchRecord[];
   intendedBehavior: string | null;
   intendedBehaviorPath: string | null;
   systemsChangePath: string | null;
   systemsChangeText: string | null;
+  lifecycle: LifecycleStep[];
+  github: GithubEvidence;
 };
 
 export type Page = InitiativePage | PacketPage;
@@ -135,6 +204,8 @@ export type Snapshot = {
   };
   activation: string | null;
   dispatchPolicy: string | null;
+  repo: string;
+  factoryPull: FactoryPull | null;
   pages: Page[];
 };
 
@@ -164,6 +235,7 @@ export type Gathered = {
   scope: Snapshot["scope"];
   activation: string | null;
   dispatchPolicy: string | null;
+  repo: string;
   initiatives: GatheredInitiative[];
   packets: GatheredPacket[];
 };
@@ -248,6 +320,148 @@ export function leaseActive(lease: Lease | null, readAt: string): boolean {
   return Boolean(lease && lease.until > readAt);
 }
 
+export const DEFAULT_TOWER_REPO = "bywale-com/omcoda_tower";
+
+export function parseReconciliationId(id: string | null): { pr: number; sha: string } | null {
+  if (!id) return null;
+  const match = /^pr-(\d+)-([0-9a-f]{7,40})$/i.exec(id.trim());
+  if (!match) return null;
+  return { pr: Number(match[1]), sha: match[2].toLowerCase() };
+}
+
+export function actionsRunUrl(repo: string, runId: string): string {
+  return `https://github.com/${repo}/actions/runs/${runId}`;
+}
+
+export function commitUrl(repo: string, sha: string): string {
+  return `https://github.com/${repo}/commit/${sha}`;
+}
+
+export function pullUrl(repo: string, number: number): string {
+  return `https://github.com/${repo}/pull/${number}`;
+}
+
+export function emptyGithub(reason: string, checks: GithubCheck[] = []): GithubEvidence {
+  return {
+    available: false,
+    unavailableReason: reason,
+    workingBranch: null,
+    pull: null,
+    latestSha: null,
+    commits: [],
+    checks,
+    preview: null,
+    merge: { merged: null, sha: null, url: null },
+  };
+}
+
+export function ledgerChecks(packet: LedgerPacket, repo: string): GithubCheck[] {
+  return (packet.execution?.checks ?? []).map((check) => ({
+    name: check.name,
+    runId: check.runId,
+    outcome: check.outcome,
+    url: check.runId ? actionsRunUrl(repo, check.runId) : null,
+    source: "ledger" as const,
+  }));
+}
+
+function githubInProgress(github: GithubEvidence | null | undefined): boolean {
+  if (!github?.available) return false;
+  return github.checks.some((check) => {
+    const outcome = (check.outcome ?? "").toLowerCase();
+    return outcome === "in_progress" || outcome === "queued" || outcome === "pending";
+  });
+}
+
+function step(id: LifecycleId, label: string, presence: EvidencePresence, basis: string): LifecycleStep {
+  return { id, label, presence, basis };
+}
+
+export function packetLifecycle(
+  packet: Pick<
+    LedgerPacket,
+    "dispatch" | "dispatchHistory" | "lease" | "candidateSha" | "verifiedSha" | "integratedSha" | "stage"
+  >,
+  readAt: string,
+  github?: GithubEvidence | null,
+): LifecycleStep[] {
+  const history = packet.dispatchHistory ?? [];
+  const dispatched = packet.dispatch != null || history.length > 0;
+  const leaseOn = leaseActive(packet.lease, readAt);
+  const inProgress = githubInProgress(github);
+  let running: EvidencePresence;
+  let runningBasis: string;
+  if (leaseOn && packet.lease) {
+    running = "yes";
+    runningBasis = `lease ${packet.lease.role} until ${packet.lease.until}`;
+  } else if (inProgress) {
+    running = "yes";
+    runningBasis = "GitHub run in progress";
+  } else if (!packet.dispatch) {
+    running = "no";
+    runningBasis = "no current dispatch";
+  } else {
+    running = "unknown";
+    runningBasis = github?.available
+      ? "dispatch recorded; no live lease or in-progress run"
+      : "dispatch recorded; GitHub unavailable";
+  }
+  return [
+    step("dispatched", "Dispatched", dispatched ? "yes" : "no", dispatched ? "dispatch record" : "no dispatch record"),
+    step("running", "Running", running, runningBasis),
+    step(
+      "committed",
+      "Committed",
+      packet.candidateSha ? "yes" : "no",
+      packet.candidateSha ? `candidateSha ${packet.candidateSha}` : "no candidateSha",
+    ),
+    step(
+      "verified",
+      "Verified",
+      packet.verifiedSha ? "yes" : "no",
+      packet.verifiedSha ? `verifiedSha ${packet.verifiedSha}` : "no verifiedSha",
+    ),
+    step(
+      "integrated",
+      "Integrated",
+      packet.integratedSha ? "yes" : "no",
+      packet.integratedSha ? `integratedSha ${packet.integratedSha}` : "no integratedSha",
+    ),
+    step(
+      "accepted",
+      "Accepted",
+      packet.stage === "accepted" ? "yes" : "no",
+      packet.stage === "accepted" ? "stage accepted" : `stage ${packet.stage}`,
+    ),
+  ];
+}
+
+export function initiativeLifecycle(
+  item: Pick<LedgerInitiative, "dispatch" | "session">,
+  github?: GithubEvidence | null,
+): LifecycleStep[] {
+  const dispatched = item.dispatch != null;
+  const inProgress = githubInProgress(github);
+  let running: EvidencePresence;
+  let runningBasis: string;
+  if (inProgress) {
+    running = "yes";
+    runningBasis = "GitHub run in progress";
+  } else if (!item.dispatch) {
+    running = "no";
+    runningBasis = "no current dispatch";
+  } else {
+    running = "unknown";
+    runningBasis = github?.available
+      ? "dispatch recorded; no in-progress run"
+      : "dispatch recorded; GitHub unavailable";
+  }
+  return [
+    step("dispatched", "Dispatched", dispatched ? "yes" : "no", dispatched ? "dispatch record" : "no dispatch record"),
+    step("running", "Running", running, runningBasis),
+  ];
+}
+
 function roleLabel(role: string): string {
   if (role === "architect") return "Architect";
   if (role === "analyst") return "Analyst";
@@ -299,6 +513,7 @@ function packetEvidence(packet: LedgerPacket): { evidence: string; evidenceError
 }
 
 export function assemble(gathered: Gathered): Snapshot {
+  const repo = gathered.repo || DEFAULT_TOWER_REPO;
   const packets = gathered.packets.map((packet) => packet.raw);
   const initiatives = [...gathered.initiatives].sort(
     (a, b) => a.raw.priority - b.raw.priority || a.raw.id.localeCompare(b.raw.id),
@@ -357,11 +572,15 @@ export function assemble(gathered: Gathered): Snapshot {
       specificationText: item.specificationText,
       journals: item.journals,
       dependedOnBy: dependedOnBy.get(item.raw.id) ?? [],
+      lifecycle: initiativeLifecycle(item.raw),
+      github: emptyGithub("not requested"),
     };
     pages.push(page);
-    for (const packet of byInitiative.get(item.raw.id) ?? []) pages.push(toPacket(packet, item.raw.module, gathered.readAt));
+    for (const packet of byInitiative.get(item.raw.id) ?? []) {
+      pages.push(toPacket(packet, item.raw.module, gathered.readAt, repo));
+    }
   }
-  for (const packet of orphans) pages.push(toPacket(packet, "", gathered.readAt));
+  for (const packet of orphans) pages.push(toPacket(packet, "", gathered.readAt, repo));
 
   return {
     ref: gathered.ref,
@@ -371,13 +590,16 @@ export function assemble(gathered: Gathered): Snapshot {
     scope: gathered.scope,
     activation: gathered.activation,
     dispatchPolicy: gathered.dispatchPolicy,
+    repo,
+    factoryPull: null,
     pages,
   };
 }
 
-function toPacket(packet: GatheredPacket, module: string, readAt: string): PacketPage {
+function toPacket(packet: GatheredPacket, module: string, readAt: string, repo: string): PacketPage {
   const raw = packet.raw;
   const evidence = packetEvidence(raw);
+  const github = emptyGithub("not requested", ledgerChecks(raw, repo));
   return {
     id: raw.id,
     type: "Packet",
@@ -404,10 +626,13 @@ function toPacket(packet: GatheredPacket, module: string, readAt: string): Packe
     reconciliationId: raw.reconciliationId,
     checks: raw.execution?.checks.map((check) => ({ ...check })) ?? [],
     dispatch: raw.dispatch,
+    dispatchHistory: (raw.dispatchHistory ?? []).map((record) => ({ ...record })),
     intendedBehavior: packet.intendedBehavior,
     intendedBehaviorPath: packet.intendedBehaviorPath,
     systemsChangePath: packet.systemsChangePath,
     systemsChangeText: packet.systemsChangeText,
+    lifecycle: packetLifecycle(raw, readAt, github),
+    github,
   };
 }
 

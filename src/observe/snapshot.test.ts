@@ -1,7 +1,17 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { assemble, edges, readAtNow, stageColor, stageLabel, visiblePages, type Gathered, type Page } from "./snapshot.ts";
+import {
+  assemble,
+  edges,
+  parseReconciliationId,
+  readAtNow,
+  stageColor,
+  stageLabel,
+  visiblePages,
+  type Gathered,
+  type Page,
+} from "./snapshot.ts";
 import { readFixture } from "./tower/read.ts";
 
 const fixture = join(import.meta.dirname, "tower/testdata/9c45f19");
@@ -70,6 +80,18 @@ describe("revision 1 fixture", () => {
     );
     expect(packet.systemsChangeText).toContain("This file is the systems-change packet.");
     expect(packet.checks.map((check) => check.runId)).toEqual(["40873984441", "40873984426"]);
+    expect(packet.lifecycle.map((step) => `${step.id}:${step.presence}`)).toEqual([
+      "dispatched:no",
+      "running:no",
+      "committed:yes",
+      "verified:yes",
+      "integrated:no",
+      "accepted:no",
+    ]);
+    expect(packet.github.available).toBe(false);
+    expect(packet.github.checks.map((check) => check.runId)).toEqual(["40873984441", "40873984426"]);
+    expect(packet.github.checks[0]?.url).toContain("/actions/runs/40873984441");
+    expect(packet.dispatchHistory).toEqual([]);
 
     expect(launch.execution).toBe("Idle · no dispatch");
     expect(launch.evidence).toBe("Blocked reason");
@@ -118,8 +140,35 @@ describe("revision 1 fixture", () => {
 });
 
 describe("display rules", () => {
+  it("parses an explicit reconciliation id and ignores a branch-shaped string", () => {
+    expect(parseReconciliationId("pr-136-9c45f19fa1ac9d909247d6be83c9263273b1bcbb")).toEqual({
+      pr: 136,
+      sha: "9c45f19fa1ac9d909247d6be83c9263273b1bcbb",
+    });
+    expect(parseReconciliationId("cursor/pkt-002-open-ask-cursor")).toBeNull();
+    expect(parseReconciliationId(null)).toBeNull();
+  });
+
   it("formats the read clock without fractional seconds", () => {
     expect(readAtNow(new Date("2026-10-29T13:00:00.123Z"))).toBe("2026-10-29T13:00:00Z");
+  });
+
+  it("does not treat a dispatch without a lease as running", async () => {
+    const snapshot = await readFixture(fixture, "main");
+    const gathered = gatheredFrom(snapshot, snapshot.readAt);
+    const raw = gathered.packets[0].raw;
+    raw.dispatch = {
+      packetId: raw.id,
+      revision: "rev-1",
+      prHead: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      effect: "wake_engineer",
+      label: "factory-wake-engineer",
+    };
+    const next = assemble(gathered);
+    const packet = next.pages.find((page) => page.id === "pkt-001-click-attribution");
+    if (!packet || packet.type !== "Packet") throw new Error("packet");
+    expect(packet.lifecycle.find((step) => step.id === "dispatched")?.presence).toBe("yes");
+    expect(packet.lifecycle.find((step) => step.id === "running")?.presence).toBe("unknown");
   });
 
   it("lets an open lease outrank a manual history line", async () => {
@@ -131,10 +180,12 @@ describe("display rules", () => {
     raw.lease = { workerId: "bc-e", role: "engineer", until: "2026-10-29T13:00:00Z", revision: "rev-1" };
     const next = assemble(gathered);
     expect(next.pages[1].execution).toBe("Engineer · running");
+    if (next.pages[1].type !== "Packet") throw new Error("packet");
+    expect(next.pages[1].lifecycle.find((step) => step.id === "running")?.presence).toBe("yes");
   });
 });
 
-function gatheredFrom(snapshot: { pages: Page[]; ref: string; sha: string; stateRevision: number; scope: Gathered["scope"]; activation: string | null; dispatchPolicy: string | null }, readAt: string): Gathered {
+function gatheredFrom(snapshot: { pages: Page[]; ref: string; sha: string; stateRevision: number; scope: Gathered["scope"]; activation: string | null; dispatchPolicy: string | null; repo?: string }, readAt: string): Gathered {
   const initiatives = snapshot.pages.filter((page) => page.type === "Initiative");
   const packets = snapshot.pages.filter((page) => page.type === "Packet");
   return {
@@ -145,6 +196,7 @@ function gatheredFrom(snapshot: { pages: Page[]; ref: string; sha: string; state
     scope: snapshot.scope,
     activation: snapshot.activation,
     dispatchPolicy: snapshot.dispatchPolicy,
+    repo: snapshot.repo ?? "bywale-com/omcoda_tower",
     initiatives: initiatives.map((page) => {
       if (page.type !== "Initiative") throw new Error("init");
       return {
@@ -190,6 +242,7 @@ function gatheredFrom(snapshot: { pages: Page[]; ref: string; sha: string; state
           integratedSha: page.integratedSha,
           reconciliationId: page.reconciliationId,
           dispatch: page.dispatch,
+          dispatchHistory: page.dispatchHistory,
           execution: page.executionMode ? { mode: page.executionMode, checks: page.checks } : null,
         },
         title: page.name,

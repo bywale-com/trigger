@@ -98,3 +98,46 @@ Order once both are true:
 6. Periodic refresh.
 
 No second controller, no second ledger, no dispatcher, no percentage, no project switcher.
+
+---
+
+## 7. Packet 002 — GitHub execution evidence
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-002-execution-observability.md`](./PM-PACKET-002-execution-observability.md)  
+**Test:** [`PM-PACKET-002-execution-observability-TEST.md`](./PM-PACKET-002-execution-observability-TEST.md)
+
+Packet 001 remains the desk. This section extends the snapshot and the shared page. It does not replace the table, the graph, or the packet 001 property order.
+
+### What was read
+
+Tower PR 137, branch `cursor/factory-agents-scope-33ee`, commit `f3ec0ca6de2d918bdefe4790455c4f91d48b6276`, ledger revision 41.
+
+- Workers authorize against `DispatchRecord.prHead`, the factory pull-request head SHA, and plant on that same pull request. They do not, in this revision, open a second branch per packet.
+- `candidateSha` / `verifiedSha` / `integratedSha` are ledger fields. `reconciliationId` on PKT-001 is `pr-136-9c45f19fa1ac9d909247d6be83c9263273b1bcbb`.
+- `workerExecution` is `ran` or `absent` and is written when a dispatch moves to history. Current dispatch has no such field.
+- GitHub `GET /repos/bywale-com/omcoda_tower/pulls?head=bywale-com:cursor/factory-agents-scope-33ee` returns pull request 137. `GET /commits/{sha}/pulls` for PKT-002’s candidate SHA and for a live engineer `prHead` also returns 137. `GET /deployments/{id}/statuses` carries `environment_url` for Preview.
+
+### Associations Trigger may use
+
+1. Ledger SHAs: `dispatch.prHead`, history `prHead`, `candidateSha`, `verifiedSha`, `integratedSha`.
+2. `reconciliationId` matching `pr-{number}-{sha}`.
+3. GitHub commit-to-pull for those SHAs.
+4. Factory pull request for the configured ref via `head={owner}:{ref}`.
+5. Check-runs and deployment statuses for those SHAs. Actions run URLs constructed from ledger `runId`.
+
+Do not associate by branch-name resemblance or commit-message resemblance. Do not list repository branches.
+
+### Lifecycle
+
+Derived on the snapshot, shown on the page. The table execution column stays the packet 001 string. Lifecycle Running is not that string.
+
+Dispatched, Running, Committed, Verified, Integrated, Accepted — each `yes` / `no` / `unknown` as in the packet. Dispatch is not Running. GitHub CI is not Integrated. `stage === "accepted"` is Accepted.
+
+### File cut
+
+`src/observe/snapshot.ts` derives the facts. `src/observe/tower/github.ts` is the read-only GitHub port. `src/observe/tower/read.ts` attaches that port after the ledger read and ignores GitHub failure. `src/desk/Detail.tsx` renders the new sections. `src/desk/chrome.tsx` may show the factory `PR {n}` next to the existing source line. Fixture mode does not call GitHub.
+
+### After this packet
+
+The founder asked for the implementation on PR 4, not another proposal. Wake is `sa`. This seat does not plant.

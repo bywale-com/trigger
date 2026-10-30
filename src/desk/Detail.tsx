@@ -1,8 +1,18 @@
 import { Alert, Button, Tag, Typography, theme } from "antd";
 import type { ReactNode } from "react";
-import { leaseActive, stageColor, stageLabel, updatedLabel, type Page } from "../observe/snapshot.ts";
+import {
+  leaseActive,
+  shortSha,
+  stageColor,
+  stageLabel,
+  updatedLabel,
+  type EvidencePresence,
+  type GithubEvidence,
+  type LifecycleStep,
+  type Page,
+} from "../observe/snapshot.ts";
 
-const { Text, Title, Paragraph } = Typography;
+const { Text, Title, Paragraph, Link } = Typography;
 const roles = ["Architect", "Analyst", "Engineer"] as const;
 
 function Property({ label, children }: { label: string; children: ReactNode }) {
@@ -14,14 +24,114 @@ function Property({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function lifecycleColor(presence: EvidencePresence): "success" | "processing" | "default" {
+  if (presence === "yes") return "success";
+  if (presence === "unknown") return "processing";
+  return "default";
+}
+
+function Lifecycle({ steps }: { steps: LifecycleStep[] }) {
+  return (
+    <Property label="Lifecycle">
+      <div data-testid="lifecycle" style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {steps.map((step) => (
+          <Tag key={step.id} color={lifecycleColor(step.presence)} title={step.basis} data-testid={`lifecycle-${step.id}`}>
+            {step.label} {step.presence}
+          </Tag>
+        ))}
+      </div>
+    </Property>
+  );
+}
+
+function ShaLink({ sha, repo }: { sha: string | null; repo?: string }) {
+  if (!sha) return <Text>unavailable</Text>;
+  const href = `https://github.com/${repo ?? "bywale-com/omcoda_tower"}/commit/${sha}`;
+  return (
+    <Link href={href} target="_blank" rel="noreferrer">
+      {sha}
+    </Link>
+  );
+}
+
+function GithubSection({ github, repo }: { github: GithubEvidence; repo: string }) {
+  if (!github.available) {
+    return (
+      <>
+        <Title level={5}>GitHub</Title>
+        <Paragraph data-testid="github-evidence">unavailable{github.unavailableReason ? ` · ${github.unavailableReason}` : ""}</Paragraph>
+      </>
+    );
+  }
+  return (
+    <>
+      <Title level={5}>GitHub</Title>
+      <div data-testid="github-evidence" style={{ borderTop: "1px solid transparent" }}>
+        <Property label="Working branch">{github.workingBranch ?? "unavailable"}</Property>
+        <Property label="Pull request">
+          {github.pull ? (
+            <Link href={github.pull.url} target="_blank" rel="noreferrer">
+              PR {github.pull.number} · {github.pull.state}
+              {github.pull.merged ? " · merged" : ""}
+            </Link>
+          ) : (
+            "unavailable"
+          )}
+        </Property>
+        <Property label="Latest commit">
+          {github.latestSha ? <ShaLink sha={github.latestSha} repo={repo} /> : "unavailable"}
+        </Property>
+        <Property label="Commits">
+          {github.commits.length ? (
+            github.commits.map((commit) => (
+              <div key={commit.sha}>
+                <Link href={commit.url} target="_blank" rel="noreferrer">
+                  {shortSha(commit.sha)}
+                </Link>
+                {commit.message ? <Text> {commit.message}</Text> : null}
+              </div>
+            ))
+          ) : (
+            "unavailable"
+          )}
+        </Property>
+        <Property label="Preview">
+          {github.preview ? (
+            <Link href={github.preview.url} target="_blank" rel="noreferrer">
+              {github.preview.url}
+            </Link>
+          ) : (
+            "unavailable"
+          )}
+        </Property>
+        <Property label="Merge">
+          {github.merge.merged == null && !github.merge.url
+            ? "unavailable"
+            : `${github.merge.merged === true ? "merged" : github.merge.merged === false ? "not merged" : "unknown"}${github.merge.url ? "" : ""}`}
+          {github.merge.url ? (
+            <>
+              {" "}
+              <Link href={github.merge.url} target="_blank" rel="noreferrer">
+                {github.merge.url}
+              </Link>
+            </>
+          ) : null}
+        </Property>
+      </div>
+    </>
+  );
+}
+
 export function Detail({
   page,
   readAt,
+  repo,
   onBack,
   onOpen,
 }: {
   page: Page;
   readAt: string;
+  repo: string;
   onBack: () => void;
   onOpen: (id: string) => void;
 }) {
@@ -50,6 +160,7 @@ export function Detail({
         <Property label="Execution">
           {running ? <Tag color="processing">{page.execution}</Tag> : page.execution}
         </Property>
+        <Lifecycle steps={page.lifecycle} />
         {page.type === "Initiative" ? (
           <Property label="Depends on">{page.dependsOn[0] ?? "—"}</Property>
         ) : null}
@@ -118,6 +229,7 @@ export function Detail({
           ) : (
             <Paragraph>0</Paragraph>
           )}
+          <GithubSection github={page.github} repo={repo} />
         </>
       ) : (
         <>
@@ -127,10 +239,40 @@ export function Detail({
           <Title level={5}>Verification</Title>
           {page.checks.map((check) => (
             <Paragraph key={check.runId}>
-              {check.name} · {check.outcome} · {check.runId}
+              {check.name} · {check.outcome} ·{" "}
+              {check.runId ? (
+                <Link href={`https://github.com/${repo}/actions/runs/${check.runId}`} target="_blank" rel="noreferrer">
+                  {check.runId}
+                </Link>
+              ) : (
+                "—"
+              )}
             </Paragraph>
           ))}
           {page.verifiedSha ? <Text type="secondary">Verified SHA {page.verifiedSha}</Text> : null}
+          <Title level={5}>Execution evidence</Title>
+          {page.dispatch ? (
+            <>
+              <Property label="Effect">{page.dispatch.effect}</Property>
+              <Property label="Label">{page.dispatch.label}</Property>
+              <Property label="Authorized SHA">
+                <ShaLink sha={page.dispatch.prHead} repo={repo} />
+              </Property>
+              {page.dispatch.issuedAt ? <Property label="Issued">{page.dispatch.issuedAt}</Property> : null}
+            </>
+          ) : (
+            <Paragraph>No current dispatch</Paragraph>
+          )}
+          {page.dispatchHistory.length ? (
+            page.dispatchHistory.map((record, index) => (
+              <Paragraph key={`${record.prHead}-${index}`}>
+                {record.effect} · {record.workerExecution ?? "unknown"} · {shortSha(record.prHead)}
+              </Paragraph>
+            ))
+          ) : (
+            <Paragraph>No dispatch history</Paragraph>
+          )}
+          <GithubSection github={page.github} repo={repo} />
         </>
       )}
     </div>

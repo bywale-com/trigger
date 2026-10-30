@@ -17,13 +17,13 @@ import {
   assemble,
   intendedSection,
   readAtNow,
-  type Gathered,
   type GatheredInitiative,
   type GatheredPacket,
   type LedgerInitiative,
   type LedgerPacket,
   type Snapshot,
 } from "../snapshot.ts";
+import { enrichSnapshot, githubGet } from "./github.ts";
 
 export type TowerFiles = {
   ref: string;
@@ -267,9 +267,19 @@ export async function readTower(): Promise<Snapshot> {
     }
   }
   const mode = towerReadMode();
-  if (mode === "fixture") return readFixture(process.env.TOWER_FIXTURE as string);
-  if (mode === "github") return readGitHubRemote();
-  return readGitRemote();
+  const snapshot =
+    mode === "fixture"
+      ? await readFixture(process.env.TOWER_FIXTURE as string)
+      : mode === "github"
+        ? await readGitHubRemote()
+        : await readGitRemote();
+  return attachGithub(snapshot, mode === "fixture");
+}
+
+async function attachGithub(snapshot: Snapshot, fixture: boolean): Promise<Snapshot> {
+  if (fixture) return enrichSnapshot(snapshot, githubGet, { enabled: false });
+  const token = githubToken();
+  return enrichSnapshot(snapshot, (url) => githubGet(url, token), { enabled: true });
 }
 
 export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
@@ -340,6 +350,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
     scope: ledger.scope,
     activation: factory?.activation ?? null,
     dispatchPolicy: factory?.dispatch ?? null,
+    repo: githubRepo(repoUrl()),
     initiatives,
     packets,
   });

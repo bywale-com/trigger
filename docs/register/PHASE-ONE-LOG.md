@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 21:14 UTC 2026-10-29 — the desk is one database of pages. The graph is that database. Packet 001 stays Wake sa. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 11:00 UTC 2026-10-30 — packet 002 is Wake sa. The desk follows named SHAs onto GitHub. The table is unchanged. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -291,3 +291,63 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 **What changed.** The plates in [`plates/v1/`](./plates/v1/) are redrawn in both modes: one Ant table of pages, the same pages as a graph, that graph filtered to initiatives, and the initiative, packet, running, and blocked pages. Inside is containment. Depends on is `dependsOn`. A packet is not drawn as depending on the initiative that contains it. The extra pages on the population plates are representative. Ledger revision 1 is still `exec-identity`, `pkt-001-click-attribution`, and `launch-agent`. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) decisions 1, 2, 7, 13, and 14 follow that face. Packet 001 and its test sheet follow it. `**Wake:** sa` stays. No `src/`.
 
 **Agent alignment (not a flag):** The graph is the table. The filter is the density control. Representative pages are plate furniture, not a store and not rows the product hardcodes.
+
+---
+
+## 10:54 UTC 2026-10-30 — factory execution, as it actually runs
+
+**Kind:** investigation for packet 002. Founder asked to treat cross-branch observability as a packet.
+
+**Founder wording:**
+
+> Trigger should follow the work, not require the founder to manually locate the branch on which an agent is operating.
+>
+> Do not assume every agent creates a separate branch.
+
+**What was read.** `bywale-com/omcoda_tower` `cursor/factory-agents-scope-33ee` `f3ec0ca6de2d918bdefe4790455c4f91d48b6276`, “factory ledger 41”. `.factory/controller/machine.ts` `DispatchRecord.prHead` is a commit SHA. `workerMayRun` refuses a `pr_head_mismatch`. `.factory/controller/dispatch.ts` `githubLabelActuator` labels `FACTORY_PR`. `docs/factory/prompts/engineer.prompt.md`: “You plant on this same pull request and this same branch.” Architecture still says one branch per bounded change is the default and sharing is an optimization. Revision 41 shares. GitHub `commits/{sha}/pulls` for PKT-002 `candidateSha` `3246a074…` and for engineer `prHead` `f06148b7…` both return pull request 137, head `cursor/factory-agents-scope-33ee`. PKT-001 `reconciliationId` is `pr-136-9c45f19…`. Pull request 136 is merged. Deployment status for the factory head carries Preview `environment_url`.
+
+**What changed.** Nothing in `src/`. This stamp is the operating model packet 002 must follow.
+
+**Agent alignment (not a flag):** The factory branch is the working branch for current wakes. A later separate engineer branch would show up as a different pull request on the same commit-to-pull API. Trigger must not guess either case from the packet id.
+
+---
+
+## 10:56 UTC 2026-10-30 — face of packet 002
+
+**Kind:** face. Same founder ask. Ant chrome stays.
+
+**Founder wording:**
+
+> Do not redesign the existing table, graph, or navigation.
+>
+> Extend the relevant detail pages to expose execution and GitHub evidence.
+
+**What changed.** The packet page gains lifecycle, the responsible dispatch, working branch and pull request, commits, verification links, preview, and integration. The table execution column stays the packet 001 string. Lifecycle Running is stricter than that string. Six facts, never `Completed`. Missing GitHub is `unknown` or `unavailable`. Header may show the factory `PR {n}` next to `Tower · {ref} {sha}` when `head={owner}:{ref}` returns a pull request. No switcher.
+
+**Ask:** none. The founder already sent the go to implement on PR 4 after the contracts.
+
+---
+
+## 10:58 UTC 2026-10-30 — file cut
+
+**Kind:** technical cut. Inspected planted `src/` read-only.
+
+**What hangs.** `src/observe/snapshot.ts` is the snapshot both views read. `src/observe/tower/read.ts` fills it from the ledger and manifests and does not import the controller. `src/desk/Detail.tsx` is the shared page. `src/desk/chrome.tsx` is the approved header. `TOWER_REF` / `source.json` already select the factory ref. `dispatchHistory` is on the live ledger and is dropped today.
+
+**What changed.** Packet 002 names `src/observe/tower/github.ts` as the GitHub port. `read.ts` attaches it after the ledger snapshot and must not fail the read when GitHub is down. Fixture mode skips GitHub. No second store.
+
+---
+
+## 11:00 UTC 2026-10-30 — packet 002 Wake sa
+
+**Kind:** founder go, already in this chat: treat it as a packet, investigate, contract, then implement on PR 4. This seat writes the packet and stops planting.
+
+**Founder wording:**
+
+> Act as the Technical Product Architect, Systems Analyst, and Engineer sequentially, preserving the existing role-specific specifications and verification requirements.
+>
+> Do not stop at another proposal if the implementation is sufficiently specified.
+>
+> Continue on PR #4. Do not create another pull request.
+
+**What changed.** [`PM-PACKET-002-execution-observability.md`](./PM-PACKET-002-execution-observability.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §7 is the grain. Next PM number is 003. No `src/` from this seat.
