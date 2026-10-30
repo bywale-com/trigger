@@ -1,8 +1,9 @@
 import { BulbOutlined } from "@ant-design/icons";
-import { Layout, Segmented, Space, Switch, Typography, theme } from "antd";
+import { Layout, Segmented, Space, Spin, Switch, Typography, theme } from "antd";
 import type { ReactNode } from "react";
 import { shortSha, type FactoryPull } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
+import { PAGE_GUTTER_COMPACT, PAGE_GUTTER_DESKTOP } from "./place.ts";
 
 const { Header, Content } = Layout;
 const { Text, Link } = Typography;
@@ -18,6 +19,7 @@ export function Chrome({
   revision,
   scopeStatus,
   readFailed,
+  refreshing,
   children,
 }: {
   mode: "light" | "dark";
@@ -30,14 +32,21 @@ export function Chrome({
   revision: number | null;
   scopeStatus: string | null;
   readFailed: boolean;
+  refreshing: boolean;
   children: ReactNode;
 }) {
   const { token } = theme.useToken();
   const compact = useCompact();
+  const gutter = compact ? PAGE_GUTTER_COMPACT : PAGE_GUTTER_DESKTOP;
   const source =
     refName && sha ? `Tower · ${refName} ${shortSha(sha)}` : refName ? `Tower · ${refName}` : "Tower";
   const ledger =
     revision != null && scopeStatus ? `Ledger revision ${revision} · scope ${scopeStatus}` : null;
+  const live = refreshing ? (
+    <span data-testid="desk-refreshing" style={{ display: "inline-flex", alignItems: "center" }}>
+      <Spin size="small" />
+    </span>
+  ) : null;
   const controls = (
     <>
       <Segmented
@@ -73,6 +82,7 @@ export function Chrome({
           {ledger}
         </Text>
       ) : null}
+      {live}
       {readFailed ? (
         <Text type="danger" data-testid="read-failed">
           read failed
@@ -95,7 +105,7 @@ export function Chrome({
                 minHeight: 56,
                 lineHeight: "normal",
                 paddingBlock: 10,
-                paddingInline: 12,
+                paddingInline: gutter,
                 background: token.colorBgContainer,
                 borderBottom: `1px solid ${token.colorSplit}`,
               }
@@ -105,7 +115,7 @@ export function Chrome({
                 gap: 16,
                 background: token.colorBgContainer,
                 borderBottom: `1px solid ${token.colorSplit}`,
-                paddingInline: 20,
+                paddingInline: gutter,
               }
         }
       >
@@ -132,6 +142,7 @@ export function Chrome({
             ) : null}
             <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 16 }}>
               {ledger ? <Text type="secondary">{ledger}</Text> : null}
+              {live}
               {readFailed ? (
                 <Text type="danger" data-testid="read-failed">
                   read failed
@@ -142,7 +153,7 @@ export function Chrome({
           </>
         )}
       </Header>
-      <Content style={{ background: token.colorBgLayout, padding: compact ? 12 : 16 }}>{children}</Content>
+      <Content style={{ background: token.colorBgLayout, padding: gutter }}>{children}</Content>
     </Layout>
   );
 }

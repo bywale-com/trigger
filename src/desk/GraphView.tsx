@@ -1,9 +1,8 @@
 import { Tag, Typography, theme } from "antd";
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { edges, stageColor, stageLabel, type Page } from "../observe/snapshot.ts";
+import { edges, stageColor, stageLabel, type DeskFilter, type Page } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
-import { FilterBar } from "./TableView.tsx";
-import type { DeskFilter } from "../observe/snapshot.ts";
+import { FilterBar, FilterChip } from "./TableView.tsx";
 
 const { Text, Title } = Typography;
 const NODE_H = 72;
@@ -62,12 +61,14 @@ export function GraphView({
   allPages,
   pages,
   filters,
+  selectedId,
   onFilter,
   onOpen,
 }: {
   allPages: Page[];
   pages: Page[];
   filters: DeskFilter[];
+  selectedId: string | null;
   onFilter: (filters: DeskFilter[]) => void;
   onOpen: (id: string) => void;
 }) {
@@ -264,6 +265,7 @@ export function GraphView({
           {placed.boxes.map((box) => {
             const page = byId.get(box.id);
             if (!page) return null;
+            const selected = page.id === selectedId;
             return (
               <button
                 key={page.id}
@@ -280,21 +282,23 @@ export function GraphView({
                   textAlign: "left",
                   cursor: "pointer",
                   background: token.colorBgElevated,
-                  border: `1px solid ${token.colorBorder}`,
+                  border: selected ? `2px solid ${token.colorPrimary}` : `1px solid ${token.colorBorder}`,
                   borderRadius: token.borderRadius,
                   padding: "8px 10px",
-                  boxShadow: token.boxShadowTertiary,
+                  boxShadow: selected ? `0 0 0 2px ${token.colorPrimaryBorder}` : token.boxShadowTertiary,
                   color: token.colorText,
                   touchAction: compact ? "none" : "auto",
                 }}
               >
                 <span style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  <Tag color={page.type === "Initiative" ? "blue" : "default"} style={{ marginInlineEnd: 0 }}>
-                    {page.type}
-                  </Tag>
-                  <Tag color={stageColor(page.stage)} style={{ marginInlineEnd: 0 }}>
-                    {stageLabel(page.stage)}
-                  </Tag>
+                  <FilterChip
+                    field="Type"
+                    value={page.type}
+                    color={page.type === "Initiative" ? "blue" : "default"}
+                    filters={filters}
+                    onFilter={onFilter}
+                  />
+                  <FilterChip field="Stage" value={stageLabel(page.stage)} color={stageColor(page.stage)} filters={filters} onFilter={onFilter} />
                   {page.evidenceError && page.stage !== "blocked" ? (
                     <Tag color="error" style={{ marginInlineEnd: 0 }}>
                       Blocked

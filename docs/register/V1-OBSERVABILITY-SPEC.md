@@ -231,3 +231,30 @@ Specification, journal, intended behavior: Ant typography from the markdown, not
 ### After this packet
 
 The founder asked to see plates and left formatting to this seat. Wake is `sa`. This seat does not plant.
+
+---
+
+## 11. Packet 006 — Interaction desk
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-006-interaction-desk.md`](./PM-PACKET-006-interaction-desk.md)  
+**Test:** [`PM-PACKET-006-interaction-desk-TEST.md`](./PM-PACKET-006-interaction-desk-TEST.md)  
+**Plates:** [`plates/ixd/README.md`](./plates/ixd/README.md)
+
+Packets 001–005 remain the desk. This section is how the founder moves through pages already on the snapshot. Trigger does not write to Tower.
+
+### What was read
+
+`cursor/ixd-plates-7b9a` `02f18af`. `App.tsx` unmounts Table/Graph when a page is open. `changeView` clears `pageId`. No hash. Filter is the form only. Compact list tap replaces the list. Content padding 16 / 12. Refresh is silent.
+
+### Face
+
+Table stays; page is a pane (expand icon fills the content width). Graph keeps the map with a selected ring. Click Type / Stage / Module / Inside / Depends on mints the existing filter chip. Crumb `← Tower / initiative / packet`, section jumps, Previous / Next, `#page-id`. Compact: sheet over the list, flush to the viewport, padding inside the card. Gutters 24 / 16 on the desk. First-load and refresh Spin. Mode in `localStorage`. Snapshot unchanged.
+
+### File cut
+
+`src/desk/place.ts`, `App.tsx`, `Pane.tsx`, `chrome.tsx`, `TableView.tsx`, `GraphView.tsx`, `Detail.tsx`, `desk.css`.
+
+### After this packet
+
+The founder asked to packet, specify, and build all five plates plus gutters, expand, and load/live spin. Wake is `sa`. This seat does not plant.

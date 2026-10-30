@@ -1,5 +1,6 @@
 import { FileTextOutlined, FilterOutlined } from "@ant-design/icons";
 import { Button, Select, Space, Table, Tag, Typography, theme } from "antd";
+import type { MouseEvent, ReactNode } from "react";
 import { useState } from "react";
 import {
   stageColor,
@@ -9,6 +10,7 @@ import {
   type Page,
 } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
+import { withFilter } from "./place.ts";
 
 const { Text, Title } = Typography;
 
@@ -58,7 +60,7 @@ export function FilterBar({
             type="primary"
             disabled={!value}
             onClick={() => {
-              onChange([...filters.filter((item) => item.field !== field), { field, value }]);
+              onChange(withFilter(filters, { field, value }));
               setOpen(false);
             }}
           >
@@ -71,12 +73,45 @@ export function FilterBar({
           key={`${filter.field}:${filter.value}`}
           closable
           color="blue"
+          data-testid="filter-chip"
           onClose={() => onChange(filters.filter((item) => item !== filter))}
         >
           {filter.field} is {filter.value}
         </Tag>
       ))}
     </div>
+  );
+}
+
+export function FilterChip({
+  field,
+  value,
+  color,
+  filters,
+  onFilter,
+  children,
+}: {
+  field: DeskFilter["field"];
+  value: string;
+  color?: string;
+  filters: DeskFilter[];
+  onFilter: (filters: DeskFilter[]) => void;
+  children?: ReactNode;
+}) {
+  const active = filters.some((item) => item.field === field && item.value === value);
+  return (
+    <Tag
+      color={color}
+      data-testid={`click-filter-${field}`}
+      onClick={(event: MouseEvent) => {
+        event.stopPropagation();
+        event.preventDefault();
+        onFilter(withFilter(filters, { field, value }));
+      }}
+      style={{ cursor: "pointer", marginInlineEnd: 0, outline: active ? "2px solid var(--ant-color-primary)" : undefined }}
+    >
+      {children ?? value}
+    </Tag>
   );
 }
 
@@ -106,13 +141,55 @@ function NameCell({ page }: { page: Page }) {
   );
 }
 
-function Relation({ value }: { value: string | null }) {
+function FilterText({
+  field,
+  value,
+  filters,
+  onFilter,
+}: {
+  field: DeskFilter["field"];
+  value: string | null;
+  filters: DeskFilter[];
+  onFilter: (filters: DeskFilter[]) => void;
+}) {
   const { token } = theme.useToken();
   if (!value) return <Text type="secondary">—</Text>;
-  return <Text style={{ color: token.colorPrimary }}>{value}</Text>;
+  return (
+    <button
+      type="button"
+      data-testid={`click-filter-${field}`}
+      onClick={(event) => {
+        event.stopPropagation();
+        onFilter(withFilter(filters, { field, value }));
+      }}
+      style={{
+        padding: 0,
+        border: "none",
+        background: "none",
+        color: token.colorPrimary,
+        cursor: "pointer",
+        textAlign: "left",
+        overflowWrap: "anywhere",
+      }}
+    >
+      {value}
+    </button>
+  );
 }
 
-function WorkList({ pages, onOpen }: { pages: Page[]; onOpen: (id: string) => void }) {
+function WorkList({
+  pages,
+  selectedId,
+  filters,
+  onFilter,
+  onOpen,
+}: {
+  pages: Page[];
+  selectedId: string | null;
+  filters: DeskFilter[];
+  onFilter: (filters: DeskFilter[]) => void;
+  onOpen: (id: string) => void;
+}) {
   const { token } = theme.useToken();
   return (
     <div data-testid="work-list" style={{ borderTop: `1px solid ${token.colorSplit}` }}>
@@ -125,12 +202,14 @@ function WorkList({ pages, onOpen }: { pages: Page[]; onOpen: (id: string) => vo
         ]
           .filter(Boolean)
           .join(" · ");
+        const selected = page.id === selectedId;
         return (
           <button
             key={page.id}
             type="button"
             data-testid={`row-${page.id}`}
             onClick={() => onOpen(page.id)}
+            className={selected ? "work-row-selected" : undefined}
             style={{
               display: "grid",
               gridTemplateColumns: "18px minmax(0, 1fr) auto",
@@ -138,10 +217,11 @@ function WorkList({ pages, onOpen }: { pages: Page[]; onOpen: (id: string) => vo
               width: "100%",
               minHeight: 52,
               margin: 0,
-              padding: "8px 4px",
+              padding: "8px 8px",
               border: "none",
               borderBottom: `1px solid ${token.colorSplit}`,
-              background: "transparent",
+              borderLeft: selected ? `3px solid ${token.colorPrimary}` : "3px solid transparent",
+              background: selected ? token.colorPrimaryBg : "transparent",
               color: token.colorText,
               textAlign: "left",
               cursor: "pointer",
@@ -170,12 +250,8 @@ function WorkList({ pages, onOpen }: { pages: Page[]; onOpen: (id: string) => vo
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2, minWidth: 0 }}>
               <span style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                <Tag color={page.type === "Initiative" ? "blue" : "default"} style={{ marginInlineEnd: 0 }}>
-                  {page.type}
-                </Tag>
-                <Tag color={stageColor(page.stage)} style={{ marginInlineEnd: 0 }}>
-                  {stageLabel(page.stage)}
-                </Tag>
+                <FilterChip field="Type" value={page.type} color={page.type === "Initiative" ? "blue" : "default"} filters={filters} onFilter={onFilter} />
+                <FilterChip field="Stage" value={stageLabel(page.stage)} color={stageColor(page.stage)} filters={filters} onFilter={onFilter} />
               </span>
               <Text style={{ fontSize: 12, textAlign: "right" }}>{page.execution}</Text>
               {page.evidenceError ? (
@@ -198,11 +274,13 @@ function WorkList({ pages, onOpen }: { pages: Page[]; onOpen: (id: string) => vo
 export function TableView({
   pages,
   filters,
+  selectedId,
   onFilter,
   onOpen,
 }: {
   pages: Page[];
   filters: DeskFilter[];
+  selectedId: string | null;
   onFilter: (filters: DeskFilter[]) => void;
   onOpen: (id: string) => void;
 }) {
@@ -214,7 +292,7 @@ export function TableView({
       </Title>
       <FilterBar pages={pages} filters={filters} onChange={onFilter} />
       {compact ? (
-        <WorkList pages={pages} onOpen={onOpen} />
+        <WorkList pages={pages} selectedId={selectedId} filters={filters} onFilter={onFilter} onOpen={onOpen} />
       ) : (
         <Table
           size="small"
@@ -223,6 +301,7 @@ export function TableView({
           rowKey="id"
           tableLayout="fixed"
           data-testid="database"
+          rowClassName={(page) => (page.id === selectedId ? "desk-row-selected" : "")}
           onRow={(page) => ({
             onClick: () => onOpen(page.id),
             style: { cursor: "pointer" },
@@ -233,14 +312,23 @@ export function TableView({
               title: "Type",
               dataIndex: "type",
               width: 100,
-              render: (type: Page["type"]) => <Tag color={type === "Initiative" ? "blue" : "default"}>{type}</Tag>,
+              render: (type: Page["type"]) => (
+                <FilterChip field="Type" value={type} color={type === "Initiative" ? "blue" : "default"} filters={filters} onFilter={onFilter} />
+              ),
             },
-            { title: "Module", dataIndex: "module", width: 196 },
+            {
+              title: "Module",
+              dataIndex: "module",
+              width: 196,
+              render: (module: string) => <FilterText field="Module" value={module} filters={filters} onFilter={onFilter} />,
+            },
             {
               title: "Stage",
               dataIndex: "stage",
               width: 112,
-              render: (stage: string) => <Tag color={stageColor(stage)}>{stageLabel(stage)}</Tag>,
+              render: (stage: string) => (
+                <FilterChip field="Stage" value={stageLabel(stage)} color={stageColor(stage)} filters={filters} onFilter={onFilter} />
+              ),
             },
             { title: "Execution", dataIndex: "execution", width: 156 },
             {
@@ -253,12 +341,21 @@ export function TableView({
               title: "Inside",
               dataIndex: "inside",
               width: 140,
-              render: (value: string | null) => <Relation value={value} />,
+              render: (value: string | null) => <FilterText field="Inside" value={value} filters={filters} onFilter={onFilter} />,
             },
             {
               title: "Depends on",
               width: 140,
-              render: (_, page) => <Relation value={page.dependsOn.length ? page.dependsOn.join(", ") : null} />,
+              render: (_, page) =>
+                page.dependsOn.length ? (
+                  <span style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {page.dependsOn.map((id) => (
+                      <FilterText key={id} field="Depends on" value={id} filters={filters} onFilter={onFilter} />
+                    ))}
+                  </span>
+                ) : (
+                  <Text type="secondary">—</Text>
+                ),
             },
             {
               title: "Updated",

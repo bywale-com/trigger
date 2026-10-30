@@ -1,6 +1,6 @@
 # Systems Analyst — log
 
-**Current (read first, then the newest stamp at the bottom):** 12:05 UTC 2026-10-30 — change packet 005 is signed. Page prose is the same snapshot strings. Next packet number is `006`. Engineer plants on a new PR off `main`.
+**Current (read first, then the newest stamp at the bottom):** 12:42 UTC 2026-10-30 — change packet 006 is signed. No new table. Hash / pane / sheet / filter / spin are faces. Next packet number is `007`. Engineer plants on PR 6.
 
 Append-only. Only Current moves in place. Quote stood-up truth from SQL and live ports. Never reuse a number.
 
@@ -117,3 +117,29 @@ Append-only. Only Current moves in place. Quote stood-up truth from SQL and live
 **Refused.** A Trigger image table. Proxying GitHub PNGs. Discovering `docs/register`. Pinning production to the plate fixture. Adding systems-change to the packet page.
 
 **Still open.** Engineer plant on a new PR off `main`. Next SA number is `006`.
+
+---
+
+## 12:42 UTC 2026-10-30 — packet 006 signed
+
+**Kind:** founder approved all five ixd plates plus gutters, pane expand, and load/live spinners, then sit Architect → SA → Engineer in this chat. No build automation.
+
+**Founder wording:**
+
+> Yes all of this are good. Do all. Ensure ensure you always maintain proper margins on the sides.
+>
+> an icon that can extend the popover.
+>
+> spinners and other interaction components specifically around process, loading, real time
+>
+> Go ahead and packet, specify and build
+
+**Stood up.** Trigger has no SQL. `App.tsx` `open ? Detail : Table | Graph`. `changeView` sets `pageId` null. `chrome.tsx` Content padding 16 / 12. Refresh is `setInterval` 60s with no spinner. `Detail.tsx` back is `← Tower`. Compact list tap replaces the list. `DeskFilter` is `{ field, value }` already. Lifecycle `basis` is a `title`. No hash. Snapshot JSON has no selection field.
+
+**Inventory delta.** Materialized: none. Map-only: hash, `pageId`, expand, click-to-filter of existing `DeskFilter`, pane vs sheet as a viewport, `localStorage` mode. Named silence: open-page store, saved views, React Flow, a Stop.
+
+**Signed.** [`SYSTEMS-CHANGE-PACKET-006-interaction-desk.md`](./SYSTEMS-CHANGE-PACKET-006-interaction-desk.md). Not planted.
+
+**Refused.** A Trigger table for the open page. Search. Command palette. Pin. Compare-two. Pause that looks like Stop. Writing to Tower.
+
+**Still open.** Engineer plant on PR 6, branch `cursor/ixd-plates-7b9a`. Next SA number is `007`.

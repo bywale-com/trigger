@@ -77,6 +77,19 @@ try {
   await page.goto(base, { waitUntil: "networkidle0" });
   await clickText(page, "Which execution a result belongs to");
   await page.waitForSelector("[data-testid=detail]");
+  check("360 list stays under sheet", Boolean(await page.$("[data-testid=work-list]")) && Boolean(await page.$("[data-testid=page-sheet]")));
+  const sheetBox = await page.$eval("[data-testid=page-sheet]", (node) => {
+    const box = node.getBoundingClientRect();
+    const style = getComputedStyle(node);
+    return {
+      left: box.left,
+      right: box.right,
+      inner: window.innerWidth,
+      pad: Number.parseFloat(style.paddingLeft),
+    };
+  });
+  check("360 sheet flush", sheetBox.left <= 1 && sheetBox.right >= sheetBox.inner - 1, JSON.stringify(sheetBox));
+  check("360 sheet inner pad", sheetBox.pad >= 16, JSON.stringify(sheetBox));
   const initiative = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("360 initiative obligation", initiative.includes("Specify and, where a packet is released"));
   check("360 initiative spec", initiative.includes("a completion belongs to the pursuit that asked for it"));
@@ -85,11 +98,13 @@ try {
   await shot(page, "desk-mobile-360-initiative-light");
 
   await clickText(page, "← Tower");
+  await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
   await page.waitForSelector("[data-testid=work-list]");
   check("360 back to list", Boolean(await page.$("[data-testid=work-list]")));
 
   await clickText(page, "An email click advances the enrollment stamped on the message");
   await page.waitForSelector("[data-testid=detail]");
+  check("360 packet sheet", Boolean(await page.$("[data-testid=page-sheet]")) && Boolean(await page.$("[data-testid=work-list]")));
   const packet = await page.$eval("[data-testid=detail]", (node) => node.innerText);
   check("360 packet intended", packet.includes("An email click advances the enrollment named on the outbound message."));
   check("360 packet lifecycle", packet.includes("Dispatched no") && packet.includes("Verified yes"));
@@ -98,6 +113,8 @@ try {
   check("360 packet overflow", packOverflow.scroll <= packOverflow.inner + 1, JSON.stringify(packOverflow));
   await shot(page, "desk-mobile-360-packet-light");
 
+  await clickText(page, "← Tower");
+  await page.waitForFunction(() => !document.querySelector("[data-testid=page-sheet]"));
   await clickText(page, "Graph");
   await page.waitForSelector("[data-testid=graph]");
   check("360 graph from packet", Boolean(await page.$("[data-testid=graph]")));
