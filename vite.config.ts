@@ -1,5 +1,7 @@
+import type { IncomingMessage, ServerResponse } from "node:http";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vitest/config";
+import { handleExternal, isExternalPath } from "./src/observe/external/route.ts";
 import { currentSnapshot } from "./src/observe/refresh.ts";
 import { treeFileResult } from "./src/observe/tree-file.ts";
 
@@ -14,6 +16,10 @@ function towerApi() {
     next: () => void,
   ) => {
     const url = new URL(request.url ?? "/", "http://127.0.0.1");
+    if (isExternalPath(url.pathname)) {
+      await handleExternal(request as IncomingMessage, response as ServerResponse);
+      return;
+    }
     if (url.pathname === "/api/tree-file") {
       const result = await treeFileResult(url.searchParams.get("path"));
       response.statusCode = result.status;

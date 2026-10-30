@@ -16,6 +16,10 @@ Newest first. On completion of a packet or hotfix the Engineer **prepends** one 
 - 2026-10-29 · PR 4 — the desk observes Tower `cursor/factory-agents-scope-33ee` unless `TOWER_REF` is set, because the active factory is that branch and the branch must stay configurable.
 - 2026-10-29 · change packet 001 · PR 4 — the desk reads the current Tower branch and shows that commit, because the signed read is the factory tree and `9c45f19` is only the plate fixture.
 
+## External read
+
+Agents use the authenticated API and MCP server in [`docs/register/EXTERNAL-READ.md`](docs/register/EXTERNAL-READ.md). The desk page is unchanged.
+
 ## Seats
 
 Pastes and identity: [`docs/README.md`](docs/README.md). House protocols: [`protocols/`](protocols/). Trails: [`docs/register/PHASE-ONE-LOG.md`](docs/register/PHASE-ONE-LOG.md) (Technical Architect) · [`docs/register/SYSTEMS-ANALYST-LOG.md`](docs/register/SYSTEMS-ANALYST-LOG.md) (SA) · git + PRs (Engineer). Always-on for Engineer: [`AGENTS.md`](AGENTS.md).

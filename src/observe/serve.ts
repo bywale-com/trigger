@@ -2,6 +2,7 @@ import { createReadStream } from "node:fs";
 import { access } from "node:fs/promises";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { handleExternal, isExternalPath } from "./external/route.ts";
 import { currentSnapshot } from "./refresh.ts";
 import { treeFileResult } from "./tree-file.ts";
 
@@ -19,6 +20,10 @@ const types: Record<string, string> = {
 
 const server = createServer(async (request, response) => {
   const url = new URL(request.url ?? "/", "http://127.0.0.1");
+  if (isExternalPath(url.pathname)) {
+    await handleExternal(request, response);
+    return;
+  }
   if (url.pathname === "/api/snapshot") {
     const body = await currentSnapshot();
     response.writeHead(200, { "content-type": "application/json; charset=utf-8" });
