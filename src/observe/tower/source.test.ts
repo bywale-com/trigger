@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { configuredTowerRef, githubRepo, resolveTowerRef, towerReadMode } from "./read.ts";
+import { configuredTowerRef, githubRepo, resolveTowerRef, shaFromUploadPack, towerReadMode, usableGithubToken } from "./read.ts";
 
 describe("factory branch", () => {
   it("reads the configured branch and lets TOWER_REF replace it", () => {
@@ -17,5 +17,15 @@ describe("factory branch", () => {
     expect(towerReadMode({ TOWER_READ: "github" })).toBe("github");
     expect(towerReadMode({ TOWER_FIXTURE: "/tmp/fixture", VERCEL: "1" })).toBe("fixture");
     expect(towerReadMode({})).toBe("git");
+    expect(usableGithubToken("${GH_TOKEN_BYWALE}")).toBeUndefined();
+    expect(usableGithubToken("  ")).toBeUndefined();
+    expect(usableGithubToken("ghp_exampletokenvalue")).toBe("ghp_exampletokenvalue");
+    const pack =
+      "001e# service=git-upload-pack\n0000" +
+      "0059a891d452fb45c8f83ad92f5c661185a3f1f468d0 refs/heads/cursor/factory-agents-scope-33ee\n" +
+      "003d0405ac12c4f2e02b51bee15a3db0e7db0b6ad027 refs/heads/main\n";
+    expect(shaFromUploadPack(pack, "cursor/factory-agents-scope-33ee")).toBe(
+      "a891d452fb45c8f83ad92f5c661185a3f1f468d0",
+    );
   });
 });

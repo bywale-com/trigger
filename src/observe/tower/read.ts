@@ -8,7 +8,7 @@
  */
 
 import { execFile } from "node:child_process";
-import { access, mkdir, readdir, readFile } from "node:fs/promises";
+import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import source from "./source.json" with { type: "json" };
@@ -65,8 +65,14 @@ export function towerReadMode(env: NodeJS.ProcessEnv = process.env): "fixture" |
   return "git";
 }
 
+export function usableGithubToken(value: string | undefined): string | undefined {
+  const token = value?.trim();
+  if (token && /^(gh[pousr]_|github_pat_)/.test(token)) return token;
+  return undefined;
+}
+
 function githubToken(env: NodeJS.ProcessEnv = process.env): string | undefined {
-  return env.TOWER_GITHUB_TOKEN || env.GITHUB_TOKEN;
+  return usableGithubToken(env.TOWER_GITHUB_TOKEN) || usableGithubToken(env.GITHUB_TOKEN);
 }
 
 const repoRef = () => resolveTowerRef();
@@ -140,55 +146,78 @@ async function readGitRemote(): Promise<Snapshot> {
   });
 }
 
-async function githubGet(path: string): Promise<Response> {
-  const headers: Record<string, string> = {
-    accept: "application/vnd.github+json",
-    "user-agent": "trigger-observe",
-  };
+function pktLines(body: string): string[] {
+  const lines: string[] = [];
+  let index = 0;
+  while (index + 4 <= body.length) {
+    const length = parseInt(body.slice(index, index + 4), 16);
+    if (Number.isNaN(length)) break;
+    if (length === 0) {
+      index += 4;
+      continue;
+    }
+    lines.push(body.slice(index + 4, index + length));
+    index += length;
+  }
+  return lines;
+}
+
+export function shaFromUploadPack(body: string, ref: string): string | null {
+  const want = `refs/heads/${ref}`;
+  for (const line of pktLines(body)) {
+    const payload = line.split("\0")[0]?.trim() ?? "";
+    const match = /^([0-9a-f]{40}) (.+)$/.exec(payload);
+    if (match?.[2] === want) return match[1];
+  }
+  return null;
+}
+
+async function githubFetch(url: string, accept?: string): Promise<Response> {
+  const headers: Record<string, string> = { "user-agent": "git/2.45 trigger-observe" };
+  if (accept) headers.accept = accept;
   const token = githubToken();
   if (token) headers.authorization = `Bearer ${token}`;
-  const response = await fetch(`https://api.github.com${path}`, { headers });
-  if (!response.ok) throw new Error(`github ${response.status} ${path}`);
-  return response;
+  return fetch(url, { headers });
+}
+
+export async function resolveGithubSha(repo: string, ref: string): Promise<string> {
+  const response = await githubFetch(`https://github.com/${repo}.git/info/refs?service=git-upload-pack`);
+  if (!response.ok) throw new Error(`github refs ${response.status}`);
+  const sha = shaFromUploadPack(await response.text(), ref);
+  if (!sha) throw new Error(`github ref missing ${ref}`);
+  return sha;
+}
+
+async function unpackGithubTree(repo: string, sha: string): Promise<string> {
+  const dir = join(tmpdir(), "trigger-tower-github", sha);
+  try {
+    await access(join(dir, ".factory/state/ledger.json"));
+    return dir;
+  } catch {
+    /* unpack */
+  }
+  await mkdir(dir, { recursive: true });
+  const response = await githubFetch(`https://codeload.github.com/${repo}/tar.gz/${sha}`);
+  if (!response.ok) throw new Error(`github archive ${response.status}`);
+  const tgz = join(tmpdir(), `trigger-tower-${sha}.tgz`);
+  await writeFile(tgz, Buffer.from(await response.arrayBuffer()));
+  await new Promise<void>((resolve, reject) => {
+    execFile("tar", ["-xzf", tgz, "-C", dir, "--strip-components=1"], (error) => {
+      if (error) reject(error);
+      else resolve();
+    });
+  });
+  return dir;
 }
 
 export async function readGitHubRemote(): Promise<Snapshot> {
-  const ref = repoRef();
-  const repo = githubRepo();
-  const commit = (await (await githubGet(`/repos/${repo}/commits/${encodeURIComponent(ref)}`)).json()) as {
-    sha?: string;
-  };
-  const sha = commit.sha;
-  if (!sha) throw new Error("github commit missing");
-  const files: TowerFiles = {
-    ref,
-    sha,
-    async file(path) {
-      const headers: Record<string, string> = { "user-agent": "trigger-observe" };
-      const token = githubToken();
-      if (token) headers.authorization = `Bearer ${token}`;
-      const response = await fetch(`https://raw.githubusercontent.com/${repo}/${sha}/${path}`, { headers });
-      if (response.status === 404) return null;
-      if (!response.ok) throw new Error(`github file ${response.status} ${path}`);
-      return response.text();
-    },
-    async list(path) {
-      try {
-        const listed = (await (await githubGet(`/repos/${repo}/contents/${path}?ref=${encodeURIComponent(sha)}`)).json()) as
-          | { name?: string }[]
-          | { message?: string };
-        if (!Array.isArray(listed)) return null;
-        const names: string[] = [];
-        for (const item of listed) {
-          if (item.name && !item.name.startsWith(".")) names.push(item.name);
-        }
-        return names.sort();
-      } catch {
-        return null;
-      }
-    },
-  };
-  return snapshotFromFiles(files);
+  return exclusive(async () => {
+    const ref = repoRef();
+    const repo = githubRepo();
+    const sha = await resolveGithubSha(repo, ref);
+    const dir = await unpackGithubTree(repo, sha);
+    return snapshotFromFiles(filesFromDirectory(dir, ref, sha));
+  });
 }
 
 export async function readTower(): Promise<Snapshot> {
