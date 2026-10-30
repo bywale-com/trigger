@@ -4,7 +4,7 @@
 
 ## Where we stopped
 
-Hotfix 002 is the open cut: on the phone the header shows Trigger until the lip reveals the branch and the ledger. The running strip is one line until its lip reveals the rows. The page lip drags the preview and fills the screen; the enlarge button stays on the desktop only. Plates are in `docs/register/plates/hotfix-002/`. Hotfix 001 is on main as PR 8. The Tower board is one bordered table at every width. Columns keep their designed widths (Name 220 through Updated 84). A header border drags that whole column, clamped to 85–115% of the designed width. The board scrolls sideways inside itself. The compact work list is gone. `data-testid="database"` is the board on the phone and on the desktop.
+Hotfix 002 is PR 9 (`cursor/compact-drawers-71ee`): on the phone the header shows Trigger until the lip reveals the branch and the ledger. The running strip is one line until its lip reveals the rows. The page lip drags the preview and fills the screen; the enlarge button stays on the desktop only. Plates are in `docs/register/plates/hotfix-002/`. Hotfix 001 is on main as PR 8. The Tower board is one bordered table at every width. Columns keep their designed widths (Name 220 through Updated 84). A header border drags that whole column, clamped to 85–115% of the designed width. The board scrolls sideways inside itself. The compact work list is gone. `data-testid="database"` is the board on the phone and on the desktop.
 
 Packets 001–006 are on `main`. Packet 007 stays hold. Packet 008 (Factory Pulse) plants on PR 7, branch `cursor/live-factory-states-7b9a`. Do not reopen PR 4. Do not bring the work list back.
 
@@ -44,4 +44,4 @@ Do not append the Architect or SA logs. One PR per initiative. Packet 007 stays 
 
 ## Paste — new Engineer
 
-You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Hotfix 002 is the phone drawers. Do not replant 001–006. Do not bring back the compact work list. Do not put the branch line back on the closed phone header.
+You are Trigger’s Engineer. Read `docs/README.md` § Engineer and `AGENTS.md`. Read this file first. Then `docs/seats/ENGINEER.md` and `protocols/engineer.md`. Trail is git + PRs. One PR per initiative. Packets 001–006 are on main. Packet 007 stays hold. Packet 008 is PR 7. Hotfix 001 is PR 8. Hotfix 002 is PR 9. Do not replant 001–006. Do not bring back the compact work list. Do not put the branch line back on the closed phone header.

@@ -6,7 +6,7 @@ Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
-- 2026-10-30 · hotfix 002 · this PR — on the phone the branch line and the running rows tuck behind a lip, and the page lip drags the preview, because those bands were crowding the table.
+- 2026-10-30 · hotfix 002 · PR 9 — on the phone the branch line and the running rows tuck behind a lip, and the page lip drags the preview, because those bands were crowding the table.
 - 2026-10-30 · hotfix 001 · PR 8 — the Tower board is a bordered table with a header and even columns, and it scrolls sideways, because the phone and the desktop were squeezing every column into the pane.
 - 2026-10-30 · change packet 005 · this PR — specification, journal, and intended behavior render as typography, and a local plate paints through `/api/tree-file`, because the founder asked to read the page and see how a plate looks.
 - 2026-10-30 · change packet 004 · PR 4 — below 992px the desk is a compact shell of the same snapshot (wrapped header, dense work list, pan/pinch graph), because the founder reads Tower from a phone and 1440 must stay the approved table.
