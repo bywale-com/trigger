@@ -1,6 +1,6 @@
 # Systems Analyst — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:30 UTC 2026-10-30 — change packet 003 is signed. Ledger remains the record. Plates are tree files on the observed SHA. Next packet number is `004`. Engineer plants on PR 4.
+**Current (read first, then the newest stamp at the bottom):** 11:50 UTC 2026-10-30 — change packet 004 is signed. Compact is a shell of the same snapshot. Next packet number is `005`. Engineer plants on PR 4.
 
 Append-only. Only Current moves in place. Quote stood-up truth from SQL and live ports. Never reuse a number.
 
@@ -71,3 +71,27 @@ Append-only. Only Current moves in place. Quote stood-up truth from SQL and live
 **Refused.** A Trigger plates table. Proxying PNG bytes. Discovering blueprint screenshots. Approve / Reject. Waiting on release or merge. Failing the Tower read when a plate directory 404s.
 
 **Still open.** Engineer plant on PR 4. Next SA number is `004`.
+
+---
+
+## 11:50 UTC 2026-10-30 — packet 004 signed
+
+**Kind:** founder asked for a first-class mobile desk, then sit Architect → SA → Engineer in this chat. No build automation.
+
+**Founder wording:**
+
+> Trigger needs a proper mobile interface—not just the desktop UI squeezed onto a smaller screen.
+>
+> don't mechanically turn the desktop table into a collection of giant cards.
+>
+> The current desktop interface is approved and must remain visually and functionally unchanged.
+
+**Stood up.** Trigger has no SQL. `src/desk/chrome.tsx` is one 56px flex row. `TableView` nine columns, `data-testid="database"`. `GraphView` overflow auto, no pinch. `Detail` 160px + 1fr. `App` keeps `pageId` / `view` / `filters` / `mode` across `setBody`. Viewport meta is device-width. Snapshot and GitHub/plates ports do not know about width.
+
+**Inventory delta.** Materialized: none. Map-only: compact vs desktop as a viewport of the same snapshot. Named silence: native app, React Flow, a mobile API.
+
+**Signed.** [`SYSTEMS-CHANGE-PACKET-004-mobile-desk.md`](./SYSTEMS-CHANGE-PACKET-004-mobile-desk.md). Not planted.
+
+**Refused.** A second store. Restyling 1440. Giant cards. Bottom navigation. Dropping GitHub or plates to fit.
+
+**Still open.** Engineer plant on PR 4. Next SA number is `005`.

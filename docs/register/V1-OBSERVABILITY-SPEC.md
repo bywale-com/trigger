@@ -179,3 +179,29 @@ On the packet page, after Intended behavior: the images, each linked to the GitH
 ### After this packet
 
 The founder asked for the implementation on PR 4, not another proposal. Wake is `sa`. This seat does not plant.
+
+---
+
+## 9. Packet 004 — Compact shell
+
+**Date:** October 30, 2026  
+**Go:** [`PM-PACKET-004-mobile-desk.md`](./PM-PACKET-004-mobile-desk.md)  
+**Test:** [`PM-PACKET-004-mobile-desk-TEST.md`](./PM-PACKET-004-mobile-desk-TEST.md)
+
+Packets 001–003 remain the desk at 1440. This section is the same snapshot below 992px.
+
+### What was read
+
+Planted `src/desk` on PR 4: one 56px header row, nine-column table, graph `overflow: auto`, detail 160px + 1fr. Refresh already keeps navigation state.
+
+### Face
+
+Compact (`max-width: 991px`): wrapped header, dense work list (not cards, not a squeezed table), same graph with pan and pinch, stacked detail, full-width plates with tap-to-enlarge. No horizontal page overflow. Desktop ≥992px is the approved chrome and table.
+
+### File cut
+
+`src/desk/compact.ts` is the media hook. `chrome.tsx`, `TableView.tsx`, `GraphView.tsx`, `Detail.tsx`, `desk.css`, `index.html`. Do not change `src/observe/*`.
+
+### After this packet
+
+The founder asked for the implementation on PR 4 and an update of the deployed desk. Wake is `sa`. This seat does not plant.

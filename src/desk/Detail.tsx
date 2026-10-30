@@ -1,4 +1,4 @@
-import { Alert, Button, Tag, Typography, theme } from "antd";
+import { Alert, Button, Image, Tag, Typography, theme } from "antd";
 import type { ReactNode } from "react";
 import {
   leaseActive,
@@ -13,15 +13,24 @@ import {
   type PacketPlates,
   type Page,
 } from "../observe/snapshot.ts";
+import { useCompact } from "./compact.ts";
 
 const { Text, Title, Paragraph, Link } = Typography;
 const roles = ["Architect", "Analyst", "Engineer"] as const;
 
 function Property({ label, children }: { label: string; children: ReactNode }) {
+  const compact = useCompact();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 12, padding: "7px 0" }}>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: compact ? "1fr" : "160px 1fr",
+        gap: compact ? 2 : 12,
+        padding: "7px 0",
+      }}
+    >
       <Text type="secondary">{label}</Text>
-      <div>{children}</div>
+      <div style={{ overflowWrap: "anywhere" }}>{children}</div>
     </div>
   );
 }
@@ -58,24 +67,27 @@ function ShaLink({ sha, repo }: { sha: string | null; repo?: string }) {
 
 function Plates({ plates }: { plates: PacketPlates }) {
   const { token } = theme.useToken();
+  const compact = useCompact();
   if (!platesVisible(plates)) return null;
+  const frame = {
+    display: "block" as const,
+    maxWidth: "100%",
+    width: compact ? "100%" : undefined,
+    borderRadius: 6,
+    border: `1px solid ${token.colorSplit}`,
+  };
   return (
     <>
       <Title level={5}>Plates</Title>
       <div data-testid="plates">
         {plates.images.map((image) => (
-          <div key={image.path} data-testid="plate-image" style={{ marginBottom: 16 }}>
-            <img
-              src={image.imageUrl}
-              alt={image.alt}
-              style={{
-                display: "block",
-                maxWidth: "100%",
-                borderRadius: 6,
-                border: `1px solid ${token.colorSplit}`,
-              }}
-            />
-            <Link href={image.artifactUrl} target="_blank" rel="noreferrer">
+          <div key={image.path} data-testid="plate-image" style={{ marginBottom: 16, width: "100%" }}>
+            {compact ? (
+              <Image src={image.imageUrl} alt={image.alt} style={frame} />
+            ) : (
+              <img src={image.imageUrl} alt={image.alt} style={frame} />
+            )}
+            <Link href={image.artifactUrl} target="_blank" rel="noreferrer" style={{ overflowWrap: "anywhere" }}>
               {image.path}
             </Link>
           </div>
@@ -174,10 +186,11 @@ export function Detail({
   onOpen: (id: string) => void;
 }) {
   const { token } = theme.useToken();
+  const compact = useCompact();
   const running = page.execution.endsWith("· running");
   const runningRole = roles.find((role) => page.execution.startsWith(`${role} · running`));
   return (
-    <div data-testid="detail" style={{ maxWidth: 880 }}>
+    <div data-testid="detail" style={{ maxWidth: compact ? "none" : 880 }}>
       <Button type="text" onClick={onBack} style={{ paddingInline: 0 }}>
         ← Tower
       </Button>
@@ -185,7 +198,7 @@ export function Detail({
         {page.type} · {page.id}
         {page.type === "Packet" ? ` · ${page.initiativeId}` : ` · ${page.module}`}
       </Text>
-      <Title level={2} style={{ marginTop: 4 }}>
+      <Title level={2} style={{ marginTop: 4, overflowWrap: "anywhere" }}>
         {page.name}
       </Title>
       <div style={{ borderTop: `1px solid ${token.colorSplit}`, marginTop: 8 }}>

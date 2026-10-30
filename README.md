@@ -6,6 +6,7 @@ Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
+- 2026-10-30 · change packet 004 · PR 4 — below 992px the desk is a compact shell of the same snapshot (wrapped header, dense work list, pan/pinch graph), because the founder reads Tower from a phone and 1440 must stay the approved table.
 - 2026-10-30 · change packet 003 · PR 4 — the packet page discovers factory UI plates on the observed SHA and shows the images with the five-bucket read, because an Architect plate should appear as soon as it is committed, without a release or an approval control.
 - 2026-10-30 · change packet 002 · PR 4 — the packet page follows named ledger SHAs onto GitHub (branch, PR, commits, checks, preview) and keeps six lifecycle facts, because the factory ledger is still the record and the founder should not hunt the working branch.
 - 2026-10-30 · PR 4 — the desk is at https://trigger-theta-cyan.vercel.app, because `/api/snapshot` is a Node function that reads the configured Tower branch.

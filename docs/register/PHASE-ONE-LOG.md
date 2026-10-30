@@ -1,6 +1,6 @@
 # Phase One — log
 
-**Current (read first, then the newest stamp at the bottom):** 11:28 UTC 2026-10-30 — packet 003 is Wake sa. The packet page shows factory UI plates committed on the observed branch. The table is unchanged. Do not plant from this seat.
+**Current (read first, then the newest stamp at the bottom):** 11:48 UTC 2026-10-30 — packet 004 is Wake sa. Compact shell below 992px. 1440 is unchanged. Do not plant from this seat.
 
 **How we maintain this log**
 
@@ -411,3 +411,61 @@ Outside those cycles: a jump from the seed to its build attempts and verificatio
 > Trigger remains entirely read-only.
 
 **What changed.** [`PM-PACKET-003-factory-plates.md`](./PM-PACKET-003-factory-plates.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §8 is the grain. Next PM number is 004. No `src/` from this seat.
+
+---
+
+## 11:42 UTC 2026-10-30 — phone as a first-class read
+
+**Kind:** investigation for packet 004. Founder asked for a proper mobile interface, not the desktop squeezed.
+
+**Founder wording:**
+
+> Trigger needs a proper mobile interface—not just the desktop UI squeezed onto a smaller screen.
+>
+> Since you'll be checking Tower's factory from your phone, I'd treat mobile as a first-class experience.
+
+**What hangs.** `chrome.tsx` one flex row, header height 56. `TableView.tsx` nine columns walked at 1440. `GraphView.tsx` 420px module columns, `overflow: auto`, no pinch. `Detail.tsx` 160px + 1fr. `App.tsx` already keeps view / page / filters across refresh. Viewport meta is already device-width.
+
+**What changed.** Nothing in `src/`. This stamp is the overflow the compact shell has to kill.
+
+---
+
+## 11:44 UTC 2026-10-30 — face of packet 004
+
+**Kind:** face. Same founder ask. Ant chrome stays at 1440.
+
+**Founder wording:**
+
+> But we should preserve the existing Ant Design visual language, not create a separate design.
+>
+> don't mechanically turn the desktop table into a collection of giant cards. Preserve information density while making it usable on mobile.
+>
+> The current desktop interface is approved and must remain visually and functionally unchanged.
+
+**What changed.** Below 992px: wrapped header, dense work list (all nine facts, not cards), same graph with pan/pinch, stacked detail, full-width plates with tap-to-enlarge. 1440 keeps the approved table and header row. No hamburger. No bottom tabs.
+
+**Ask:** none. The founder already sent the go to implement on PR 4.
+
+---
+
+## 11:46 UTC 2026-10-30 — file cut
+
+**Kind:** technical cut. Inspected planted `src/` read-only.
+
+**What hangs.** Snapshot and Tower read do not know about viewport. Compact is a desk shell.
+
+**What changed.** Packet 004 names `src/desk/compact.ts` as the media hook, then chrome / TableView / GraphView / Detail / desk.css / `index.html` viewport-fit. Do not touch `src/observe/*`.
+
+---
+
+## 11:48 UTC 2026-10-30 — packet 004 Wake sa
+
+**Kind:** founder go: implement first-class mobile on PR 4, update the deployed desk.
+
+**Founder wording:**
+
+> Implement first-class mobile support for Trigger on the existing PR #4.
+>
+> Complete the implementation on PR #4 and update the deployed Trigger application.
+
+**What changed.** [`PM-PACKET-004-mobile-desk.md`](./PM-PACKET-004-mobile-desk.md) is `**Wake:** sa`. Test sheet beside it. [`V1-OBSERVABILITY-SPEC.md`](./V1-OBSERVABILITY-SPEC.md) §9 is the grain. Next PM number is 005. No `src/` from this seat.
