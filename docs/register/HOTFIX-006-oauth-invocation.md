@@ -11,7 +11,8 @@ The preview then returned JSON: `Cannot find module '/var/task/src/observe/exter
 - Include `src/observe/**` on the OAuth functions, the same way the other Node routes do.
 - Load `oauth.js` from inside the handler, so a module error is a JSON body instead of a platform crash.
 - Keep `export const config.runtime` at `nodejs`. Keep `api.bodyParser: false` on authorize, token, and register.
-- `api/oauth/ping.ts` answers `{ ok, version }` with no other import, so a platform crash can be separated from the OAuth module.
+
+The no-import probe confirmed Node `v22.23.4` and was removed. On the preview after `includeFiles`, both well-known routes return `200`, authorize GET returns `400` HTML, token POST of JSON returns `415`, and register GET returns `405`.
 
 ## Not in this cut
 
