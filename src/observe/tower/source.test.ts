@@ -5,6 +5,7 @@ import {
   packetIdForms,
   plateFilenameMatches,
   resolvePlateHref,
+  pinnedTowerRef,
   resolveTowerRef,
   shaFromUploadPack,
   towerReadMode,
@@ -19,6 +20,10 @@ describe("factory branch", () => {
     expect(resolveTowerRef({ TOWER_REF: "main" })).toBe("main");
     expect(resolveTowerRef({ TOWER_REF: "  " })).toBe(configured);
     expect(resolveTowerRef({})).toBe(configured);
+    expect(pinnedTowerRef({ TOWER_REF: "main" })).toBe("main");
+    expect(pinnedTowerRef({ TOWER_SOURCE: "configured" })).toBe(configured);
+    expect(pinnedTowerRef({ VERCEL_ENV: "production", TOWER_REF: configured, TOWER_SOURCE: "configured" })).toBeNull();
+    expect(pinnedTowerRef({ VERCEL_ENV: "preview", TOWER_REF: "main" })).toBe("main");
   });
 
   it("uses GitHub on Vercel and git locally", () => {
