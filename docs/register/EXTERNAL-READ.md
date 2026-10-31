@@ -6,7 +6,7 @@ Trigger’s desk, `GET /api/v1`, and the MCP tools read one snapshot. This surfa
 
 Production https://trigger-theta-cyan.vercel.app is serving hotfix 005 (`870a576`). `GET /api/snapshot` reads the operating factory. `GET /api/v1/factory` and `POST /api/mcp` return `401` without a bearer. The production read token is set on Vercel and is not in this environment. Do not print it.
 
-`vercel.json` must not set `functions.*.runtime` to `nodejs20.x`: that field is a community runtime package plus a version, and the 31 Oct 2026 8:19 AM America/Toronto build stopped with `invalid_function_runtime`. The OAuth functions set `export const config.runtime` to `nodejs` and include `src/observe/**`. They load `oauth.js`, which imports `auth.ts`. Without those sources in the function the route cannot start. On the hotfix 006 preview both well-known metadata routes return `200`.
+`vercel.json` must not set `functions.*.runtime` to `nodejs20.x`: that field is a community runtime package plus a version, and the 31 Oct 2026 8:19 AM America/Toronto build stopped with `invalid_function_runtime`. The OAuth functions set `export const config.runtime` to `nodejs` and include `src/observe/**`. They load `oauth.js`, which imports `auth.ts`. Without those sources in the function the route cannot start. Production `12e1109` returns `200` for both well-known metadata routes.
 
 ChatGPT and Claude were not signed in from this seat.
 
