@@ -130,6 +130,7 @@ export function App() {
         factoryPull={snapshot?.factoryPull ?? null}
         revision={snapshot?.stateRevision ?? null}
         scopeStatus={snapshot?.scope.status ?? null}
+        activation={snapshot?.activation ?? null}
         readFailed={body?.readFailed ?? false}
         refreshing={refreshing}
         fill={Boolean(open) && compact}
@@ -140,7 +141,15 @@ export function App() {
           </div>
         ) : (
           <div className={open && compact ? "desk-body desk-body-open" : "desk-body"}>
-            {snapshot ? <FactoryPulseBar pulse={snapshot.pulse} readAt={snapshot.readAt} onOpen={openPage} /> : null}
+            {snapshot ? (
+              <FactoryPulseBar
+                pulse={snapshot.pulse}
+                readAt={snapshot.readAt}
+                scopeStatus={snapshot.scope.status}
+                activation={snapshot.activation}
+                onOpen={openPage}
+              />
+            ) : null}
             <div className={open ? (expanded ? "desk-split desk-split-expanded" : "desk-split") : undefined}>
             <div className="desk-main">{main}</div>
             {open && snapshot ? (

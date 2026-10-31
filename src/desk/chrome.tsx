@@ -18,6 +18,7 @@ export function Chrome({
   factoryPull,
   revision,
   scopeStatus,
+  activation,
   readFailed,
   refreshing,
   fill,
@@ -32,6 +33,7 @@ export function Chrome({
   factoryPull: FactoryPull | null;
   revision: number | null;
   scopeStatus: string | null;
+  activation: string | null;
   readFailed: boolean;
   refreshing: boolean;
   fill?: boolean;
@@ -46,7 +48,9 @@ export function Chrome({
   const source =
     refName && sha ? `Tower · ${refName} ${shortSha(sha)}` : refName ? `Tower · ${refName}` : "Tower";
   const ledger =
-    revision != null && scopeStatus ? `Ledger revision ${revision} · scope ${scopeStatus}` : null;
+    revision != null && scopeStatus
+      ? `Ledger revision ${revision} · scope ${scopeStatus} · controller ${activation ?? "unset"}`
+      : null;
   const live = refreshing ? (
     <span data-testid="desk-refreshing" style={{ display: "inline-flex", alignItems: "center" }}>
       <Spin size="small" />

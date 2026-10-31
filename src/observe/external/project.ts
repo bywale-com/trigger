@@ -141,6 +141,10 @@ export function projectFactory(snapshot: Snapshot) {
     repo: snapshot.repo,
     scope: snapshot.scope,
     activation: snapshot.activation,
+    status: {
+      authorizationScope: snapshot.scope.status,
+      controllerActivation: snapshot.activation,
+    },
     dispatchPolicy: snapshot.dispatchPolicy,
     factoryPull: snapshot.factoryPull,
     pulse: {
@@ -320,7 +324,7 @@ export function projectNext(snapshot: Snapshot) {
     basis:
       snapshot.pulse.wakes.length > 0
         ? "Wakes are the controller's eligible effects on this read."
-        : `No eligible wake. Controller reason: ${snapshot.pulse.reason}.`,
+        : `No eligible wake. Authorization scope is ${snapshot.scope.status}. Controller activation is ${snapshot.activation ?? "unset"}.`,
   };
 }
 

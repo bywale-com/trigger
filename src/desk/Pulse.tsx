@@ -8,10 +8,14 @@ const { Text } = Typography;
 export function FactoryPulseBar({
   pulse,
   readAt,
+  scopeStatus,
+  activation,
   onOpen,
 }: {
   pulse: FactoryPulse;
   readAt: string;
+  scopeStatus: string | null;
+  activation: string | null;
   onOpen?: (id: string) => void;
 }) {
   const { token } = theme.useToken();
@@ -55,9 +59,17 @@ export function FactoryPulseBar({
             </Tag>
           </span>
         )}
-        <Tag data-testid="pulse-reason" style={{ marginInlineEnd: 0 }}>
-          {pulse.reason}
+        <Tag data-testid="pulse-scope" style={{ marginInlineEnd: 0 }}>
+          {`scope ${scopeStatus ?? "unset"}`}
         </Tag>
+        <Tag data-testid="pulse-activation" style={{ marginInlineEnd: 0 }}>
+          {`controller ${activation ?? "unset"}`}
+        </Tag>
+        {pulse.reason !== "inactive" ? (
+          <Tag data-testid="pulse-reason" style={{ marginInlineEnd: 0 }}>
+            {pulse.reason}
+          </Tag>
+        ) : null}
         {next ? (
           <Tag color="processing" data-testid="pulse-next" style={{ marginInlineEnd: 0 }}>
             {next.effect}

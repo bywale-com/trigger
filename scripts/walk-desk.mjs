@@ -77,8 +77,11 @@ try {
   check("header ledger", header.includes("Ledger revision 1") && header.includes("scope inactive"), header);
   check("light", header.includes("Light"));
   check("pulse present", Boolean(await page.$("[data-testid=factory-pulse]")));
-  const pulseReason = await page.$eval("[data-testid=pulse-reason]", (node) => node.innerText.trim());
-  check("pulse reason", pulseReason === "inactive", pulseReason);
+  const pulseScope = await page.$eval("[data-testid=pulse-scope]", (node) => node.innerText.trim());
+  const pulseActivation = await page.$eval("[data-testid=pulse-activation]", (node) => node.innerText.trim());
+  check("pulse scope", pulseScope === "scope inactive", pulseScope);
+  check("pulse activation", pulseActivation === "controller inactive", pulseActivation);
+  check("pulse reason hidden while controller is inactive", !(await page.$("[data-testid=pulse-reason]")));
   check("pulse unconfirmed", Boolean(await page.$("[data-testid=pulse-unconfirmed]")) && !(await page.$("[data-testid=pulse-live]")));
   const pulseCadence = await page.$eval("[data-testid=pulse-cadence]", (node) => node.innerText.trim());
   check("pulse cadence", pulseCadence === "event", pulseCadence);

@@ -17,6 +17,8 @@ describe("external read projection", () => {
     const factory = projectFactory(snapshot);
     expect(factory.sha).toBe(snapshot.sha);
     expect(factory.pulse.reason).toBe("inactive");
+    expect(factory.status.authorizationScope).toBe("inactive");
+    expect(factory.status.controllerActivation).toBe("inactive");
     expect(factory.timing.nextAt).toBeNull();
     expect(factory.timing.known).toBe(false);
     expect(factory.timing.basis).toContain("event");
@@ -34,7 +36,8 @@ describe("external read projection", () => {
     const next = projectNext(snapshot);
     expect(next.timing.nextAt).toBeNull();
     expect(next.eligible).toEqual([]);
-    expect(next.basis).toContain("inactive");
+    expect(next.basis).toContain("Authorization scope is inactive");
+    expect(next.basis).toContain("Controller activation is inactive");
     const scheduled = timingOf({ ...snapshot.pulse, controllerCadence: "scheduled", schedule: "*/5 * * * *" });
     expect(scheduled.nextAt).toBeNull();
     expect(scheduled.known).toBe(false);

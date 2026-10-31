@@ -9,8 +9,7 @@ Founder, 30 Oct 2026: Trigger kept refreshing Tower PR 137 (`cursor/factory-agen
 ## Cut
 
 - `TOWER_REF` still selects one branch. That is the secondary view (main, a development branch, or a pull request).
-- With `TOWER_REF` unset, Trigger reads `.factory/operating.json` on `refs/factory/operating` when that file exists, and the successful `factory-dispatch` runs. It follows whichever of those names the greater `factory ledger N` commit. The same revision prefers the published pointer.
-- `src/observe/tower/source.json` remains the fallback when those signals are missing. It is not the operating pin.
+- With `TOWER_REF` unset, Trigger reads `.factory/operating.json` on `refs/factory/operating` when that file exists, and otherwise the successful `factory-dispatch` runs. Hotfix 004: the published ref wins even when a dispatch run has a greater ledger revision. The dispatch run is only the fallback. `src/observe/tower/source.json` remains the fallback when both signals are missing. It is not the operating pin.
 - The resolved branch is held for five minutes. Each snapshot still reads that branch’s tip, so ledger commits on the same branch show up on the next refresh.
 - The desk, the read API, and MCP all use that snapshot. No write tool. No branch switcher.
 

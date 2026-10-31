@@ -1,13 +1,14 @@
 /**
  * Which Tower branch is the factory Trigger reads.
  *
- * TOWER_REF is an explicit view. Otherwise the source is the factory pointer
- * when Tower has published one, or the factory-dispatch run whose commit
- * advanced the ledger furthest. source.json is the fallback when neither
- * signal is present. This does not scan branches and does not write a ledger.
+ * TOWER_REF is an explicit view. A published operating ref is authoritative.
+ * The highest factory-ledger dispatch run is only the fallback when that
+ * ref is absent. source.json is the fallback after that. A higher revision
+ * does not outrank the published ref. This does not scan branches and does
+ * not write a ledger.
  */
 
-export type FactorySignal = { ref: string; stateRevision: number };
+export type FactorySignal = { ref: string; stateRevision: number | null };
 
 const LEDGER_COMMIT = /^factory ledger (\d+)\b/;
 
@@ -50,10 +51,13 @@ export function pointerFromContents(json: unknown): FactorySignal | null {
   } else if (typeof row.ref === "string") {
     parsed = row;
   }
-  if (!parsed || typeof parsed.ref !== "string" || typeof parsed.stateRevision !== "number") return null;
-  if (!Number.isInteger(parsed.stateRevision) || parsed.stateRevision < 0) return null;
+  if (!parsed || typeof parsed.ref !== "string") return null;
   const ref = safeFactoryRef(parsed.ref);
   if (!ref) return null;
+  if (parsed.stateRevision == null) return { ref, stateRevision: null };
+  if (typeof parsed.stateRevision !== "number" || !Number.isInteger(parsed.stateRevision) || parsed.stateRevision < 0) {
+    return null;
+  }
   return { ref, stateRevision: parsed.stateRevision };
 }
 
@@ -84,7 +88,7 @@ export function observedFactory(json: unknown, repo: string): FactorySignal | nu
     const stateRevision = ledgerRevisionFromMessage(message);
     const ref = typeof row.head_branch === "string" ? safeFactoryRef(row.head_branch) : null;
     if (stateRevision == null || !ref) continue;
-    if (!best || stateRevision > best.stateRevision) best = { ref, stateRevision };
+    if (!best || best.stateRevision == null || stateRevision > best.stateRevision) best = { ref, stateRevision };
   }
   return best;
 }
@@ -94,17 +98,11 @@ export function chooseFactorySource(input: {
   pointer: FactorySignal | null;
   observed: FactorySignal | null;
 }): string {
-  const ranked: { ref: string; stateRevision: number; order: number }[] = [];
-  const add = (candidate: FactorySignal | null, order: number) => {
-    if (!candidate || !Number.isInteger(candidate.stateRevision) || candidate.stateRevision < 0) return;
-    const ref = safeFactoryRef(candidate.ref);
-    if (!ref) return;
-    ranked.push({ ref, stateRevision: candidate.stateRevision, order });
-  };
-  add(input.pointer, 2);
-  add(input.observed, 1);
-  ranked.sort((a, b) => b.stateRevision - a.stateRevision || b.order - a.order);
-  return ranked[0]?.ref ?? input.configured;
+  const published = input.pointer ? safeFactoryRef(input.pointer.ref) : null;
+  if (published) return published;
+  const observed = input.observed ? safeFactoryRef(input.observed.ref) : null;
+  if (observed && input.observed && (input.observed.stateRevision == null || input.observed.stateRevision >= 0)) return observed;
+  return input.configured;
 }
 
 export async function resolveFactoryRef(input: {

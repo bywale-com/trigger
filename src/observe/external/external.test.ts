@@ -315,9 +315,17 @@ describe("external read API and MCP", () => {
     ]);
     const status = toolBody(await client.callTool({ name: "get_factory_status", arguments: {} }));
     const snapshot = await readFixture(fixture, "main");
-    const statusData = status.body.data as { sha?: string; pulse?: { reason: string } };
+    const statusData = status.body.data as {
+      sha?: string;
+      pulse?: { reason: string };
+      status?: { authorizationScope: string; controllerActivation: string };
+    };
     expect(status.body.sha).toBe(snapshot.sha);
     expect(statusData.pulse?.reason).toBe(snapshot.pulse.reason);
+    expect(statusData.status).toEqual({
+      authorizationScope: snapshot.scope.status,
+      controllerActivation: snapshot.activation,
+    });
     const initiatives = toolBody(await client.callTool({ name: "list_initiatives", arguments: {} }));
     const rows = initiatives.body.data as { id: string }[];
     expect(rows.map((row) => row.id)).toEqual(snapshot.pages.filter((page) => page.type === "Initiative").map((page) => page.id));

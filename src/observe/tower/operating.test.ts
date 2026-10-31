@@ -52,7 +52,7 @@ describe("operating factory source", () => {
     expect(chooseFactorySource({ configured, pointer: null, observed })).toBe(operating);
   });
 
-  it("keeps the newer of the published pointer and the dispatch run", () => {
+  it("keeps the published operating ref ahead of a higher ledger revision", () => {
     const pointer = pointerFromContents({
       encoding: "base64",
       content: Buffer.from(JSON.stringify({ ref: "cursor/published-branch", stateRevision: 170 }), "utf8").toString("base64"),
@@ -70,6 +70,14 @@ describe("operating factory source", () => {
         configured,
         pointer: { ref: configured, stateRevision: 122 },
         observed: { ref: operating, stateRevision: 160 },
+      }),
+    ).toBe(configured);
+    expect(pointerFromContents({ ref: operating })).toEqual({ ref: operating, stateRevision: null });
+    expect(
+      chooseFactorySource({
+        configured,
+        pointer: { ref: operating, stateRevision: null },
+        observed: { ref: configured, stateRevision: 999 },
       }),
     ).toBe(operating);
     expect(

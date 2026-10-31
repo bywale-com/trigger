@@ -38,7 +38,7 @@ import {
 } from "./project.ts";
 
 const INSTRUCTIONS =
-  "Trigger is a read-only desk for the Tower factory. Tools return the same snapshot the desk shows. They do not dispatch workers, change the ledger, or predict the next run. nextAt is null when this read has no execution instant. If readFailed is true, the body is the last successful snapshot.";
+  "Trigger is a read-only desk for the Tower factory. Tools return the same snapshot the desk shows. They do not dispatch workers, change the ledger, or predict the next run. nextAt is null when this read has no execution instant. If readFailed is true, the body is the last successful snapshot. Authorization scope is the ledger scope. Controller activation is the factory manifest. Those are different facts.";
 
 export type McpDeps = {
   current?: () => Promise<SnapshotBody>;
@@ -90,7 +90,7 @@ function createServer(current: () => Promise<SnapshotBody>): McpServer {
     {
       title: "Factory status",
       description:
-        "Read Tower factory status from the current Trigger snapshot: scope, activation, pulse, blockers, and whether a next run time is known. Use this first.",
+        "Read Tower factory status from the current Trigger snapshot: ledger authorization scope, controller activation, pulse, blockers, and whether a next run time is known. Scope and activation are different facts. Use this first.",
       inputSchema: z.object({}),
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true },
     },
