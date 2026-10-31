@@ -50,6 +50,13 @@ body,
   display: block;
 }
 
+.desk-sentence {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .desk-board .ant-table-content::-webkit-scrollbar {
   height: 8px;
 }

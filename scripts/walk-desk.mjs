@@ -82,7 +82,13 @@ try {
   check("pulse scope", pulseScope === "scope inactive", pulseScope);
   check("pulse activation", pulseActivation === "controller inactive", pulseActivation);
   check("pulse reason hidden while controller is inactive", !(await page.$("[data-testid=pulse-reason]")));
-  check("pulse unconfirmed", Boolean(await page.$("[data-testid=pulse-unconfirmed]")) && !(await page.$("[data-testid=pulse-live]")));
+  const pulseHeadline = await page.$eval("[data-testid=pulse-headline]", (node) => node.innerText.trim());
+  check(
+    "pulse headline",
+    pulseHeadline === "Factory inactive · 0 Engineers active · 0 packets awaiting verification · 0 releases awaiting your review",
+    pulseHeadline,
+  );
+  check("pulse has no live lease", !(await page.$("[data-testid=pulse-live]")));
   const pulseCadence = await page.$eval("[data-testid=pulse-cadence]", (node) => node.innerText.trim());
   check("pulse cadence", pulseCadence === "event", pulseCadence);
 
@@ -96,7 +102,7 @@ try {
   const columns = await board(page);
   check(
     "table header",
-    columns.headers.join("|") === "Name|Type|Module|Stage|Execution|Evidence|Inside|Depends on|Updated",
+    columns.headers.join("|") === "Name|Type|Module|Stage|Why|Next|Execution|Evidence|Inside|Depends on|Updated",
     columns.headers.join("|"),
   );
   check("column borders", columns.border >= 1, String(columns.border));

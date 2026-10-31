@@ -78,6 +78,7 @@ function githubView(page: Page) {
       return { sha: commit.sha, url: commit.url, message: message.text, messageTruncated: message.truncated };
     }),
     checks: page.github.checks,
+    files: page.github.files,
     preview: page.github.preview,
     merge: page.github.merge,
   };
@@ -99,6 +100,12 @@ function summary(page: Page, waits: PulseWait[]) {
     activityBasis: activity.basis,
     running: presence(page, "running"),
     dispatched: presence(page, "dispatched"),
+    where: page.where,
+    happening: page.happening,
+    why: page.why,
+    next: page.next,
+    who: page.who,
+    situation: page.situation,
   };
 }
 
@@ -161,6 +168,18 @@ export function projectFactory(snapshot: Snapshot) {
     timing: timingOf(snapshot.pulse),
     counts,
     blockers,
+    explanation: snapshot.explanation
+      ? {
+          headline: snapshot.explanation.summary.headline,
+          scopeStatus: snapshot.explanation.summary.scopeStatus,
+          lanes: snapshot.explanation.summary.lanes,
+          withheldLanes: snapshot.explanation.summary.withheldLanes,
+          engineersRunning: snapshot.explanation.summary.engineersRunning,
+          awaitingVerification: snapshot.explanation.summary.awaitingVerification,
+          founderInbox: snapshot.explanation.summary.founderInbox,
+          intervention: snapshot.explanation.summary.intervention,
+        }
+      : null,
   };
 }
 
@@ -268,6 +287,11 @@ export function getPacket(snapshot: Snapshot, id: string) {
     lifecycle: page.lifecycle,
     github: githubView(page),
     plates: plateBody(page),
+    ledgerRelease: page.ledgerRelease,
+    prNumber: page.ledgerRelease?.prNumber ?? null,
+    prUrl: page.ledgerRelease?.prUrl ?? null,
+    mergeSha: page.ledgerRelease?.mergeSha ?? null,
+    siblings: page.siblings,
   };
 }
 
