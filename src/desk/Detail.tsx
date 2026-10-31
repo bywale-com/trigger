@@ -255,9 +255,15 @@ function ReleaseReview({
         )}
       </Property>
       <Property label="Dependencies">{dependencies.length ? dependencies.map((link) => link.id).join(", ") : "—"}</Property>
-      <Button data-testid="merge-release" onClick={(event) => event.preventDefault()}>
-        Merge
-      </Button>
+      {release.prUrl ? (
+        <Button data-testid="merge-release" href={release.prUrl} target="_blank" rel="noreferrer">
+          Merge
+        </Button>
+      ) : (
+        <Button data-testid="merge-release" onClick={(event) => event.preventDefault()}>
+          Merge
+        </Button>
+      )}
     </div>
   );
 }
