@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  assertOperatingChoice,
   chooseFactorySource,
   dispatchRunsUrl,
   ledgerRevisionFromMessage,
   observedFactory,
   operatingPointerUrl,
   pointerFromContents,
+  resolveFactoryChoice,
   resolveFactoryRef,
   safeFactoryRef,
 } from "./operating.ts";
@@ -112,5 +114,14 @@ describe("operating factory source", () => {
       },
     });
     expect(failed).toBe(configured);
+    const missing = await resolveFactoryChoice({
+      configured,
+      repo,
+      get: async () => ({ status: 404, json: { message: "Not Found" } }),
+    });
+    expect(missing).toEqual({ ref: configured, signaled: false });
+    expect(() => assertOperatingChoice({ VERCEL_ENV: "production" }, missing)).toThrow(/operating factory unresolved/);
+    expect(assertOperatingChoice({}, missing)).toBe(configured);
+    expect(assertOperatingChoice({ VERCEL_ENV: "production" }, { ref: operating, signaled: true })).toBe(operating);
   });
 });
