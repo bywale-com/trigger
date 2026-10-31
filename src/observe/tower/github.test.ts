@@ -225,6 +225,7 @@ describe("github evidence", () => {
             },
           ],
           intervention: [],
+          knownDefects: [],
         },
         packets: [],
         executions: [],

@@ -11,6 +11,7 @@ import {
   type Page,
 } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
+import { NextCommitment } from "./NextCommitment.tsx";
 import { withFilter } from "./place.ts";
 
 const { Text, Title } = Typography;
@@ -352,10 +353,12 @@ export function TableView({
               dataIndex: "next",
               width: widths.next,
               ellipsis: true,
-              render: (value: string) => (
-                <span className="desk-sentence" title={value}>
-                  {value}
-                </span>
+              render: (_value: string, page: Page) => (
+                <NextCommitment
+                  commitment={page.commitment}
+                  unknown={page.happening === "Unknown" && page.why === "Unknown" && page.next === "Unknown"}
+                  testId={`next-${page.id}`}
+                />
               ),
             },
             {

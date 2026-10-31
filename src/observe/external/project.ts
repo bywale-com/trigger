@@ -106,6 +106,7 @@ function summary(page: Page, waits: PulseWait[]) {
     next: page.next,
     who: page.who,
     situation: page.situation,
+    commitment: page.commitment,
   };
 }
 
@@ -178,6 +179,7 @@ export function projectFactory(snapshot: Snapshot) {
           awaitingVerification: snapshot.explanation.summary.awaitingVerification,
           founderInbox: snapshot.explanation.summary.founderInbox,
           intervention: snapshot.explanation.summary.intervention,
+          knownDefects: snapshot.explanation.summary.knownDefects,
         }
       : null,
   };
