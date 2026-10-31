@@ -3,6 +3,7 @@
  * Display strings are derived here, once. This file has no Tower paths and no rendering.
  */
 
+import type { Commitment } from "./tower/commitment.ts";
 import { unknownWork, type Actor, type FactoryExplanation, type Situation, type WorkExplanation } from "./tower/explain.ts";
 import { projectPulse, type FactoryPulse } from "./tower/pulse.ts";
 
@@ -170,6 +171,7 @@ export type PageBase = {
   next: string;
   who: Actor;
   situation: Situation;
+  commitment: Commitment;
 };
 
 export type InitiativePage = PageBase & {
@@ -839,7 +841,7 @@ export function assemble(gathered: Gathered): Snapshot {
   };
 }
 
-function stated(work: WorkExplanation): Pick<PageBase, "where" | "happening" | "why" | "next" | "who" | "situation"> {
+function stated(work: WorkExplanation): Pick<PageBase, "where" | "happening" | "why" | "next" | "who" | "situation" | "commitment"> {
   return {
     where: work.where,
     happening: work.happening,
@@ -847,6 +849,7 @@ function stated(work: WorkExplanation): Pick<PageBase, "where" | "happening" | "
     next: work.next,
     who: work.who,
     situation: work.situation,
+    commitment: work.commitment,
   };
 }
 

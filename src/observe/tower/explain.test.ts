@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { commitmentHolds, commitmentLine, nextReconcileAt, working } from "./commitment.ts";
 import { explainFactory, type ExplainLedger } from "./explain.ts";
 
 const ledger = JSON.parse(readFileSync(join(import.meta.dirname, "testdata/ledger-193-explain.json"), "utf8")) as ExplainLedger;
@@ -17,8 +18,9 @@ describe("explainFactory on ledger 193", () => {
 
   it("prints the dispatch headline", () => {
     expect(explained.summary.headline).toBe(
-      "Factory operating · 0 Engineers active · 0 packets awaiting verification · 8 releases awaiting your review",
+      "Factory operating · 0 Engineers active · 0 packets awaiting verification · 8 releases awaiting your review · 5 known defects",
     );
+    expect(explained.summary.knownDefects).toHaveLength(5);
     expect(explained.summary.engineersRunning).toBe(0);
     expect(explained.summary.awaitingVerification).toBe(0);
     expect(explained.summary.founderInbox.map((release) => release.prNumber)).toEqual([141, 142, 143, 144, 145, 146, 147, 148]);
@@ -31,6 +33,9 @@ describe("explainFactory on ledger 193", () => {
     expect(row.next).toBe("Merge release pull request 141.");
     expect(row.who).toBe("founder");
     expect(row.situation).toBe("external");
+    expect(row.commitment.condition).toBe("needs_you");
+    expect(commitmentLine(row.commitment, now)).toBe("Needs you");
+    expect(commitmentHolds(row.commitment)).toBe(true);
   });
 
   it("holds a verified packet on the packets still short of verified", () => {
@@ -38,31 +43,38 @@ describe("explainFactory on ledger 193", () => {
     expect(row.why).toBe("Waiting on pkt-017-tick-send-halt, pkt-019-first-step-send-denied.");
     expect(row.next).toBe("pkt-017-tick-send-halt and pkt-019-first-step-send-denied reach verified.");
     expect(row.situation).toBe("held");
+    expect(row.commitment.condition).toBe("waiting");
+    expect(row.commitment.checkAt).toBeNull();
+    expect(commitmentLine(row.commitment, now)).toBe("Waiting on PKT-017 and PKT-019");
   });
 
   it("leaves an analyst dispatch that already ran as intervention", () => {
     const row = packet("pkt-009-eligibility-writes");
-    expect(row.happening).toBe("Released. The Analyst dispatch for rev-1 is recorded as ran.");
-    expect(row.why).toBe("No sign_change is recorded, and this revision is not dispatched again.");
+    expect(row.happening).toBe("Known defect. Released. The Analyst dispatch for rev-1 is recorded as ran.");
+    expect(row.why).toBe("No sign_change is recorded, and this revision is not dispatched again. This is a known defect.");
     expect(row.next).toBe("Unknown");
     expect(row.situation).toBe("intervention");
+    expect(row.commitment.condition).toBe("needs_repair");
+    expect(commitmentLine(row.commitment, now)).toBe("Needs repair");
     expect(explained.summary.intervention).toEqual([
       "pkt-009-eligibility-writes",
       "pkt-011-halt-records-writes",
       "pkt-012-consent-opt-out-writes",
       "pkt-014-empty-firing-audience",
       "pkt-017-tick-send-halt",
-      "pkt-019-first-step-send-denied",
     ]);
   });
 
-  it("records the elapsed lease as intervention with next Unknown", () => {
+  it("records the elapsed lease as a recovery commitment", () => {
     const row = packet("pkt-019-first-step-send-denied");
-    expect(row.happening).toBe("Engineering. No live lease and no classified failure.");
-    expect(row.why).toBe("An engineer wake requires change_specified. A repair wake requires a classified failure.");
-    expect(row.next).toBe("Unknown");
-    expect(row.who).toBe("unknown");
-    expect(row.situation).toBe("intervention");
+    expect(row.happening).toBe("Engineering. The lease on dsp-172-engineer-pkt-018-send-denied-engagement expired before a candidate.");
+    expect(row.why).toBe("The recorded contradiction matches this execution and worker. Recovery adopts it before any re-arm.");
+    expect(row.next).toBe("The next Factory dispatch pass returns this packet to the Analyst.");
+    expect(row.who).toBe("controller");
+    expect(row.situation).toBe("held");
+    expect(row.commitment.condition).toBe("recovering");
+    expect(row.commitment.checkAt).toBe(nextReconcileAt(now));
+    expect(commitmentLine(row.commitment, now)).toBe("Recovering — next check in 14 minutes");
     const execution = explained.executions.find((item) => item.id === "dsp-172-engineer-pkt-018-send-denied-engagement");
     expect(execution?.phase).toBe("interrupted");
     expect(execution?.why).toBe("lease_expired");
@@ -76,10 +88,19 @@ describe("explainFactory on ledger 193", () => {
     expect(row?.next).toBe("Include the architect lane.");
     expect(row?.who).toBe("founder");
     expect(row?.situation).toBe("held");
+    expect(row?.commitment.condition).toBe("needs_you");
+    expect(row ? commitmentLine(row.commitment, now) : "").toBe("Needs you");
   });
 
   it("does not alert a dispatch whose later outcome is already recorded", () => {
     const alerts = explained.executions.filter((item) => item.alert);
     expect(alerts).toEqual([]);
+  });
+
+  it("prints a working commitment without a countdown", () => {
+    const commitment = working("engineer", "2026-10-31T15:20:00.000Z");
+    expect(commitmentLine(commitment, now)).toBe("Working");
+    expect(commitmentHolds(commitment)).toBe(true);
+    expect(nextReconcileAt(now)).toBe("2026-10-31T15:22:00.000Z");
   });
 });

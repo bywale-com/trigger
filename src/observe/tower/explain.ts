@@ -6,6 +6,18 @@
  * `now` is the caller's clock. An empty `now` leaves lease validity Unknown.
  */
 
+import {
+  finished,
+  needsRepair,
+  needsYou,
+  nextReconcileAt,
+  recovering,
+  scheduled,
+  waiting,
+  working,
+  type Commitment,
+} from "./commitment.ts";
+
 const SATISFIED = new Set(["accepted", "integrated", "reconciled", "integration_authorized"]);
 const PENDING_RESERVE_MS = 30 * 60 * 1000;
 const ENGINEER_BACKLOG_FOR_EXPLANATION = 2;
@@ -30,6 +42,7 @@ export type WorkExplanation = {
   who: Actor;
   clocks: NamedClock[];
   situation: Situation;
+  commitment: Commitment;
 };
 
 export type ExecutionPhase = "dispatched" | "started" | "running" | "completed" | "failed" | "refused" | "interrupted";
@@ -61,6 +74,7 @@ export type FactoryExplanation = {
     awaitingVerification: number;
     founderInbox: Array<{ id: string; prNumber: number; prUrl: string | null; packetIds: string[] }>;
     intervention: string[];
+    knownDefects: string[];
   };
   packets: WorkExplanation[];
   executions: ExecutionExplanation[];
@@ -75,6 +89,7 @@ type DispatchRecord = {
   issuedAt?: string;
   workerExecution?: "ran" | "absent";
   executionId?: string;
+  deliveredAt?: string | null;
 };
 
 type SiblingLink = { id: string; basis: string; note?: string };
@@ -100,6 +115,12 @@ type ExplainPacket = {
   dispatch?: DispatchRecord | null;
   dispatchHistory?: DispatchRecord[];
   siblings?: SiblingLink[];
+  specificationBlock?: {
+    failureClass?: string;
+    escalationNote?: string;
+    note?: string;
+    blockedRevision?: string;
+  } | null;
 };
 
 type ExplainExecution = {
@@ -111,10 +132,12 @@ type ExplainExecution = {
   issuedAt: string;
   startedAt?: string | null;
   runningAt?: string | null;
+  endedAt?: string | null;
   reserveUntil?: string;
   startUntil?: string | null;
   leaseUntil?: string | null;
   reason?: string | null;
+  revisions?: Record<string, string>;
 };
 
 type ExplainRelease = {
@@ -154,6 +177,7 @@ export function unknownWork(id: string, where: string): WorkExplanation {
     who: "unknown",
     clocks: [],
     situation: "unknown",
+    commitment: needsRepair("controller"),
   };
 }
 
@@ -167,7 +191,7 @@ export function explainFactory(ledger: ExplainLedger, now = "", jobs?: readonly 
     .map((execution) => explainExecution(ledger, execution));
   const initiatives = Object.values(ledger.initiatives)
     .sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0) || a.id.localeCompare(b.id))
-    .map((initiative) => explainInitiative(ledger, initiative));
+    .map((initiative) => explainInitiative(ledger, initiative, now));
   const lanes = ledger.scope.lanes ?? null;
   const founderInbox = Object.values(ledger.releases ?? {})
     .filter((release) => release.prNumber != null && !release.mergeSha)
@@ -183,6 +207,7 @@ export function explainFactory(ledger: ExplainLedger, now = "", jobs?: readonly 
   ).length;
   const awaitingVerification = packets.filter((packet) => packet.where === "candidate").length;
   const intervention = packets.filter((packet) => packet.situation === "intervention").map((packet) => packet.id);
+  const knownDefects = packets.filter((packet) => packet.happening.startsWith("Known defect")).map((packet) => packet.id);
   const summary = {
     headline: "",
     scopeStatus: ledger.scope.status,
@@ -192,6 +217,7 @@ export function explainFactory(ledger: ExplainLedger, now = "", jobs?: readonly 
     awaitingVerification,
     founderInbox,
     intervention,
+    knownDefects,
   };
   summary.headline = headline(summary);
   return { summary, packets, executions, initiatives };
@@ -199,12 +225,14 @@ export function explainFactory(ledger: ExplainLedger, now = "", jobs?: readonly 
 
 function headline(summary: FactoryExplanation["summary"]): string {
   const scope = summary.scopeStatus === "active" ? "Factory operating" : `Factory ${summary.scopeStatus}`;
-  return [
+  const parts = [
     scope,
     countPhrase(summary.engineersRunning, "Engineer active", "Engineers active"),
     countPhrase(summary.awaitingVerification, "packet awaiting verification", "packets awaiting verification"),
     countPhrase(summary.founderInbox.length, "release awaiting your review", "releases awaiting your review"),
-  ].join(" · ");
+  ];
+  if (summary.knownDefects.length) parts.push(countPhrase(summary.knownDefects.length, "known defect", "known defects"));
+  return parts.join(" · ");
 }
 
 function countPhrase(count: number, singular: string, plural: string): string {
@@ -230,6 +258,7 @@ function explainPacket(
       next: "Nothing.",
       who: "unknown",
       situation: "complete",
+      commitment: finished(),
     });
   }
   if (ledger.scope.status !== "active") {
@@ -239,6 +268,7 @@ function explainPacket(
       next: "Unknown",
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
   if (packet.hold) {
@@ -248,6 +278,7 @@ function explainPacket(
       next: "Clear the hold.",
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
   if (packet.blockerId || packet.stage === "blocked") {
@@ -257,16 +288,80 @@ function explainPacket(
       next: "Clear the blocker.",
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
-  if (packet.stage === "returned_analyst" || packet.stage === "returned_architect") {
+  if (packet.stage === "returned_architect" && packet.specificationBlock?.failureClass === "specification") {
+    const architectLane = !ledger.scope.lanes || ledger.scope.lanes.includes("architect");
     return row(packet, {
-      happening: `Stage is ${packet.stage}.`,
-      why: `Reopen from ${packet.stage} is not an event.`,
-      next: "Unknown",
-      who: packet.stage === "returned_analyst" ? "analyst" : "architect",
-      situation: "intervention",
+      happening: `Returned to the Architect. ${packet.revision} is unsigned.`,
+      why: packet.specificationBlock.escalationNote
+        ? `Requirements blocked. ${packet.specificationBlock.escalationNote}`
+        : "Requirements blocked.",
+      next: architectLane ? "The next architect session can revise this packet." : "Include the architect lane.",
+      who: architectLane ? "architect" : "founder",
+      situation: architectLane ? "proceeding" : "held",
+      commitment: architectLane ? needsRepair("architect") : needsYou(),
     });
+  }
+  if (!(packet.stage === "returned_analyst" && packet.specificationBlock?.failureClass === "systems_contract")) {
+    if (packet.stage === "returned_analyst" || packet.stage === "returned_architect") {
+      return row(packet, {
+        happening: `Stage is ${packet.stage}.`,
+        why: `Reopen from ${packet.stage} is not an event.`,
+        next: "Unknown",
+        who: packet.stage === "returned_analyst" ? "analyst" : "architect",
+        situation: "intervention",
+        commitment: needsRepair(packet.stage === "returned_analyst" ? "analyst" : "architect"),
+      });
+    }
+  }
+  if (packet.stage === "returned_analyst" && packet.specificationBlock?.failureClass === "systems_contract") {
+    if (packet.dispatch?.effect === "wake_sa") {
+      const open = packet.dispatch.executionId ? ledger.executions?.[packet.dispatch.executionId] : undefined;
+      if (open?.phase === "dispatched" && (open.reserveUntil ?? "") <= now) {
+        return row(packet, {
+          happening: `Returned to the Analyst at ${packet.revision}. The reservation elapsed at ${open.reserveUntil}.`,
+          why: "The dispatch is still open because recovery has not run.",
+          next: "The next reconcile pass expires this reservation.",
+          who: "controller",
+          situation: "held",
+          commitment: recovering(now, "controller"),
+        });
+      }
+      if (packet.dispatch.deliveredAt === null) {
+        return row(packet, {
+          happening: `Returned to the Analyst at ${packet.revision}. The dispatch is recorded and not delivered.`,
+          why: packet.specificationBlock.note ?? "The systems contract is blocked.",
+          next: "The next pass delivers this dispatch.",
+          who: "controller",
+          situation: "held",
+          commitment: recovering(now, "controller"),
+        });
+      }
+      return row(packet, {
+        happening: `Returned to the Analyst at ${packet.revision}. The dispatch is open.`,
+        why: packet.specificationBlock.note ?? "The systems contract is blocked.",
+        next: "Sign the change.",
+        who: "analyst",
+        situation: "proceeding",
+        commitment: waiting(open?.id ? `claim ${open.id}` : "analyst claim", "analyst", nextReconcileAt(now)),
+      });
+    }
+    const falseRan = [...(packet.dispatchHistory ?? [])].reverse().find(
+      (record) => record.effect === "wake_sa" && record.revision === packet.revision && record.workerExecution === "ran" && record.executionId,
+    );
+    const unstarted = falseRan?.executionId ? ledger.executions?.[falseRan.executionId] : undefined;
+    if (unstarted?.phase === "dispatched" && !unstarted.endedAt) {
+      return row(packet, {
+        happening: `Returned to the Analyst at ${packet.revision}. The dispatch was recorded as ran before the worker started.`,
+        why: "The systems-change file from the blocked revision is not this wake.",
+        next: "The next Factory dispatch pass restores the unstarted Analyst dispatch.",
+        who: "controller",
+        situation: "held",
+        commitment: recovering(now, "controller"),
+      });
+    }
   }
 
   const execution = liveExecutionFor(ledger, packet.id);
@@ -276,10 +371,11 @@ function explainPacket(
   if (stageStillOpen && execution?.phase === "running" && window === "elapsed" && leaseUntil) {
     return row(packet, {
       happening: `Execution phase is running. The lease elapsed at ${leaseUntil}.`,
-      why: "Recovery has not run. Factory dispatch has no schedule.",
+      why: "Recovery has not run. The reconcile pass has not run.",
       next: "The next Factory dispatch pass recovers this execution.",
       who: "controller",
       situation: "held",
+      commitment: recovering(now, "controller"),
       clocks: clocks(execution, leaseUntil, packet),
     });
   }
@@ -290,6 +386,7 @@ function explainPacket(
       next: "Unknown",
       who: execution.role,
       situation: "unknown",
+      commitment: needsRepair(execution.role),
       clocks: clocks(execution, leaseUntil, packet),
     });
   }
@@ -303,6 +400,7 @@ function explainPacket(
       next: role === "analyst" ? "Sign the change." : role === "engineer" ? "Record a candidate SHA." : "Continue the session.",
       who: role,
       situation: "proceeding",
+      commitment: working(role, leaseUntil),
       clocks: clocks(execution, leaseUntil, packet),
     });
   }
@@ -314,7 +412,7 @@ function explainPacket(
     packet.stage === "integrated" ||
     packet.stage === "reconciled"
   ) {
-    return explainVerified(ledger, packet);
+    return explainVerified(ledger, packet, now);
   }
   if (packet.stage === "released" && packet.wake === "sa" && packet.dispatchedSaRevision === packet.revision && !packet.dispatch) {
     const ran = (packet.dispatchHistory ?? []).some(
@@ -323,12 +421,15 @@ function explainPacket(
     const issued = (packet.dispatchHistory ?? []).find((record) => record.effect === "wake_sa" && record.issuedAt)?.issuedAt;
     return row(packet, {
       happening: ran
-        ? `Released. The Analyst dispatch for ${packet.revision} is recorded as ran.`
+        ? `Known defect. Released. The Analyst dispatch for ${packet.revision} is recorded as ran.`
         : `Released. ${packet.revision} was already dispatched to the Analyst.`,
-      why: "No sign_change is recorded, and this revision is not dispatched again.",
+      why: ran
+        ? "No sign_change is recorded, and this revision is not dispatched again. This is a known defect."
+        : "No sign_change is recorded, and this revision is not dispatched again.",
       next: "Unknown",
       who: "unknown",
       situation: "intervention",
+      commitment: needsRepair("controller"),
       clocks: issued ? [{ name: "dispatch_attempted", at: issued }] : [],
     });
   }
@@ -339,6 +440,7 @@ function explainPacket(
       next: "Unknown",
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
 
@@ -352,6 +454,7 @@ function explainPacket(
       next: `Include the ${lane} lane.`,
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
   if (decision.reason === "concurrency") {
@@ -361,6 +464,7 @@ function explainPacket(
       next: "That execution records its result.",
       who: "engineer",
       situation: "held",
+      commitment: waiting(owner ? `engineer result ${owner}` : "engineer result", "engineer", nextReconcileAt(now)),
     });
   }
   if (decision.reason === "dispatch_authorization_exhausted" || decision.reason === "dispatch_not_authorized") {
@@ -372,6 +476,7 @@ function explainPacket(
       next: "Unknown",
       who: "founder",
       situation: "held",
+      commitment: needsYou(),
     });
   }
   if (decision.effect === "wake_engineer") {
@@ -381,6 +486,7 @@ function explainPacket(
       next: "The next pass wakes the Engineer.",
       who: "engineer",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     });
   }
   if (decision.effect === "wake_repair") {
@@ -390,6 +496,18 @@ function explainPacket(
       next: "The next pass wakes a repair.",
       who: "engineer",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
+    });
+  }
+  if (decision.effect === "wake_sa" && decision.reason === "specification_returned") {
+    const blocked = packet.specificationBlock?.blockedRevision ?? "the prior revision";
+    return row(packet, {
+      happening: `Returned to the Analyst at ${packet.revision}. ${blocked} stays in history.`,
+      why: packet.specificationBlock?.note ?? "The engineer recorded a systems-contract block.",
+      next: "The next pass wakes the Analyst.",
+      who: "analyst",
+      situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     });
   }
   if (decision.effect === "wake_sa") {
@@ -399,15 +517,46 @@ function explainPacket(
       next: "The next pass wakes the Analyst.",
       who: "analyst",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     });
   }
   if (decision.reason === "no_transition" && packet.stage === "engineering") {
+    const expired = Object.values(ledger.executions ?? {}).find(
+      (execution) =>
+        execution.role === "engineer" &&
+        execution.packetIds.includes(packet.id) &&
+        isTerminal(execution.phase) &&
+        (execution.reason === "lease_expired" || execution.reason === "reservation_expired"),
+    );
+    if (!packet.candidateSha && !packet.specificationBlock && !packet.dispatch && packet.attempts === 0 && !packet.lastFailureFingerprint && !packet.lease && expired) {
+      if (recordedSpecificationReturn(packet, expired, now)) {
+        return row(packet, {
+          happening: `Engineering. The lease on ${expired.id} expired before a candidate.`,
+          why: "The recorded contradiction matches this execution and worker. Recovery adopts it before any re-arm.",
+          next: "The next Factory dispatch pass returns this packet to the Analyst.",
+          who: "controller",
+          situation: "held",
+          commitment: recovering(now, "controller"),
+          clocks: clocks(expired, expired.leaseUntil ?? null, packet),
+        });
+      }
+      return row(packet, {
+        happening: `Engineering. The lease on ${expired.id} expired before a candidate.`,
+        why: "An expired engineering execution cannot leave the packet here.",
+        next: "The next Factory dispatch pass returns this packet to change_specified.",
+        who: "controller",
+        situation: "held",
+        commitment: recovering(now, "controller"),
+        clocks: clocks(expired, expired.leaseUntil ?? null, packet),
+      });
+    }
     return row(packet, {
       happening: "Engineering. No live lease and no classified failure.",
       why: "An engineer wake requires change_specified. A repair wake requires a classified failure.",
       next: "Unknown",
       who: "unknown",
       situation: "intervention",
+      commitment: needsRepair("controller"),
     });
   }
   if (decision.reason === "no_transition" && packet.stage === "analysis") {
@@ -417,6 +566,7 @@ function explainPacket(
       next: "Unknown",
       who: "unknown",
       situation: "intervention",
+      commitment: needsRepair("controller"),
     });
   }
   return row(packet, {
@@ -425,6 +575,7 @@ function explainPacket(
     next: "Unknown",
     who: "unknown",
     situation: "unknown",
+    commitment: needsRepair("controller"),
   });
 }
 
@@ -434,6 +585,8 @@ function explainVerification(
   execution: ExplainExecution | null,
 ): WorkExplanation {
   const sha = packet.candidateSha ?? "Unknown";
+  const open = jobs?.find((job) => job.name === sha || (sha !== "Unknown" && job.name.includes(sha)));
+  const event = open && open.status !== "completed" ? `actions run ${open.runId}` : `actions for ${sha}`;
   if (packet.stage === "verifying") {
     return row(packet, {
       happening: `Verification of ${sha} is recorded as in progress.`,
@@ -441,10 +594,10 @@ function explainVerification(
       next: `Record the Actions run id for commit ${sha}.`,
       who: "github_actions",
       situation: "proceeding",
+      commitment: waiting(event, "github_actions"),
       clocks: clocks(execution, null, packet),
     });
   }
-  const match = jobs?.find((job) => job.name === sha || (sha !== "Unknown" && job.name.includes(sha)));
   if (!jobs) {
     return row(packet, {
       happening: `Candidate ${sha} is recorded. Whether a verification job is already open is Unknown.`,
@@ -452,32 +605,35 @@ function explainVerification(
       next: `GitHub Actions must verify commit ${sha}.`,
       who: "github_actions",
       situation: "external",
+      commitment: waiting(event, "github_actions"),
       clocks: clocks(execution, null, packet),
     });
   }
-  if (match && match.status !== "completed") {
+  if (open && open.status !== "completed") {
     return row(packet, {
-      happening: `Verification job ${match.runId} is ${match.status}.`,
+      happening: `Verification job ${open.runId} is ${open.status}.`,
       why: "Verification starts from the candidate SHA.",
       next: `GitHub Actions must verify commit ${sha}.`,
       who: "github_actions",
       situation: "proceeding",
+      commitment: waiting(event, "github_actions"),
       clocks: clocks(execution, null, packet),
     });
   }
   return row(packet, {
-    happening: match
-      ? `Verification job ${match.runId} finished ${match.conclusion ?? "without a conclusion"}. The run id is not on the packet.`
+    happening: open
+      ? `Verification job ${open.runId} finished ${open.conclusion ?? "without a conclusion"}. The run id is not on the packet.`
       : `Candidate ${sha} is recorded. No verification job is open for that commit.`,
     why: "Verification starts from the candidate SHA.",
     next: `GitHub Actions must verify commit ${sha}.`,
     who: "github_actions",
     situation: "external",
+    commitment: open ? needsRepair("github_actions") : waiting(event, "github_actions"),
     clocks: clocks(execution, null, packet),
   });
 }
 
-function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExplanation {
+function explainVerified(ledger: ExplainLedger, packet: ExplainPacket, now: string): WorkExplanation {
   if (packet.stage !== "verified") {
     return row(packet, {
       happening: `Stage is ${packet.stage}.`,
@@ -485,6 +641,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
       next: "The conclude path continues to accepted.",
       who: "controller",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     });
   }
   const release = Object.values(ledger.releases ?? {}).find((item) => item.packetIds.includes(packet.id)) ?? null;
@@ -495,6 +652,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
       next: "The conclude path continues to accepted.",
       who: "controller",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
       clocks: releaseClock(release),
     });
   }
@@ -505,6 +663,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
       next: `Merge release pull request ${release.prNumber}.`,
       who: "founder",
       situation: "external",
+      commitment: needsYou(),
       clocks: releaseClock(release),
     });
   }
@@ -516,6 +675,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
       next: `${joinIds(holding)} ${holding.length === 1 ? "reaches" : "reach"} verified.`,
       who: "unknown",
       situation: "held",
+      commitment: waiting(holding.join(","), "controller"),
     });
   }
   const ready = readyReleaseIds(ledger);
@@ -526,6 +686,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
       next: "The next Factory dispatch pass opens a release pull request.",
       who: "controller",
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     });
   }
   return row(packet, {
@@ -534,6 +695,7 @@ function explainVerified(ledger: ExplainLedger, packet: ExplainPacket): WorkExpl
     next: "Unknown",
     who: "unknown",
     situation: "unknown",
+    commitment: needsRepair("controller"),
   });
 }
 
@@ -561,7 +723,7 @@ function explainExecution(ledger: ExplainLedger, execution: ExplainExecution): E
   };
 }
 
-function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative): WorkExplanation {
+function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative, now: string): WorkExplanation {
   const depth = engineerQueueDepth(Object.values(ledger.packets));
   const lanes = ledger.scope.lanes ?? null;
   const architectAllowed = !lanes || lanes.includes("architect");
@@ -576,6 +738,20 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
       who: "founder",
       clocks: [],
       situation: "held",
+      commitment: needsYou(),
+    };
+  }
+  if (session === "founder_decision") {
+    return {
+      id: initiative.id,
+      where: session,
+      happening: "Architect session is founder_decision.",
+      why: "The architect session is waiting on a founder decision.",
+      next: "The founder decides.",
+      who: "founder",
+      clocks: [],
+      situation: "held",
+      commitment: needsYou(),
     };
   }
   if (initiative.queue === "active" && session === "continuation_due" && !initiative.dispatch) {
@@ -589,6 +765,7 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
         who: "controller",
         clocks: [],
         situation: "held",
+        commitment: waiting("engineer queue below 2", "controller", nextReconcileAt(now)),
       };
     }
     if (!architectAllowed) {
@@ -601,6 +778,7 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
         who: "founder",
         clocks: [],
         situation: "held",
+        commitment: needsYou(),
       };
     }
     return {
@@ -612,6 +790,7 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
       who: "architect",
       clocks: [],
       situation: "proceeding",
+      commitment: scheduled(now, "controller"),
     };
   }
   if (session === "running") {
@@ -624,6 +803,7 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
       who: "architect",
       clocks: [],
       situation: "proceeding",
+      commitment: working("architect", null),
     };
   }
   return {
@@ -631,11 +811,29 @@ function explainInitiative(ledger: ExplainLedger, initiative: ExplainInitiative)
     where: session,
     happening: `Architect session is ${session}.`,
     why: "No architect wake is due.",
-    next: "Unknown",
-    who: "unknown",
+    next: session === "founder_decision" ? "The founder decides." : "Unknown",
+    who: session === "founder_decision" ? "founder" : "unknown",
     clocks: [],
-    situation: "unknown",
+    situation: session === "founder_decision" ? "held" : "unknown",
+    commitment: session === "founder_decision" ? needsYou() : finished(),
   };
+}
+
+const RECORDED_SPECIFICATION_BLOCK = {
+  packetId: "pkt-019-first-step-send-denied",
+  executionId: "dsp-172-engineer-pkt-018-send-denied-engagement",
+  workerId: "bc-4192002b-f944-4eeb-919a-1af83d403f28",
+  revision: "rev-1",
+} as const;
+
+function recordedSpecificationReturn(packet: ExplainPacket, execution: ExplainExecution, now: string): boolean {
+  const spec = RECORDED_SPECIFICATION_BLOCK;
+  if (packet.id !== spec.packetId || packet.stage !== "engineering" || packet.revision !== spec.revision) return false;
+  if (packet.candidateSha || packet.specificationBlock || packet.dispatch) return false;
+  if (packet.lease && packet.lease.until > now) return false;
+  if (execution.id !== spec.executionId || execution.agentId !== spec.workerId) return false;
+  if (execution.role !== "engineer" || execution.phase !== "interrupted" || execution.reason !== "lease_expired") return false;
+  return execution.packetIds.includes(packet.id) && execution.revisions?.[packet.id] === spec.revision;
 }
 
 function laterResolved(ledger: ExplainLedger, execution: ExplainExecution): boolean {
@@ -884,6 +1082,7 @@ function row(
     who: Actor;
     situation: Situation;
     clocks?: NamedClock[];
+    commitment: Commitment;
   },
 ): WorkExplanation {
   return {
@@ -895,5 +1094,6 @@ function row(
     who: fields.who,
     clocks: fields.clocks ?? [],
     situation: fields.situation,
+    commitment: fields.commitment,
   };
 }

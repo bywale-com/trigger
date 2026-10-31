@@ -16,6 +16,7 @@ import {
 } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
 import { FactoryMarkdown } from "./markdown.tsx";
+import { NextCommitment } from "./NextCommitment.tsx";
 import { neighbors, withFilter } from "./place.ts";
 import { FilterChip } from "./TableView.tsx";
 
@@ -355,7 +356,13 @@ export function Detail({
       </div>
       <div style={{ borderTop: `1px solid ${token.colorSplit}`, marginTop: 8 }}>
         <Property label="Why">{page.why}</Property>
-        <Property label="Next">{page.next}</Property>
+        <Property label="Next">
+          <NextCommitment
+            commitment={page.commitment}
+            unknown={page.happening === "Unknown" && page.why === "Unknown" && page.next === "Unknown"}
+            testId="detail-next"
+          />
+        </Property>
         <Property label="Who">{page.who}</Property>
         <Property label="Happening">{page.happening}</Property>
         <Property label="Stage">
