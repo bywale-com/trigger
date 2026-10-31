@@ -1,18 +1,23 @@
-import { Spin, Tag, Typography, theme } from "antd";
+import { Button, Tag, Typography, theme } from "antd";
 import { useRef, useState } from "react";
-import { compactDuration, type FactoryPulse } from "../observe/tower/pulse.ts";
+import type { FactoryExplanation } from "../observe/tower/explain.ts";
+import type { FactoryPulse } from "../observe/tower/pulse.ts";
+import type { Page } from "../observe/snapshot.ts";
 import { useCompact } from "./compact.ts";
 
 const { Text } = Typography;
 
 export function FactoryPulseBar({
   pulse,
-  readAt,
+  explanation,
+  pages,
   scopeStatus,
   activation,
   onOpen,
 }: {
   pulse: FactoryPulse;
+  explanation: FactoryExplanation | null;
+  pages: Page[];
   readAt: string;
   scopeStatus: string | null;
   activation: string | null;
@@ -20,82 +25,63 @@ export function FactoryPulseBar({
 }) {
   const { token } = theme.useToken();
   const compact = useCompact();
-  const live = pulse.live[0];
-  const remaining = pulse.remaining;
-  const leaseLeft = live?.until ? compactDuration(readAt, live.until) : null;
-  const next = pulse.wakes[0];
+  const summary = explanation?.summary ?? null;
+  const inbox = summary?.founderInbox ?? [];
+  const intervention = (summary?.intervention ?? []).map((id) => ({
+    id,
+    why: pages.find((page) => page.id === id)?.why ?? "Unknown",
+  }));
+  const openable = inbox.length > 0 || intervention.length > 0;
   const [open, setOpen] = useState(false);
   const pull = useRef<{ y: number; moved: boolean } | null>(null);
   const suppress = useRef(false);
-  const waiting = pulse.waits.length > 0;
+  const nameOf = (id: string) => pages.find((page) => page.id === id)?.name ?? id;
   return (
     <div
       data-testid="factory-pulse"
       className="factory-pulse"
       style={{
         marginBottom: 12,
-        padding: compact ? "8px 0 0" : "8px 0 0",
+        padding: "8px 0 0",
         borderBottom: `1px solid ${token.colorSplit}`,
       }}
     >
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: compact ? 8 : 10 }}>
-        {live ? (
-          <span data-testid="pulse-live" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <Spin size="small" />
-            <Tag color="processing" style={{ marginInlineEnd: 0 }}>
-              {live.role}
-            </Tag>
-            {leaseLeft ? (
-              <Text type="secondary" style={{ fontSize: 12 }}>
-                {leaseLeft}
-              </Text>
-            ) : null}
-          </span>
-        ) : (
-          <span data-testid="pulse-idle" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            {waiting ? <Spin size="small" data-testid="pulse-motion" /> : null}
-            <Tag data-testid="pulse-unconfirmed" style={{ marginInlineEnd: 0 }}>
-              unconfirmed
-            </Tag>
-          </span>
-        )}
+      <div data-testid="pulse-headline" style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.45 }}>
+        {summary?.headline ?? "Unknown"}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: compact ? 8 : 10, marginTop: 6 }}>
         <Tag data-testid="pulse-scope" style={{ marginInlineEnd: 0 }}>
           {`scope ${scopeStatus ?? "unset"}`}
         </Tag>
         <Tag data-testid="pulse-activation" style={{ marginInlineEnd: 0 }}>
           {`controller ${activation ?? "unset"}`}
         </Tag>
-        {pulse.reason !== "inactive" ? (
-          <Tag data-testid="pulse-reason" style={{ marginInlineEnd: 0 }}>
-            {pulse.reason}
-          </Tag>
-        ) : null}
-        {next ? (
-          <Tag color="processing" data-testid="pulse-next" style={{ marginInlineEnd: 0 }}>
-            {next.effect}
-          </Tag>
-        ) : null}
-        {remaining != null ? (
+        {pulse.remaining != null ? (
           <Text type="secondary" style={{ fontSize: 12 }} data-testid="pulse-remaining">
-            {remaining}/{pulse.authorizedDispatches}
+            {pulse.remaining}/{pulse.authorizedDispatches}
           </Text>
         ) : null}
         <Text type="secondary" style={{ fontSize: 12 }} data-testid="pulse-cadence">
           {pulse.controllerCadence === "scheduled" && pulse.schedule ? pulse.schedule : "event"}
         </Text>
-        {waiting ? (
-          <Tag data-testid="pulse-wait-count" style={{ marginInlineEnd: 0 }}>
-            {pulse.waits.length}
-          </Tag>
+        {summary?.withheldLanes.length ? (
+          <Text type="secondary" style={{ fontSize: 12 }} data-testid="pulse-withheld">
+            {summary.withheldLanes.map((lane) => `${lane} lane off`).join(" · ")}
+          </Text>
+        ) : null}
+        {intervention.length ? (
+          <Text type="secondary" style={{ fontSize: 12 }} data-testid="pulse-intervention-count">
+            {intervention.length} intervention
+          </Text>
         ) : null}
       </div>
-      {waiting ? (
+      {openable ? (
         <button
           type="button"
           className="desk-drawer-grab"
           data-testid="pulse-grab"
           aria-expanded={open}
-          aria-label="Running"
+          aria-label="Inbox"
           onPointerDown={(event) => {
             pull.current = { y: event.clientY, moved: false };
             try {
@@ -127,53 +113,52 @@ export function FactoryPulseBar({
         </button>
       ) : null}
       {open ? (
-        <div
-          data-testid="pulse-detail"
-          style={{
-            display: "flex",
-            flexDirection: compact ? "column" : "row",
-            flexWrap: compact ? "nowrap" : "wrap",
-            alignItems: compact ? "flex-start" : "center",
-            gap: 8,
-            paddingBottom: 8,
-          }}
-        >
-          {pulse.waits.map((wait) => {
-            const elapsed = wait.since ? compactDuration(wait.since, readAt) : null;
-            return (
-              <button
-                key={`${wait.kind}:${wait.id}:${wait.reason}`}
-                type="button"
-                data-testid={`pulse-wait-${wait.id}`}
-                onClick={() => onOpen?.(wait.id)}
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  margin: 0,
-                  padding: 0,
-                  border: "none",
-                  background: "none",
-                  cursor: onOpen ? "pointer" : "default",
-                  color: "inherit",
-                }}
-              >
-                <Spin size="small" />
-                <Tag style={{ marginInlineEnd: 0 }}>{wait.id}</Tag>
-                <Tag style={{ marginInlineEnd: 0 }}>{wait.reason}</Tag>
-                {wait.next !== "none" ? (
-                  <Tag color="processing" style={{ marginInlineEnd: 0 }}>
-                    {wait.next}
-                  </Tag>
-                ) : null}
-                {elapsed ? (
-                  <Text type="secondary" style={{ fontSize: 12 }}>
-                    {elapsed}
-                  </Text>
-                ) : null}
-              </button>
-            );
-          })}
+        <div data-testid="pulse-detail" style={{ display: "flex", flexDirection: "column", gap: 8, paddingBottom: 8 }}>
+          {inbox.map((release) => (
+            <div
+              key={release.id}
+              data-testid={`pulse-release-${release.id}`}
+              style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}
+            >
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {release.packetIds.map((id) => nameOf(id)).join(", ")}
+                </div>
+                <Text type="secondary" style={{ fontSize: 12 }}>
+                  PR {release.prNumber}
+                </Text>
+              </div>
+              <Button size="small" data-testid={`pulse-review-${release.packetIds[0]}`} onClick={() => onOpen?.(release.packetIds[0] ?? release.id)}>
+                Review
+              </Button>
+            </div>
+          ))}
+          {intervention.map((row) => (
+            <button
+              key={row.id}
+              type="button"
+              data-testid={`pulse-intervention-${row.id}`}
+              onClick={() => onOpen?.(row.id)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                gap: 2,
+                margin: 0,
+                padding: 0,
+                border: "none",
+                background: "none",
+                color: "inherit",
+                cursor: onOpen ? "pointer" : "default",
+                textAlign: "left",
+              }}
+            >
+              <span>{nameOf(row.id)}</span>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                {row.why}
+              </Text>
+            </button>
+          ))}
         </div>
       ) : null}
     </div>

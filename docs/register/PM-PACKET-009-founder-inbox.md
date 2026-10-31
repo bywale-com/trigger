@@ -1,8 +1,8 @@
 # PM-PACKET-009 — Founder inbox
 
-**Wake:** hold
+**Wake:** plant
 
-Plates: [`plates/packet-009/`](./plates/packet-009/README.md). Approve the plates before this wake moves. The plant does not start while this line says hold.
+Plates: [`plates/packet-009/`](./plates/packet-009/README.md). The founder ordered the plant after Tower commit `3ff7729` (31 Oct 2026, 11:05 AM America/Toronto) put `explainFactory` on the operating branch.
 
 ## Founder lock
 
@@ -39,33 +39,27 @@ Those packets are `verified`. Ledger checks for 141 and 142 are the passes alrea
 
 ## Sentences
 
-Trigger does not add a store. It reads fields Tower already records and says only these sentences.
+Trigger does not add a store and does not write these sentences. It runs the same derivation Tower prints from `explainFactory` on the ledger it already fetched. A missing fact stays Unknown. The pass does not write a stage and does not read handoff prose.
 
-| Recorded fact | Why | Next |
-| --- | --- | --- |
-| A `releases` entry with `mergeSha` null | Awaiting your review. | Merge release PR `{prNumber}`. The opened time is `openedAt`. |
-| Execution `phase` `running`, `startedAt` set, `endedAt` null, lease `until` after the read | Running, confirmed. Worker started at `startedAt`. Last recorded activity is `runningAt` when that field is set. | `execution.reason`, or Unknown when `reason` is null. |
-| `factory.json` `activation` is `inactive`, and the advance is a dispatch | Controller inactive. | Controller activation. |
-| Stage `verified`, `releaseEligible`, no `releases` entry | Unknown. | Unknown. |
-| Stage `accepted` and `integratedSha` set | Integrated. | This row is not in the drawer. |
+Factory dispatch [41213188243](https://github.com/bywale-com/omcoda_tower/actions/runs/41213188243) printed, at ledger revision 193:
 
-`pkt-019-first-step-send-denied` is the running case. Execution `dsp-172` is `running`, started 9:48 AM America/Toronto, last activity 9:51 AM, lease until 10:51 AM, `reason` null. The lease role is engineer. Next is Unknown. The manifest says checkpoint enforcement is an instruction and that no timer observes the interval, so the age of `runningAt` is not a stall.
+**Factory operating · 0 Engineers active · 0 packets awaiting verification · 8 releases awaiting your review**
 
-`pkt-018-send-denied-engagement` is also listed on `dsp-172`. Its stage is `verified` and it has no release. Its sentence is Unknown, not running.
+`pkt-019-first-step-send-denied` is `engineering`. Execution `dsp-172` is `interrupted` with reason `lease_expired`. The sentence is intervention, next Unknown: an engineer wake requires `change_specified`, and a repair wake requires a classified failure.
 
-`pkt-009-eligibility-writes` and the other `released` packets with `wake` `sa` and no release use the controller sentence. Activation is inactive, so the controller does not dispatch. The desk does not say the analyst is the thing that advances them while that is true.
+`pkt-009-eligibility-writes`, `pkt-011-halt-records-writes`, `pkt-012-consent-opt-out-writes`, `pkt-014-empty-firing-audience`, and `pkt-017-tick-send-halt` are `released`. The Analyst dispatch for that revision is recorded as ran. They stay intervention, next Unknown. They are not in the founder inbox.
 
-`pkt-015-halt-enroll-firm`, `pkt-016-halt-send-firm`, and `pkt-018` are `verified` with no release. Unknown.
+`pkt-015-halt-enroll-firm` is verified and waiting on `pkt-017-tick-send-halt` and `pkt-019-first-step-send-denied`.
 
-`pkt-001-click-attribution` is `accepted` and integrated. It is not an alert.
+Pull requests 141–148 are the founder inbox. The architect lane is off. Engineer queue depth is 1, so `exec-identity` is held and the next step is to include the architect lane.
 
-An unconfirmed dispatch is a current row only while it is still that packet’s `dispatch` and no later execution for that packet has `phase` `completed`. On revision 192, `pkt-002` and `pkt-003` have `dispatch` null and stage `verified`. They are not unconfirmed. `exec-identity` session is `continuation_due` and its `dispatch` is null. It is not unconfirmed. Its sentence is controller inactive.
+Scope and controller activation stay separate facts on the quiet line. Calling the factory operating is the scope sentence. It does not mean the controller manifest is active.
 
 ## Face
 
-Closed pulse: **8 releases awaiting your review · 1 Engineer running**
+Closed pulse: Tower’s headline. On revision 193 that is **Factory operating · 0 Engineers active · 0 packets awaiting verification · 8 releases awaiting your review**.
 
-Quiet line under it: `scope active · controller inactive · 43/50 · event`
+Quiet line under it: `scope active · controller inactive · 43/50 · event · architect lane off · 6 intervention`
 
 The existing lip opens the drawer. Releases first, by `openedAt`. The running execution after them. A release row is the manifest title, the sentence, and Review. The running row has no Review.
 
@@ -79,9 +73,9 @@ Review is the packet page. Why and Next are the first properties. Specification 
 
 | File | Job |
 | --- | --- |
-| `src/observe/snapshot.ts` | Carry `releases` and the execution fields the sentences use: `phase`, `startedAt`, `runningAt`, `endedAt`, `reason`. |
-| `src/observe/tower/read.ts` | Pass those through. No second fetch and no new store. |
-| `src/observe/tower/pulse.ts` | The sentences and the drawer order. Unconfirmed only for a dispatch that is still unresolved. |
+| `src/observe/tower/explain.ts` | The same derivation Tower prints. No second sentence table. |
+| `src/observe/snapshot.ts` | Carry the explanation, the ledger release, and Why / Next / Who on each page. |
+| `src/observe/tower/read.ts` | Run `explainFactory` on the ledger JSON already fetched. No second fetch and no new store. |
 | `src/desk/Pulse.tsx` | The sentence, the quiet line, and the drawer. No second band. |
 | `src/desk/TableView.tsx` | Why and Next on the existing board. |
 | `src/desk/Detail.tsx` | Why and Next. The review block for a packet named by an open release. |
@@ -93,10 +87,8 @@ Review is the packet page. Why and Next are the first properties. Specification 
 
 The merge write. A server-side token, later, that can merge only a Tower release pull request whose packet is `verified` and whose `mergeSha` is null.
 
-A Tower field for a transition reason. Unknown stays Unknown until that field exists.
-
-Any sentence that is not in the table above.
+A sentence the desk writes itself. Unknown stays Unknown when `explainFactory` says Unknown.
 
 Pointing production at a different factory ref.
 
-Calling a worker stalled because `runningAt` is old. Calling the factory operating while `activation` is inactive.
+Calling a worker stalled because `runningAt` is old. Treating controller activation and scope status as the same fact.

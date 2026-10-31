@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { getPacket } from "../external/project.ts";
 import { assemble, emptyGithub, type Gathered, type LedgerPacket } from "../snapshot.ts";
 import { enrichSnapshot, namedPullNumbers, namedShas, type GithubGet } from "./github.ts";
 
@@ -192,6 +193,50 @@ describe("github evidence", () => {
     expect(enriched.pages[1]?.github.unavailableReason).toBe("github unavailable");
     if (enriched.pages[1]?.type !== "Packet") throw new Error("packet");
     expect(enriched.pages[1].candidateSha).toBe(packet.candidateSha);
+  });
+
+  it("keeps the ledger pull request when GitHub enrichment fails", async () => {
+    const snapshot = assemble({
+      ...gathered,
+      releases: [
+        {
+          id: "rel-pkt-002-open-ask-cursor",
+          packetIds: ["pkt-002-open-ask-cursor"],
+          prNumber: 141,
+          prUrl: "https://github.com/bywale-com/omcoda_tower/pull/141",
+          openedAt: "2026-10-31T13:43:15.757Z",
+          mergeSha: null,
+        },
+      ],
+      explanation: {
+        summary: {
+          headline: "Factory operating · 0 Engineers active · 0 packets awaiting verification · 1 release awaiting your review",
+          scopeStatus: "active",
+          lanes: ["engineer", "analyst"],
+          withheldLanes: ["architect"],
+          engineersRunning: 0,
+          awaitingVerification: 0,
+          founderInbox: [
+            {
+              id: "rel-pkt-002-open-ask-cursor",
+              prNumber: 141,
+              prUrl: "https://github.com/bywale-com/omcoda_tower/pull/141",
+              packetIds: ["pkt-002-open-ask-cursor"],
+            },
+          ],
+          intervention: [],
+        },
+        packets: [],
+        executions: [],
+        initiatives: [],
+      },
+    });
+    const enriched = await enrichSnapshot(snapshot, async () => ({ status: 403, json: {} }), { enabled: true });
+    const body = getPacket(enriched, "pkt-002-open-ask-cursor");
+    expect(body?.github.available).toBe(false);
+    expect(body?.prNumber).toBe(141);
+    expect(body?.prUrl).toBe("https://github.com/bywale-com/omcoda_tower/pull/141");
+    expect(body?.mergeSha).toBeNull();
   });
 
   it("skips GitHub in fixture mode", async () => {

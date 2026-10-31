@@ -173,6 +173,95 @@ function GithubSection({ github, repo }: { github: GithubEvidence; repo: string 
   );
 }
 
+function checkWord(outcome: string | null): string {
+  const value = (outcome ?? "").toLowerCase();
+  if (value === "failure" || value === "failed") return "failed";
+  return outcome ?? "Unknown";
+}
+
+function ReleaseReview({
+  page,
+  pages,
+  repo,
+}: {
+  page: Extract<Page, { type: "Packet" }>;
+  pages: Page[];
+  repo: string;
+}) {
+  const release = page.ledgerRelease;
+  if (!release || release.prNumber == null) return null;
+  const initiative = pages.find((item) => item.type === "Initiative" && item.id === page.initiativeId);
+  const dependencies = page.siblings.filter((link) => link.basis === "dependency");
+  const pullChecks = page.github.checks.filter((check) => check.source === "github");
+  return (
+    <div data-testid="release-review" data-section="review">
+      <Title level={5}>Review</Title>
+      <Property label="Pull request">
+        {release.prUrl ? (
+          <Link href={release.prUrl} target="_blank" rel="noreferrer" data-testid="release-pr">
+            PR {release.prNumber}
+          </Link>
+        ) : (
+          <span data-testid="release-pr">PR {release.prNumber}</span>
+        )}
+      </Property>
+      <div data-section="specification">
+        <Title level={5}>Specification</Title>
+        <FactoryMarkdown
+          text={initiative && initiative.type === "Initiative" ? initiative.specificationText : null}
+          testId="review-specification"
+          stripTitle
+        />
+      </div>
+      <Property label="Changes">
+        {page.github.files.length ? (
+          page.github.files.map((file) => (
+            <div key={file.filename} data-testid="release-file">
+              {file.filename}
+              {file.status ? ` · ${file.status}` : ""}
+            </div>
+          ))
+        ) : (
+          <Text>{page.github.available ? "—" : "Unknown"}</Text>
+        )}
+      </Property>
+      <Property label="Ledger checks">
+        {page.checks.length
+          ? page.checks.map((check) => (
+              <div key={`${check.name}-${check.runId}`}>
+                {check.name} · {check.outcome} ·{" "}
+                {check.runId ? (
+                  <Link href={`https://github.com/${repo}/actions/runs/${check.runId}`} target="_blank" rel="noreferrer">
+                    {check.runId}
+                  </Link>
+                ) : (
+                  "—"
+                )}
+              </div>
+            ))
+          : "—"}
+      </Property>
+      <Property label="Pull request checks">
+        {!page.github.available ? (
+          "Unknown"
+        ) : pullChecks.length ? (
+          pullChecks.map((check) => (
+            <div key={`${check.name}-${check.runId ?? check.outcome}`} data-testid="pull-check">
+              {check.name} · {checkWord(check.outcome)}
+            </div>
+          ))
+        ) : (
+          "—"
+        )}
+      </Property>
+      <Property label="Dependencies">{dependencies.length ? dependencies.map((link) => link.id).join(", ") : "—"}</Property>
+      <Button data-testid="merge-release" onClick={(event) => event.preventDefault()}>
+        Merge
+      </Button>
+    </div>
+  );
+}
+
 function jumpTo(key: string) {
   const node = document.querySelector(`[data-section="${key}"]`);
   if (node instanceof HTMLElement) node.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -259,6 +348,10 @@ export function Detail({
         </Title>
       </div>
       <div style={{ borderTop: `1px solid ${token.colorSplit}`, marginTop: 8 }}>
+        <Property label="Why">{page.why}</Property>
+        <Property label="Next">{page.next}</Property>
+        <Property label="Who">{page.who}</Property>
+        <Property label="Happening">{page.happening}</Property>
         <Property label="Stage">
           <FilterChip field="Stage" value={stageLabel(page.stage)} color={stageColor(page.stage)} filters={filters} onFilter={onFilter} />
         </Property>
@@ -408,6 +501,9 @@ export function Detail({
               <Paragraph>No dispatch history</Paragraph>
             )}
           </div>
+          {page.ledgerRelease?.prNumber != null && !page.ledgerRelease.mergeSha ? (
+            <ReleaseReview page={page} pages={pages} repo={repo} />
+          ) : null}
           <GithubSection github={page.github} repo={repo} />
         </>
       )}

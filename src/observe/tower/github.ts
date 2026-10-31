@@ -57,6 +57,8 @@ type DeploymentStatusJson = {
   description?: string;
 };
 
+type FileJson = { filename?: string; status?: string };
+
 export function namedShas(pages: Page[]): string[] {
   const found = new Set<string>();
   const add = (value: string | null | undefined) => {
@@ -84,6 +86,18 @@ export function namedPullNumbers(pages: Page[]): number[] {
     if (parsed) found.add(parsed.pr);
   }
   return [...found].slice(0, PR_MAX);
+}
+
+/** Pull requests named by the ledger release, including the founder inbox. */
+export function inboxPullNumbers(snapshot: Snapshot): number[] {
+  const found = new Set<number>();
+  for (const release of snapshot.explanation?.summary.founderInbox ?? []) {
+    if (Number.isInteger(release.prNumber)) found.add(release.prNumber);
+  }
+  for (const page of snapshot.pages) {
+    if (page.type === "Packet" && page.ledgerRelease?.prNumber != null) found.add(page.ledgerRelease.prNumber);
+  }
+  return [...found].sort((a, b) => a - b);
 }
 
 export async function githubGet(url: string, token?: string): Promise<{ status: number; json: unknown }> {
@@ -187,10 +201,10 @@ async function attach(snapshot: Snapshot, get: GithubGet): Promise<Snapshot> {
     : null;
 
   const pullsBySha = new Map(shaPulls.map((row) => [row.sha, row.pulls]));
-  const numbers = new Set<number>(namedPullNumbers(snapshot.pages));
+  const numbers = new Set<number>([...inboxPullNumbers(snapshot), ...namedPullNumbers(snapshot.pages)]);
   if (factory?.number) numbers.add(factory.number);
   for (const row of shaPulls) for (const pull of row.pulls) numbers.add(pull.number);
-  const pullNumbers = [...numbers].slice(0, PR_MAX);
+  const pullNumbers = [...numbers].slice(0, Math.max(PR_MAX, inboxPullNumbers(snapshot).length, 24));
 
   const pullDetails = new Map<number, GithubPull>();
   await Promise.all(
@@ -212,6 +226,21 @@ async function attach(snapshot: Snapshot, get: GithubGet): Promise<Snapshot> {
         message: row.commit?.message?.split("\n")[0] ?? null,
       })).filter((row) => row.sha);
       commitsByPull.set(number, commits);
+    }),
+  );
+
+  const inbox = new Set(inboxPullNumbers(snapshot));
+  const filesByPull = new Map<number, GithubEvidence["files"]>();
+  await Promise.all(
+    pullNumbers.filter((number) => inbox.has(number)).map(async (number) => {
+      const result = await load(`https://api.github.com/repos/${repo}/pulls/${number}/files?per_page=100`);
+      if (result.status !== 200) return;
+      filesByPull.set(
+        number,
+        asArray<FileJson>(result.json)
+          .filter((row) => row.filename)
+          .map((row) => ({ filename: row.filename as string, status: row.status ?? null })),
+      );
     }),
   );
 
@@ -262,6 +291,29 @@ async function attach(snapshot: Snapshot, get: GithubGet): Promise<Snapshot> {
     }),
   );
 
+  const headShas = new Set<string>();
+  for (const number of inbox) {
+    const head = pullDetails.get(number)?.headSha?.toLowerCase();
+    if (head && /^[0-9a-f]{40}$/.test(head) && !checkBySha.has(head)) headShas.add(head);
+  }
+  await Promise.all(
+    [...headShas].map(async (sha) => {
+      const result = await load(`https://api.github.com/repos/${repo}/commits/${sha}/check-runs?per_page=20`);
+      if (result.status !== 200 || !result.json || typeof result.json !== "object") return;
+      const runs = asArray<CheckRunJson>((result.json as { check_runs?: CheckRunJson[] }).check_runs);
+      checkBySha.set(
+        sha,
+        runs.map((run) => ({
+          name: run.name ?? "check",
+          runId: runIdFrom(run.html_url ?? run.details_url ?? null),
+          outcome: run.conclusion ?? run.status ?? null,
+          url: run.html_url ?? run.details_url ?? null,
+          source: "github" as const,
+        })),
+      );
+    }),
+  );
+
   const pages = snapshot.pages.map((page) => {
     const github = evidenceFor(page, {
       repo,
@@ -270,6 +322,7 @@ async function attach(snapshot: Snapshot, get: GithubGet): Promise<Snapshot> {
       commitsByPull,
       checkBySha,
       previewBySha,
+      filesByPull,
     });
     if (page.type === "Packet") {
       return { ...page, github, lifecycle: packetLifecycle(page, snapshot.readAt, github) };
@@ -293,6 +346,7 @@ function evidenceFor(
     commitsByPull: Map<number, GithubCommit[]>;
     checkBySha: Map<string, GithubCheck[]>;
     previewBySha: Map<string, GithubPreview>;
+    filesByPull: Map<number, GithubEvidence["files"]>;
   },
 ): GithubEvidence {
   const ledgerRows = page.github.checks.filter((check) => check.source === "ledger");
@@ -306,6 +360,7 @@ function evidenceFor(
     add(page.dispatch?.prHead);
     add(page.integratedSha);
     for (const record of page.dispatchHistory) add(record.prHead);
+    if (page.ledgerRelease?.prNumber != null) add(ctx.pullDetails.get(page.ledgerRelease.prNumber)?.headSha);
   } else {
     add(page.dispatch?.prHead);
   }
@@ -326,6 +381,8 @@ function evidenceFor(
     for (const check of ctx.checkBySha.get(sha) ?? []) githubChecks.push(check);
   }
   const checks = mergeChecks(ledgerRows, githubChecks);
+  const releaseNumber = page.type === "Packet" ? page.ledgerRelease?.prNumber : null;
+  const files = releaseNumber != null ? ctx.filesByPull.get(releaseNumber) ?? [] : [];
   const preview =
     (latestSha && ctx.previewBySha.get(latestSha.toLowerCase())) ||
     shas.map((sha) => ctx.previewBySha.get(sha)).find(Boolean) ||
@@ -339,6 +396,7 @@ function evidenceFor(
     latestSha,
     commits: working ? ctx.commitsByPull.get(working.number) ?? [] : [],
     checks,
+    files,
     preview,
     merge: {
       merged: integration?.merged ?? working?.merged ?? null,

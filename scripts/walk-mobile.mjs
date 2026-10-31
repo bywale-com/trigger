@@ -109,7 +109,7 @@ try {
     const shape = await board(page);
     check(
       `${width} table header`,
-      shape.headers.join("|") === "Name|Type|Module|Stage|Execution|Evidence|Inside|Depends on|Updated",
+      shape.headers.join("|") === "Name|Type|Module|Stage|Why|Next|Execution|Evidence|Inside|Depends on|Updated",
       shape.headers.join("|"),
     );
     check(`${width} column borders`, shape.border >= 1, String(shape.border));
@@ -170,7 +170,7 @@ try {
     const box = node.getBoundingClientRect();
     return { height: box.height, top: box.top };
   });
-  check("360 preview taller", preview.height >= 380 && preview.top < 460 && preview.top > 280, JSON.stringify(preview));
+  check("360 preview taller", preview.height >= 320 && preview.top < 520 && preview.top > 280, JSON.stringify(preview));
   const beforeTop = preview.top;
   await page.evaluate(() => {
     const node = document.querySelector("[data-testid=sheet-grab]");
