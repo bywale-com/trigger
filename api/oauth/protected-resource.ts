@@ -1,6 +1,6 @@
 import { nodeHandler } from "../../src/observe/external/node-handler.ts";
+import { handleProtectedResource } from "../../src/observe/external/oauth.ts";
 
-export default nodeHandler(async () => {
-  const { handleProtectedResource } = await import("../../src/observe/external/oauth.ts");
-  return handleProtectedResource;
-});
+export const config = { runtime: "nodejs" };
+
+export default nodeHandler((req, res) => handleProtectedResource(req, res));

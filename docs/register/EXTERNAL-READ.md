@@ -4,17 +4,11 @@ Trigger’s desk, `GET /api/v1`, and the MCP tools read one snapshot. This surfa
 
 ## Deployment state
 
-The read API and MCP server were built on the preview deployment:
+Production https://trigger-theta-cyan.vercel.app is serving hotfix 005 (`870a576`). `GET /api/snapshot` reads the operating factory. `GET /api/v1/factory` and `POST /api/mcp` return `401` without a bearer. The production read token is set on Vercel and is not in this environment. Do not print it.
 
-`https://trigger-git-cursor-external-read-9dd405-wale-omotayos-projects.vercel.app`
+The OAuth metadata routes on that deploy return `FUNCTION_INVOCATION_FAILED`. `vercel.json` must not set `functions.*.runtime` to `nodejs20.x`: that field is a community runtime package plus a version, and the 31 Oct 2026 8:19 AM America/Toronto build stopped with `invalid_function_runtime`. The Node runtime pin that the builder accepts is `export const config = { runtime: "nodejs" }` in the function file. The OAuth handlers are static imports so the compiler rewrites `.ts` to the emitted `.js` file. A dynamic `import("…oauth.ts")` is left unchanged and the function cannot load it.
 
-There, `GET /api/v1/factory` and `POST /api/mcp` return `503` `read_token_unconfigured` until `TRIGGER_READ_TOKEN` is set. `GET /api/snapshot` still returns the live Tower snapshot. The desk assets on production stayed `index-BV7mBNrp.js`.
-
-The OAuth routes on that preview crash (`FUNCTION_INVOCATION_FAILED`). `a9ba798` set `functions.*.runtime` to `nodejs20.x`. Vercel’s `runtime` field is a community runtime package with a version, for example `now-php@1.0.0`, so that value fails the build with `invalid_function_runtime`. Node.js is the default when `runtime` is omitted. The OAuth entries import `node:crypto` through the handler so they stay on that runtime.
-
-This seat could not set `TRIGGER_READ_TOKEN`. The Vercel token here cannot access team `wale-omotayos-projects`.
-
-After the limit resets, redeploy `main` and set `TRIGGER_READ_TOKEN` on Production. `GET /api/v1/factory` should then be `401` without a bearer and `200` with one. ChatGPT and Claude were not signed in from this seat.
+ChatGPT and Claude were not signed in from this seat.
 
 ## Endpoints
 

@@ -1,13 +1,11 @@
-/** Node handler wrapper. Surfaces a crash as JSON instead of an empty platform 500. The crypto import keeps these routes on Node. */
-import "node:crypto";
+/** Node handler wrapper. Surfaces a thrown request error as JSON instead of an empty platform 500. */
 import type { IncomingMessage, ServerResponse } from "node:http";
 
 export function nodeHandler(
-  load: () => Promise<(req: IncomingMessage, res: ServerResponse) => Promise<void>>,
+  handle: (req: IncomingMessage, res: ServerResponse) => Promise<void>,
 ) {
   return async function handler(req: IncomingMessage, res: ServerResponse) {
     try {
-      const handle = await load();
       await handle(req, res);
     } catch (error) {
       const message = error instanceof Error ? error.message : "request failed";
