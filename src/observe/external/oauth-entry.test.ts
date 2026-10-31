@@ -14,13 +14,13 @@ const entries = [
 ];
 
 describe("oauth function entries", () => {
-  it("keeps static Node imports so the Vercel compiler can rewrite them", () => {
+  it("loads the compiled OAuth module by its .js specifier", () => {
     for (const file of entries) {
       const source = readFileSync(join(import.meta.dirname, "../../../api/oauth", file), "utf8");
       expect(source, file).toContain('runtime: "nodejs"');
-      expect(source, file).not.toContain("import(");
+      expect(source, file).toContain("../../src/observe/external/oauth.js");
+      expect(source, file).not.toContain("oauth.ts");
       expect(source, file).not.toContain("nodejs20");
-      expect(source, file).toContain("../../src/observe/external/oauth.ts");
     }
   });
 
