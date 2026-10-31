@@ -4,7 +4,7 @@
 
 ## Where we stopped
 
-Packet 009 is on `cursor/founder-inbox-71ee`. **Wake:** hold. The plates are in `docs/register/plates/packet-009/`. The founder asked to see them before the plant. Do not plant the inbox, and do not add a merge write, while the wake says hold. Ledger 176 already has `releases` for PR 141 and PR 142. The snapshot does not read that object.
+Packet 009 is on `cursor/founder-inbox-71ee`. **Wake:** hold. The plates in `docs/register/plates/packet-009/` were revised 31 Oct 2026: the inbox is the pulse drawer, releases first, and Why / Next use recorded fields or Unknown. Do not plant, and do not add a merge write, while the wake says hold. Operating ledger on `cursor/execution-architecture-74f7` was revision 192 at 10:44 AM America/Toronto: scope active, controller inactive, eight open releases (PR 141–148), execution `dsp-172` running on `pkt-019`. Production `GET /api/snapshot` at that time returned `cursor/factory-agents-scope-33ee`, revision 122, scope suspended. That is the server snapshot. This packet does not change the ref. The snapshot type still does not carry `releases`.
 
 Hotfix 007 is `cursor/operating-factory-lock-71ee`. Production deployment `78fa391` reads `cursor/factory-agents-scope-33ee`, ledger revision 122. Deployment `69380f9` of the same resolver reads `cursor/execution-architecture-74f7`, ledger revision 192. Production ignores `TOWER_REF` and `TOWER_SOURCE`. A missing operating signal fails the read instead of serving `source.json`.
 
