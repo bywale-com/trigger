@@ -128,9 +128,25 @@ export function FactoryPulseBar({
                   PR {release.prNumber}
                 </Text>
               </div>
-              <Button size="small" data-testid={`pulse-review-${release.packetIds[0]}`} onClick={() => onOpen?.(release.packetIds[0] ?? release.id)}>
-                Review
-              </Button>
+              {release.prUrl ? (
+                <Button
+                  size="small"
+                  data-testid={`pulse-review-${release.packetIds[0]}`}
+                  href={release.prUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Review
+                </Button>
+              ) : (
+                <Button
+                  size="small"
+                  data-testid={`pulse-review-${release.packetIds[0]}`}
+                  onClick={() => onOpen?.(release.packetIds[0] ?? release.id)}
+                >
+                  Review
+                </Button>
+              )}
             </div>
           ))}
           {intervention.map((row) => (
