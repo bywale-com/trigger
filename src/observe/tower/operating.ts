@@ -1,11 +1,11 @@
 /**
  * Which Tower branch is the factory Trigger reads.
  *
- * TOWER_REF is an explicit view. A published operating ref is authoritative.
- * The highest factory-ledger dispatch run is only the fallback when that
- * ref is absent. source.json is the fallback after that. A higher revision
- * does not outrank the published ref. This does not scan branches and does
- * not write a ledger.
+ * A published operating ref is authoritative. The highest factory-ledger
+ * dispatch run is the fallback when that ref is absent. source.json is the
+ * last fallback, and production does not use it when both signals are missing.
+ * A higher revision does not outrank the published ref. This does not scan
+ * branches and does not write a ledger.
  */
 
 export type FactorySignal = { ref: string; stateRevision: number | null };
@@ -105,11 +105,13 @@ export function chooseFactorySource(input: {
   return input.configured;
 }
 
-export async function resolveFactoryRef(input: {
+export type FactoryChoice = { ref: string; signaled: boolean };
+
+export async function resolveFactoryChoice(input: {
   configured: string;
   repo: string;
   get: (url: string) => Promise<{ status: number; json: unknown }>;
-}): Promise<string> {
+}): Promise<FactoryChoice> {
   try {
     const [pointerResult, runsResult] = await Promise.all([
       input.get(operatingPointerUrl(input.repo)),
@@ -117,8 +119,28 @@ export async function resolveFactoryRef(input: {
     ]);
     const pointer = pointerResult.status === 200 ? pointerFromContents(pointerResult.json) : null;
     const observed = runsResult.status === 200 ? observedFactory(runsResult.json, input.repo) : null;
-    return chooseFactorySource({ configured: input.configured, pointer, observed });
+    return {
+      ref: chooseFactorySource({ configured: input.configured, pointer, observed }),
+      signaled: pointer != null || observed != null,
+    };
   } catch {
-    return input.configured;
+    return { ref: input.configured, signaled: false };
   }
+}
+
+export async function resolveFactoryRef(input: {
+  configured: string;
+  repo: string;
+  get: (url: string) => Promise<{ status: number; json: unknown }>;
+}): Promise<string> {
+  const choice = await resolveFactoryChoice(input);
+  return choice.ref;
+}
+
+/** Production shows the operating factory or a failed read. It does not serve source.json in place of a missing signal. */
+export function assertOperatingChoice(env: NodeJS.ProcessEnv, choice: FactoryChoice): string {
+  if (env.VERCEL_ENV === "production" && !choice.signaled) {
+    throw new Error("operating factory unresolved");
+  }
+  return choice.ref;
 }

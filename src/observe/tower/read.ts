@@ -3,10 +3,10 @@
  * Does not import the controller and does not call decide.
  *
  * The reference tree at 9c45f19 is a fixture for the approved plates.
- * TOWER_REF selects a branch. When it is unset, the desk follows the operating
- * factory (published pointer, or the factory-dispatch run that advanced the
- * ledger). source.json is the fallback. The desk records the commit that ref
- * resolved to. It does not pin a sha.
+ * TOWER_REF selects a branch outside production. Production follows the operating
+ * factory: the published pointer, or the factory-dispatch run that advanced the
+ * ledger. It does not serve source.json when both signals are missing. The desk
+ * records the commit that ref resolved to. It does not pin a sha.
  */
 
 import { execFile } from "node:child_process";
@@ -32,7 +32,7 @@ import {
 } from "../snapshot.ts";
 import { setTreeFileRoot, treeFileUrl } from "../tree-file.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
-import { resolveFactoryRef } from "./operating.ts";
+import { assertOperatingChoice, resolveFactoryChoice } from "./operating.ts";
 import { projectPulse, workflowCadence } from "./pulse.ts";
 
 export type TowerFiles = {
@@ -97,23 +97,29 @@ async function githubJson(url: string): Promise<{ status: number; json: unknown 
   return first;
 }
 
-/** Explicit TOWER_REF, else the operating factory, else source.json. */
-export async function operatingTowerRef(env: NodeJS.ProcessEnv = process.env): Promise<string> {
+/**
+ * Local and preview may pin a branch. Production follows the operating factory.
+ * A project setting cannot select source.json there.
+ */
+export function pinnedTowerRef(env: NodeJS.ProcessEnv): string | null {
+  if (env.VERCEL_ENV === "production") return null;
   const explicit = env.TOWER_REF?.trim();
   if (explicit) return explicit;
   if (env.TOWER_SOURCE === "configured" || env.TOWER_FIXTURE) return configuredTowerRef();
+  return null;
+}
+
+/** The operating factory, else source.json outside production. */
+export async function operatingTowerRef(env: NodeJS.ProcessEnv = process.env): Promise<string> {
+  const pinned = pinnedTowerRef(env);
+  if (pinned) return pinned;
   const now = Date.now();
   if (sourceCache && now < sourceCache.until) return sourceCache.ref;
   const configured = configuredTowerRef();
-  try {
-    const ref = await resolveFactoryRef({ configured, repo: githubRepo(env.TOWER_REPO), get: githubJson });
-    sourceCache = { ref, until: now + (ref === configured ? SOURCE_MISS_MS : SOURCE_FRESH_MS) };
-    return ref;
-  } catch {
-    const ref = sourceCache?.ref ?? configured;
-    sourceCache = { ref, until: now + SOURCE_MISS_MS };
-    return ref;
-  }
+  const choice = await resolveFactoryChoice({ configured, repo: githubRepo(env.TOWER_REPO), get: githubJson });
+  const ref = assertOperatingChoice(env, choice);
+  sourceCache = { ref, until: now + (choice.signaled ? SOURCE_FRESH_MS : SOURCE_MISS_MS) };
+  return ref;
 }
 
 export function githubRepo(url = repoUrl()): string {
