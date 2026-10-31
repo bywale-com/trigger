@@ -1,4 +1,5 @@
-/** Node handler wrapper. Surfaces a crash as JSON instead of an empty platform 500. */
+/** Node handler wrapper. Surfaces a crash as JSON instead of an empty platform 500. The crypto import keeps these routes on Node. */
+import "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
 export function nodeHandler(

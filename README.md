@@ -6,7 +6,7 @@ Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
-- 2026-10-31 · hotfix 004 · PR 12 — the desk labels ledger scope and controller activation separately, and a published operating ref outranks a higher ledger revision, because those two facts were being read as one status.
+- 2026-10-31 · hotfix 005 · this PR — the OAuth function config no longer sets `runtime` to `nodejs20.x`, because that value is not a runtime package and the Vercel build stops on `invalid_function_runtime`.
 - 2026-10-30 · external read · PR 10 — an authenticated read API and remote MCP server answer from the same Tower snapshot, because an agent should be able to ask what the factory is doing without opening the desk.
 - 2026-10-30 · hotfix 002 · PR 9 — on the phone the branch line and the running rows tuck behind a lip, and the page lip drags the preview, because those bands were crowding the table.
 - 2026-10-30 · hotfix 001 · PR 8 — the Tower board is a bordered table with a header and even columns, and it scrolls sideways, because the phone and the desktop were squeezing every column into the pane.

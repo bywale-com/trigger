@@ -10,7 +10,7 @@ The read API and MCP server were built on the preview deployment:
 
 There, `GET /api/v1/factory` and `POST /api/mcp` return `503` `read_token_unconfigured` until `TRIGGER_READ_TOKEN` is set. `GET /api/snapshot` still returns the live Tower snapshot. The desk assets on production stayed `index-BV7mBNrp.js`.
 
-The OAuth routes on that preview crash (`FUNCTION_INVOCATION_FAILED`). The follow-up on `main` (`a9ba798`) pins those routes to the Node.js runtime. Vercel then refused the build: “Deployment rate limited — retry in 24 hours” (30 Oct 2026, 1:44 PM America/Toronto). Production `https://trigger-theta-cyan.vercel.app/api/v1` was still `404` after that, so the production alias is the previous desk deploy.
+The OAuth routes on that preview crash (`FUNCTION_INVOCATION_FAILED`). `a9ba798` set `functions.*.runtime` to `nodejs20.x`. Vercel’s `runtime` field is a community runtime package with a version, for example `now-php@1.0.0`, so that value fails the build with `invalid_function_runtime`. Node.js is the default when `runtime` is omitted. The OAuth entries import `node:crypto` through the handler so they stay on that runtime.
 
 This seat could not set `TRIGGER_READ_TOKEN`. The Vercel token here cannot access team `wale-omotayos-projects`.
 
