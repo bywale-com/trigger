@@ -20,11 +20,11 @@
       "maxDuration": 30,
       "includeFiles": "src/observe/**"
     },
-    "api/oauth/authorize.ts": { "maxDuration": 10 },
-    "api/oauth/token.ts": { "maxDuration": 10 },
-    "api/oauth/register.ts": { "maxDuration": 10 },
-    "api/oauth/protected-resource.ts": { "maxDuration": 10 },
-    "api/oauth/authorization-server.ts": { "maxDuration": 10 }
+    "api/oauth/authorize.ts": { "maxDuration": 10, "includeFiles": "src/observe/**" },
+    "api/oauth/token.ts": { "maxDuration": 10, "includeFiles": "src/observe/**" },
+    "api/oauth/register.ts": { "maxDuration": 10, "includeFiles": "src/observe/**" },
+    "api/oauth/protected-resource.ts": { "maxDuration": 10, "includeFiles": "src/observe/**" },
+    "api/oauth/authorization-server.ts": { "maxDuration": 10, "includeFiles": "src/observe/**" }
   },
   "rewrites": [
     { "source": "/.well-known/oauth-protected-resource", "destination": "/api/oauth/protected-resource" },
