@@ -26,6 +26,7 @@ import {
   type GatheredPacket,
   type LedgerInitiative,
   type LedgerPacket,
+  type LedgerRelease,
   type PacketPlateImage,
   type PacketPlates,
   type Snapshot,
@@ -33,6 +34,7 @@ import {
 import { setTreeFileRoot, treeFileUrl } from "../tree-file.ts";
 import { enrichSnapshot, githubGet } from "./github.ts";
 import { resolveFactoryRef } from "./operating.ts";
+import { explainFactory, type ExplainLedger } from "./explain.ts";
 import { projectPulse, workflowCadence } from "./pulse.ts";
 
 export type TowerFiles = {
@@ -493,10 +495,24 @@ async function attachGithub(snapshot: Snapshot, fixture: boolean): Promise<Snaps
   return enrichSnapshot(snapshot, (url) => githubGet(url, token), { enabled: true });
 }
 
+function ledgerReleases(ledger: LedgerFile): LedgerRelease[] {
+  const bag = (ledger as LedgerFile & { releases?: Record<string, Partial<LedgerRelease>> }).releases ?? {};
+  return Object.values(bag).map((release) => ({
+    id: release.id ?? "",
+    packetIds: [...(release.packetIds ?? [])],
+    prNumber: release.prNumber ?? null,
+    prUrl: release.prUrl ?? null,
+    openedAt: release.openedAt ?? null,
+    mergeSha: release.mergeSha ?? null,
+  }));
+}
+
 export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
   const ledgerText = await tree.file(".factory/state/ledger.json");
   if (!ledgerText) throw new Error("ledger missing");
   const ledger = JSON.parse(ledgerText) as LedgerFile;
+  const readAt = readAtNow();
+  const explanation = explainFactory(ledger as unknown as ExplainLedger, readAt);
   const factoryText = await tree.file(".factory/manifests/factory.json");
   const factory = factoryText ? (JSON.parse(factoryText) as { activation?: string; dispatch?: string }) : null;
   const dispatchWorkflow = await tree.file(".github/workflows/factory-dispatch.yml");
@@ -509,7 +525,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
       initiatives: ledger.initiatives,
       packets: ledger.packets,
     },
-    readAtNow(),
+    readAt,
     factory?.activation === "active" ? "active" : "inactive",
     cadence,
   );
@@ -572,7 +588,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
   return assemble({
     ref: tree.ref,
     sha: tree.sha,
-    readAt: readAtNow(),
+    readAt,
     stateRevision: ledger.stateRevision,
     scope: ledger.scope,
     activation: factory?.activation ?? null,
@@ -581,5 +597,7 @@ export async function snapshotFromFiles(tree: TowerFiles): Promise<Snapshot> {
     initiatives,
     packets,
     pulse,
+    explanation,
+    releases: ledgerReleases(ledger),
   });
 }
