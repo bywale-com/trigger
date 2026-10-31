@@ -1,0 +1,1619 @@
+{
+  "stateRevision": 193,
+  "authorizedDispatches": 50,
+  "usedDispatches": 43,
+  "scope": {
+    "status": "active",
+    "lanes": [
+      "engineer",
+      "analyst"
+    ]
+  },
+  "initiatives": {
+    "exec-identity": {
+      "id": "exec-identity",
+      "priority": 10,
+      "session": "continuation_due",
+      "queue": "active",
+      "dispatch": null
+    },
+    "launch-agent": {
+      "id": "launch-agent",
+      "priority": 20,
+      "session": "idle",
+      "queue": "discovered",
+      "dispatch": null
+    }
+  },
+  "packets": {
+    "pkt-001-click-attribution": {
+      "id": "pkt-001-click-attribution",
+      "initiativeId": "exec-identity",
+      "stage": "accepted",
+      "wake": "hold",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "19c47938d8aa8884b4874999a50667f5677205b3",
+      "verifiedSha": "19c47938d8aa8884b4874999a50667f5677205b3",
+      "integratedSha": "9c45f19fa1ac9d909247d6be83c9263273b1bcbb",
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": null,
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": false,
+      "reconciliationId": "pr-136-9c45f19fa1ac9d909247d6be83c9263273b1bcbb",
+      "dispatch": null,
+      "dispatchHistory": null,
+      "siblings": null
+    },
+    "pkt-002-open-ask-cursor": {
+      "id": "pkt-002-open-ask-cursor",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "3246a074efecd8adb98e4ca232d443b90821173f",
+      "verifiedSha": "3246a074efecd8adb98e4ca232d443b90821173f",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-002-open-ask-cursor",
+          "revision": "rev-1",
+          "prHead": "a19229352274f07f177619c8d92f689d21d4fdba",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-002-open-ask-cursor",
+          "revision": "rev-1",
+          "prHead": "f06148b747f212ef49678b226e3650cc353e598f",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T10:29:42.849Z",
+          "executionId": "dsp-123-engineer-pkt-002-open-ask-cursor",
+          "assignmentId": "asg-dsp-123-engineer-pkt-002-open-ask-cursor",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": null
+    },
+    "pkt-003-resume-same-run": {
+      "id": "pkt-003-resume-same-run",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "e94b1e0bb91c1a1d276eb4e92fff7507075e410f",
+      "verifiedSha": "e94b1e0bb91c1a1d276eb4e92fff7507075e410f",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-003-resume-same-run",
+          "revision": "rev-1",
+          "prHead": "3d15878496575ff4f40e187a3d8012bc7107b6ae",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "workerExecution": "absent"
+        },
+        {
+          "packetId": "pkt-003-resume-same-run",
+          "revision": "rev-1",
+          "prHead": "05058493132dd973f33e5ef10326b7463c15133e",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-29T22:08:17.332Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-003-resume-same-run",
+          "revision": "rev-1",
+          "prHead": "f451cee9422ebfb0fda2b120bfb0f669299c0242",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T10:38:20.846Z",
+          "executionId": "dsp-123-engineer-pkt-003-resume-same-run",
+          "assignmentId": "asg-dsp-123-engineer-pkt-003-resume-same-run",
+          "workerExecution": "absent"
+        },
+        {
+          "packetId": "pkt-003-resume-same-run",
+          "revision": "rev-1",
+          "prHead": "e94b1e0bb91c1a1d276eb4e92fff7507075e410f",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:02:57.204Z",
+          "executionId": "dsp-126-engineer-pkt-003-resume-same-run",
+          "assignmentId": "asg-dsp-126-engineer-pkt-003-resume-same-run",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-004-firing-handle",
+          "basis": "component",
+          "note": "walk-handle: rows a run may read after a park or a firing"
+        }
+      ]
+    },
+    "pkt-004-firing-handle": {
+      "id": "pkt-004-firing-handle",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "c8fb14e78f7d9f81aa68d15a5050ae73650cbcc3",
+      "verifiedSha": "c8fb14e78f7d9f81aa68d15a5050ae73650cbcc3",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-004-firing-handle",
+          "revision": "rev-1",
+          "prHead": "00ec5e7f066e6e491c4b6f3d1f80db360da25675",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "workerExecution": "absent"
+        },
+        {
+          "packetId": "pkt-004-firing-handle",
+          "revision": "rev-1",
+          "prHead": "98ef7825446a5c6ad6a8c98f8d410cb071b311c4",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-29T22:16:55.360Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-004-firing-handle",
+          "revision": "rev-1",
+          "prHead": "74d9770bb0d627191b8580225dcb73845ebf0126",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:03:26.103Z",
+          "executionId": "dsp-128-engineer-pkt-004-firing-handle",
+          "assignmentId": "asg-dsp-128-engineer-pkt-004-firing-handle",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-003-resume-same-run",
+          "basis": "component",
+          "note": "walk-handle: rows a run may read after a park or a firing"
+        },
+        {
+          "id": "pkt-006-id-keyed-loads",
+          "basis": "dependency",
+          "note": "006 loads fact, meeting, and wait rows by the id predicate; 004 loads engagement_records by that predicate"
+        }
+      ]
+    },
+    "pkt-005-audit-row-grain": {
+      "id": "pkt-005-audit-row-grain",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "e325464c5ab8fb356841154bae691f5fc3ea199c",
+      "verifiedSha": "e325464c5ab8fb356841154bae691f5fc3ea199c",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-005-audit-row-grain",
+          "revision": "rev-1",
+          "prHead": "3bce58d4c8668d9545a173c9d21519265545a6b9",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T10:30:18.281Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-005-audit-row-grain",
+          "revision": "rev-1",
+          "prHead": "9b058e847b3dc04787e355e19ad195f5e3ef95b6",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:17:11.042Z",
+          "executionId": "dsp-133-engineer-pkt-005-audit-row-grain",
+          "assignmentId": "asg-dsp-133-engineer-pkt-005-audit-row-grain",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": null
+    },
+    "pkt-006-id-keyed-loads": {
+      "id": "pkt-006-id-keyed-loads",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "e8642a6f0d2f4154f7f766975e06e80d6fddb9d2",
+      "verifiedSha": "e8642a6f0d2f4154f7f766975e06e80d6fddb9d2",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-006-id-keyed-loads",
+          "revision": "rev-1",
+          "prHead": "dd62fb6cd8c0c6b8b94eb8ecfc02bafb0f880c78",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T10:51:23.108Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-006-id-keyed-loads",
+          "revision": "rev-1",
+          "prHead": "62192cabc34dfeb5ef0994b9d1df4a4e775a3168",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:30:17.466Z",
+          "executionId": "dsp-137-engineer-pkt-006-id-keyed-loads",
+          "assignmentId": "asg-dsp-137-engineer-pkt-006-id-keyed-loads",
+          "workerExecution": "absent"
+        },
+        {
+          "packetId": "pkt-006-id-keyed-loads",
+          "revision": "rev-1",
+          "prHead": "4e2eba314bfcdbaa4e58a8318fac0fe1344b2dd3",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:35:52.079Z",
+          "executionId": "dsp-140-engineer-pkt-006-id-keyed-loads",
+          "assignmentId": "asg-dsp-140-engineer-pkt-006-id-keyed-loads",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-004-firing-handle",
+          "basis": "dependency",
+          "note": "006 loads fact, meeting, and wait rows by the id predicate; 004 loads engagement_records by that predicate"
+        }
+      ]
+    },
+    "pkt-007-fact-writes": {
+      "id": "pkt-007-fact-writes",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "385b173dc6a6bbdb0eff858c5347451f9358730b",
+      "verifiedSha": "385b173dc6a6bbdb0eff858c5347451f9358730b",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-007-fact-writes",
+          "revision": "rev-1",
+          "prHead": "b0abdc52f91e3d68f88a08fa28cbbbaec409b403",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T10:58:49.970Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-007-fact-writes",
+          "revision": "rev-1",
+          "prHead": "a2bd4bcffd8b202b61fa8659ece4506ed2dfa5d2",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T18:47:15.644Z",
+          "executionId": "dsp-144-engineer-pkt-007-fact-writes",
+          "assignmentId": "asg-dsp-144-engineer-pkt-007-fact-writes",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-008-meeting-writes": {
+      "id": "pkt-008-meeting-writes",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "7c3cc5e197a56d186bd1ec483966530d77d0411c",
+      "verifiedSha": "7c3cc5e197a56d186bd1ec483966530d77d0411c",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-008-meeting-writes",
+          "revision": "rev-1",
+          "prHead": "b9cc3608fba078634ea25ed06c64170a58579f47",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T11:06:43.404Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-008-meeting-writes",
+          "revision": "rev-1",
+          "prHead": "b86188af3e385bc2c2bb3dcc89a6733a83111967",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T19:00:57.908Z",
+          "executionId": "dsp-148-engineer-pkt-008-meeting-writes",
+          "assignmentId": "asg-dsp-148-engineer-pkt-008-meeting-writes",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-009-eligibility-writes": {
+      "id": "pkt-009-eligibility-writes",
+      "initiativeId": "exec-identity",
+      "stage": "released",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-009-eligibility-writes",
+          "revision": "rev-1",
+          "prHead": "34b5865ff57c6d855bfc3f73fef5cde9a3bb9dfe",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T11:15:06.469Z",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-010-campaign-failure-writes": {
+      "id": "pkt-010-campaign-failure-writes",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "a93943ad6bf1038c428eeb8174e7c83a436cf5cf",
+      "verifiedSha": "a93943ad6bf1038c428eeb8174e7c83a436cf5cf",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-010-campaign-failure-writes",
+          "revision": "rev-1",
+          "prHead": "fe1e97d0908517101c2d4950ac166f41d7180bfe",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T11:33:35.045Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-010-campaign-failure-writes",
+          "revision": "rev-1",
+          "prHead": "11808a66a5fa55c492d2ef760a2499738a05ed3f",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T19:08:22.735Z",
+          "executionId": "dsp-152-engineer-pkt-010-campaign-failure-writes",
+          "assignmentId": "asg-dsp-152-engineer-pkt-010-campaign-failure-writes",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-011-halt-records-writes": {
+      "id": "pkt-011-halt-records-writes",
+      "initiativeId": "exec-identity",
+      "stage": "released",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-011-halt-records-writes",
+          "revision": "rev-1",
+          "prHead": "4d4215d2a24bd0ba3874032a0ff706832a07feff",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T11:51:12.635Z",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-012-consent-opt-out-writes": {
+      "id": "pkt-012-consent-opt-out-writes",
+      "initiativeId": "exec-identity",
+      "stage": "released",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-012-consent-opt-out-writes",
+          "revision": "rev-1",
+          "prHead": "5f746ffb616d98d6d991ea308609bfa60761bd13",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T12:02:14.436Z",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-013-firm-provision-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-013-firm-provision-writes": {
+      "id": "pkt-013-firm-provision-writes",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "fcc495b8a2fba8d29b1460179d995e5c1ec3e5eb",
+      "verifiedSha": "fcc495b8a2fba8d29b1460179d995e5c1ec3e5eb",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-013-firm-provision-writes",
+          "revision": "rev-1",
+          "prHead": "3d14649ff8a1c6a124be0d04b6917508f88ee73b",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T12:20:14.544Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-013-firm-provision-writes",
+          "revision": "rev-1",
+          "prHead": "e726a10677be7f8c224d2b4303601c71fbac28d0",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T12:28:08.331Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-013-firm-provision-writes",
+          "revision": "rev-1",
+          "prHead": "df6ed4d480f564d10e4bd6793762bfc27cef7b42",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T19:17:07.949Z",
+          "executionId": "dsp-156-engineer-pkt-013-firm-provision-writes",
+          "assignmentId": "asg-dsp-156-engineer-pkt-013-firm-provision-writes",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-007-fact-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-008-meeting-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-009-eligibility-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-010-campaign-failure-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-011-halt-records-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        },
+        {
+          "id": "pkt-012-consent-opt-out-writes",
+          "basis": "component",
+          "note": "firing-pointers: this firing places its own rows on payload.writes"
+        }
+      ]
+    },
+    "pkt-014-empty-firing-audience": {
+      "id": "pkt-014-empty-firing-audience",
+      "initiativeId": "exec-identity",
+      "stage": "released",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-014-empty-firing-audience",
+          "revision": "rev-1",
+          "prHead": "b40e42b965f15e97a4e625a16291f5fe43ade3ae",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T12:38:25.138Z",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": null
+    },
+    "pkt-015-halt-enroll-firm": {
+      "id": "pkt-015-halt-enroll-firm",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "06abd74b9427fb03f6968861848e96e38483940c",
+      "verifiedSha": "06abd74b9427fb03f6968861848e96e38483940c",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-015-halt-enroll-firm",
+          "revision": "rev-1",
+          "prHead": "08f28e36682490c51dd44eb6129e1e7d33a9758d",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T12:48:55.989Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-015-halt-enroll-firm",
+          "revision": "rev-1",
+          "prHead": "9297b03fa8322a9a5a5d79f53cf3a1576c9510a6",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-30T19:26:43.997Z",
+          "executionId": "dsp-160-engineer-pkt-015-halt-enroll-firm",
+          "assignmentId": "asg-dsp-160-engineer-pkt-015-halt-enroll-firm",
+          "workerExecution": "absent"
+        },
+        {
+          "packetId": "pkt-015-halt-enroll-firm",
+          "revision": "rev-1",
+          "prHead": "86022c517931e4ef24cb0bd5395ac8f606f6acfe",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-31T13:34:37.616Z",
+          "executionId": "dsp-164-engineer-pkt-015-halt-enroll-firm",
+          "assignmentId": "asg-dsp-164-engineer-pkt-015-halt-enroll-firm",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-016-halt-send-firm",
+          "basis": "dependency",
+          "note": "016 leaves the enroll predicate 015 specified; both read halt_records by firm"
+        }
+      ]
+    },
+    "pkt-016-halt-send-firm": {
+      "id": "pkt-016-halt-send-firm",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "0302493b1048fa0c07ba41a31050fb61c90e8602",
+      "verifiedSha": "0302493b1048fa0c07ba41a31050fb61c90e8602",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-016-halt-send-firm",
+          "revision": "rev-1",
+          "prHead": "6bcd463ffd046b20865b425564ccfbb72dc42b31",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T13:07:59.836Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-016-halt-send-firm",
+          "revision": "rev-1",
+          "prHead": "86022c517931e4ef24cb0bd5395ac8f606f6acfe",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-31T13:34:37.616Z",
+          "executionId": "dsp-164-engineer-pkt-015-halt-enroll-firm",
+          "assignmentId": "asg-dsp-164-engineer-pkt-015-halt-enroll-firm",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-015-halt-enroll-firm",
+          "basis": "dependency",
+          "note": "016 leaves the enroll predicate 015 specified; both read halt_records by firm"
+        },
+        {
+          "id": "pkt-017-tick-send-halt",
+          "basis": "dependency",
+          "note": "017 denies the tick send with the firm predicate 016 specified"
+        }
+      ]
+    },
+    "pkt-017-tick-send-halt": {
+      "id": "pkt-017-tick-send-halt",
+      "initiativeId": "exec-identity",
+      "stage": "released",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-017-tick-send-halt",
+          "revision": "rev-1",
+          "prHead": "968d2ec4fd1dd565a49182f88fd73cc543d815b8",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T13:25:04.920Z",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-016-halt-send-firm",
+          "basis": "dependency",
+          "note": "017 denies the tick send with the firm predicate 016 specified"
+        },
+        {
+          "id": "pkt-018-send-denied-engagement",
+          "basis": "dependency",
+          "note": "018 appends send_denied for the tick send 017 left open"
+        }
+      ]
+    },
+    "pkt-018-send-denied-engagement": {
+      "id": "pkt-018-send-denied-engagement",
+      "initiativeId": "exec-identity",
+      "stage": "verified",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": "13e6c14d0531cc1b583449b38c9a007056d8174f",
+      "verifiedSha": "13e6c14d0531cc1b583449b38c9a007056d8174f",
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": "rev-1",
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-018-send-denied-engagement",
+          "revision": "rev-1",
+          "prHead": "c0f7d41bd28d79aef36bf6559fb950c6f3d88d74",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T13:42:40.503Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-018-send-denied-engagement",
+          "revision": "rev-1",
+          "prHead": "00283ac4b875c28cc3cab35592f98e5144d39b44",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-31T13:45:40.987Z",
+          "executionId": "dsp-172-engineer-pkt-018-send-denied-engagement",
+          "assignmentId": "asg-dsp-172-engineer-pkt-018-send-denied-engagement",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-017-tick-send-halt",
+          "basis": "dependency",
+          "note": "018 appends send_denied for the tick send 017 left open"
+        },
+        {
+          "id": "pkt-019-first-step-send-denied",
+          "basis": "dependency",
+          "note": "019 records the send_denied kind 018 required of a denied send"
+        }
+      ]
+    },
+    "pkt-019-first-step-send-denied": {
+      "id": "pkt-019-first-step-send-denied",
+      "initiativeId": "exec-identity",
+      "stage": "engineering",
+      "wake": "sa",
+      "revision": "rev-1",
+      "hold": false,
+      "blockerId": null,
+      "lease": null,
+      "attempts": 0,
+      "maxAttempts": 1,
+      "candidateSha": null,
+      "verifiedSha": null,
+      "integratedSha": null,
+      "lastFailureFingerprint": null,
+      "lastFailureClass": null,
+      "dispatchedSaRevision": "rev-1",
+      "dispatchedEngineerRevision": null,
+      "dispatchedRepairFingerprint": null,
+      "releaseEligible": true,
+      "reconciliationId": null,
+      "dispatch": null,
+      "dispatchHistory": [
+        {
+          "packetId": "pkt-019-first-step-send-denied",
+          "revision": "rev-1",
+          "prHead": "c99c4c91e6fa0af644a3891ae0180edf0f5a6854",
+          "effect": "wake_sa",
+          "label": "factory-wake-sa",
+          "issuedAt": "2026-10-30T14:02:15.786Z",
+          "workerExecution": "ran"
+        },
+        {
+          "packetId": "pkt-019-first-step-send-denied",
+          "revision": "rev-1",
+          "prHead": "00283ac4b875c28cc3cab35592f98e5144d39b44",
+          "effect": "wake_engineer",
+          "label": "factory-wake-engineer",
+          "issuedAt": "2026-10-31T13:45:40.987Z",
+          "executionId": "dsp-172-engineer-pkt-018-send-denied-engagement",
+          "assignmentId": "asg-dsp-172-engineer-pkt-018-send-denied-engagement",
+          "workerExecution": "ran"
+        }
+      ],
+      "siblings": [
+        {
+          "id": "pkt-018-send-denied-engagement",
+          "basis": "dependency",
+          "note": "019 records the send_denied kind 018 required of a denied send"
+        }
+      ]
+    }
+  },
+  "executions": {
+    "dsp-123-engineer-pkt-002-open-ask-cursor": {
+      "id": "dsp-123-engineer-pkt-002-open-ask-cursor",
+      "assignmentId": "asg-dsp-123-engineer-pkt-002-open-ask-cursor",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-002-open-ask-cursor"
+      ],
+      "revisions": {
+        "pkt-002-open-ask-cursor": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "f06148b747f212ef49678b226e3650cc353e598f",
+      "agentId": null,
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T10:29:42.849Z",
+      "startedAt": null,
+      "runningAt": null,
+      "endedAt": "2026-10-30T15:45:00.000Z",
+      "reserveUntil": "2026-10-30T10:59:42.849Z",
+      "startUntil": null,
+      "leaseUntil": null,
+      "reason": "candidate_recorded"
+    },
+    "dsp-123-engineer-pkt-003-resume-same-run": {
+      "id": "dsp-123-engineer-pkt-003-resume-same-run",
+      "assignmentId": "asg-dsp-123-engineer-pkt-003-resume-same-run",
+      "role": "engineer",
+      "phase": "refused",
+      "packetIds": [
+        "pkt-003-resume-same-run"
+      ],
+      "revisions": {
+        "pkt-003-resume-same-run": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "f451cee9422ebfb0fda2b120bfb0f669299c0242",
+      "agentId": null,
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T10:38:20.846Z",
+      "startedAt": null,
+      "runningAt": null,
+      "endedAt": "2026-10-30T15:45:00.000Z",
+      "reserveUntil": "2026-10-30T11:08:20.846Z",
+      "startUntil": null,
+      "leaseUntil": null,
+      "reason": "reservation_expired"
+    },
+    "dsp-124-architect-exec-identity": {
+      "id": "dsp-124-architect-exec-identity",
+      "assignmentId": "asg-dsp-124-architect-exec-identity",
+      "role": "architect",
+      "phase": "interrupted",
+      "packetIds": [
+        "exec-identity"
+      ],
+      "revisions": {
+        "exec-identity": "rev-4"
+      },
+      "label": "factory-wake-architect",
+      "prHead": "66becb1b39810446b771b36e8bac43df9bfb3bc0",
+      "agentId": null,
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T14:11:43.660Z",
+      "startedAt": null,
+      "runningAt": null,
+      "endedAt": "2026-10-30T17:50:29.766Z",
+      "reserveUntil": "2026-10-30T17:11:43.660Z",
+      "startUntil": null,
+      "leaseUntil": null,
+      "reason": "reservation_expired"
+    },
+    "dsp-126-engineer-pkt-003-resume-same-run": {
+      "id": "dsp-126-engineer-pkt-003-resume-same-run",
+      "assignmentId": "asg-dsp-126-engineer-pkt-003-resume-same-run",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-003-resume-same-run"
+      ],
+      "revisions": {
+        "pkt-003-resume-same-run": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "e94b1e0bb91c1a1d276eb4e92fff7507075e410f",
+      "agentId": "bc-f456e11c-60be-4d08-83b5-e8b01c1574f7",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:02:57.204Z",
+      "startedAt": "2026-10-30T18:02:57.204Z",
+      "runningAt": "2026-10-30T18:02:57.204Z",
+      "endedAt": "2026-10-30T18:03:05.661Z",
+      "reserveUntil": "2026-10-30T18:32:57.204Z",
+      "startUntil": "2026-10-30T18:17:57.204Z",
+      "leaseUntil": "2026-10-30T19:02:57.204Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-128-engineer-pkt-004-firing-handle": {
+      "id": "dsp-128-engineer-pkt-004-firing-handle",
+      "assignmentId": "asg-dsp-128-engineer-pkt-004-firing-handle",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-004-firing-handle"
+      ],
+      "revisions": {
+        "pkt-004-firing-handle": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "74d9770bb0d627191b8580225dcb73845ebf0126",
+      "agentId": "bc-290d8b85-0254-43aa-bc40-d4576053056c",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:03:26.103Z",
+      "startedAt": "2026-10-30T18:04:35.867Z",
+      "runningAt": "2026-10-30T18:04:39.044Z",
+      "endedAt": "2026-10-30T18:16:44.883Z",
+      "reserveUntil": "2026-10-30T18:33:26.103Z",
+      "startUntil": "2026-10-30T18:19:35.867Z",
+      "leaseUntil": "2026-10-30T19:04:39.044Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-133-engineer-pkt-005-audit-row-grain": {
+      "id": "dsp-133-engineer-pkt-005-audit-row-grain",
+      "assignmentId": "asg-dsp-133-engineer-pkt-005-audit-row-grain",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-005-audit-row-grain"
+      ],
+      "revisions": {
+        "pkt-005-audit-row-grain": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "9b058e847b3dc04787e355e19ad195f5e3ef95b6",
+      "agentId": "bc-5bc4801d-c496-4f76-b6b4-db1d838b8aca",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:17:11.042Z",
+      "startedAt": "2026-10-30T18:22:04.428Z",
+      "runningAt": "2026-10-30T18:22:06.272Z",
+      "endedAt": "2026-10-30T18:29:50.422Z",
+      "reserveUntil": "2026-10-30T18:47:11.042Z",
+      "startUntil": "2026-10-30T18:37:04.428Z",
+      "leaseUntil": "2026-10-30T19:22:06.272Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-137-engineer-pkt-006-id-keyed-loads": {
+      "id": "dsp-137-engineer-pkt-006-id-keyed-loads",
+      "assignmentId": "asg-dsp-137-engineer-pkt-006-id-keyed-loads",
+      "role": "engineer",
+      "phase": "refused",
+      "packetIds": [
+        "pkt-006-id-keyed-loads"
+      ],
+      "revisions": {
+        "pkt-006-id-keyed-loads": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "62192cabc34dfeb5ef0994b9d1df4a4e775a3168",
+      "agentId": "bc-aa5f3113-1dcc-4e94-bfc8-447ec18f939b",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:30:17.466Z",
+      "startedAt": "2026-10-30T18:35:20.983Z",
+      "runningAt": null,
+      "endedAt": "2026-10-30T18:35:22.716Z",
+      "reserveUntil": "2026-10-30T19:00:17.466Z",
+      "startUntil": "2026-10-30T18:50:20.983Z",
+      "leaseUntil": null,
+      "reason": "worker_refused"
+    },
+    "dsp-140-engineer-pkt-006-id-keyed-loads": {
+      "id": "dsp-140-engineer-pkt-006-id-keyed-loads",
+      "assignmentId": "asg-dsp-140-engineer-pkt-006-id-keyed-loads",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-006-id-keyed-loads"
+      ],
+      "revisions": {
+        "pkt-006-id-keyed-loads": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "4e2eba314bfcdbaa4e58a8318fac0fe1344b2dd3",
+      "agentId": "bc-0ea79187-7b27-4c16-a835-57482d0bb9d1",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:35:52.079Z",
+      "startedAt": "2026-10-30T18:40:24.263Z",
+      "runningAt": "2026-10-30T18:40:26.179Z",
+      "endedAt": "2026-10-30T18:46:56.434Z",
+      "reserveUntil": "2026-10-30T19:05:52.079Z",
+      "startUntil": "2026-10-30T18:55:24.263Z",
+      "leaseUntil": "2026-10-30T19:40:26.179Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-144-engineer-pkt-007-fact-writes": {
+      "id": "dsp-144-engineer-pkt-007-fact-writes",
+      "assignmentId": "asg-dsp-144-engineer-pkt-007-fact-writes",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-007-fact-writes"
+      ],
+      "revisions": {
+        "pkt-007-fact-writes": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "a2bd4bcffd8b202b61fa8659ece4506ed2dfa5d2",
+      "agentId": "bc-3b6c91f0-5a89-44dc-bd8e-1234e11ed9d1",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T18:47:15.644Z",
+      "startedAt": "2026-10-30T18:51:38.894Z",
+      "runningAt": "2026-10-30T18:51:43.339Z",
+      "endedAt": "2026-10-30T19:00:42.047Z",
+      "reserveUntil": "2026-10-30T19:17:15.644Z",
+      "startUntil": "2026-10-30T19:06:38.894Z",
+      "leaseUntil": "2026-10-30T19:51:43.339Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-148-engineer-pkt-008-meeting-writes": {
+      "id": "dsp-148-engineer-pkt-008-meeting-writes",
+      "assignmentId": "asg-dsp-148-engineer-pkt-008-meeting-writes",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-008-meeting-writes"
+      ],
+      "revisions": {
+        "pkt-008-meeting-writes": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "b86188af3e385bc2c2bb3dcc89a6733a83111967",
+      "agentId": "bc-85ddf227-1c40-454f-a9ba-260b6dbd6a6d",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T19:00:57.908Z",
+      "startedAt": "2026-10-30T19:01:57.971Z",
+      "runningAt": "2026-10-30T19:01:59.777Z",
+      "endedAt": "2026-10-30T19:07:51.827Z",
+      "reserveUntil": "2026-10-30T19:30:57.908Z",
+      "startUntil": "2026-10-30T19:16:57.971Z",
+      "leaseUntil": "2026-10-30T20:01:59.777Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-152-engineer-pkt-010-campaign-failure-writes": {
+      "id": "dsp-152-engineer-pkt-010-campaign-failure-writes",
+      "assignmentId": "asg-dsp-152-engineer-pkt-010-campaign-failure-writes",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-010-campaign-failure-writes"
+      ],
+      "revisions": {
+        "pkt-010-campaign-failure-writes": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "11808a66a5fa55c492d2ef760a2499738a05ed3f",
+      "agentId": "bc-51265dff-9572-40fb-a9cd-be7f3ce5797d",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T19:08:22.735Z",
+      "startedAt": "2026-10-30T19:11:07.570Z",
+      "runningAt": "2026-10-30T19:11:09.369Z",
+      "endedAt": "2026-10-30T19:16:35.809Z",
+      "reserveUntil": "2026-10-30T19:38:22.735Z",
+      "startUntil": "2026-10-30T19:26:07.570Z",
+      "leaseUntil": "2026-10-30T20:11:09.369Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-156-engineer-pkt-013-firm-provision-writes": {
+      "id": "dsp-156-engineer-pkt-013-firm-provision-writes",
+      "assignmentId": "asg-dsp-156-engineer-pkt-013-firm-provision-writes",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-013-firm-provision-writes"
+      ],
+      "revisions": {
+        "pkt-013-firm-provision-writes": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "df6ed4d480f564d10e4bd6793762bfc27cef7b42",
+      "agentId": "bc-4192002b-f944-4eeb-919a-1af83d403f28",
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T19:17:07.949Z",
+      "startedAt": "2026-10-30T19:18:16.209Z",
+      "runningAt": "2026-10-30T19:18:23.972Z",
+      "endedAt": "2026-10-30T19:26:22.949Z",
+      "reserveUntil": "2026-10-30T19:47:07.949Z",
+      "startUntil": "2026-10-30T19:33:16.209Z",
+      "leaseUntil": "2026-10-30T20:18:23.972Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-160-engineer-pkt-015-halt-enroll-firm": {
+      "id": "dsp-160-engineer-pkt-015-halt-enroll-firm",
+      "assignmentId": "asg-dsp-160-engineer-pkt-015-halt-enroll-firm",
+      "role": "engineer",
+      "phase": "refused",
+      "packetIds": [
+        "pkt-015-halt-enroll-firm"
+      ],
+      "revisions": {
+        "pkt-015-halt-enroll-firm": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "9297b03fa8322a9a5a5d79f53cf3a1576c9510a6",
+      "agentId": null,
+      "continuation": "fresh",
+      "issuedAt": "2026-10-30T19:26:43.997Z",
+      "startedAt": null,
+      "runningAt": null,
+      "endedAt": "2026-10-31T12:24:31.081Z",
+      "reserveUntil": "2026-10-30T19:56:43.997Z",
+      "startUntil": null,
+      "leaseUntil": null,
+      "reason": "reservation_expired"
+    },
+    "dsp-164-engineer-pkt-015-halt-enroll-firm": {
+      "id": "dsp-164-engineer-pkt-015-halt-enroll-firm",
+      "assignmentId": "asg-dsp-164-engineer-pkt-015-halt-enroll-firm",
+      "role": "engineer",
+      "phase": "completed",
+      "packetIds": [
+        "pkt-015-halt-enroll-firm",
+        "pkt-016-halt-send-firm"
+      ],
+      "revisions": {
+        "pkt-015-halt-enroll-firm": "rev-1",
+        "pkt-016-halt-send-firm": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "86022c517931e4ef24cb0bd5395ac8f606f6acfe",
+      "agentId": "bc-4192002b-f944-4eeb-919a-1af83d403f28",
+      "continuation": "resume",
+      "issuedAt": "2026-10-31T13:34:37.616Z",
+      "startedAt": "2026-10-31T13:36:00.126Z",
+      "runningAt": "2026-10-31T13:41:54.990Z",
+      "endedAt": "2026-10-31T13:45:19.997Z",
+      "reserveUntil": "2026-10-31T14:04:37.616Z",
+      "startUntil": "2026-10-31T13:51:00.126Z",
+      "leaseUntil": "2026-10-31T14:41:54.990Z",
+      "reason": "candidate_recorded"
+    },
+    "dsp-172-engineer-pkt-018-send-denied-engagement": {
+      "id": "dsp-172-engineer-pkt-018-send-denied-engagement",
+      "assignmentId": "asg-dsp-172-engineer-pkt-018-send-denied-engagement",
+      "role": "engineer",
+      "phase": "interrupted",
+      "packetIds": [
+        "pkt-018-send-denied-engagement",
+        "pkt-019-first-step-send-denied"
+      ],
+      "revisions": {
+        "pkt-018-send-denied-engagement": "rev-1",
+        "pkt-019-first-step-send-denied": "rev-1"
+      },
+      "label": "factory-wake-engineer",
+      "prHead": "00283ac4b875c28cc3cab35592f98e5144d39b44",
+      "agentId": "bc-4192002b-f944-4eeb-919a-1af83d403f28",
+      "continuation": "resume",
+      "issuedAt": "2026-10-31T13:45:40.987Z",
+      "startedAt": "2026-10-31T13:48:02.104Z",
+      "runningAt": "2026-10-31T13:51:21.603Z",
+      "endedAt": "2026-10-31T15:06:12.539Z",
+      "reserveUntil": "2026-10-31T14:15:40.987Z",
+      "startUntil": "2026-10-31T14:03:02.104Z",
+      "leaseUntil": "2026-10-31T14:51:21.603Z",
+      "reason": "lease_expired"
+    }
+  },
+  "releases": {
+    "rel-pkt-002-open-ask-cursor": {
+      "id": "rel-pkt-002-open-ask-cursor",
+      "packetIds": [
+        "pkt-002-open-ask-cursor"
+      ],
+      "prNumber": 141,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/141",
+      "openedAt": "2026-10-31T13:43:15.757Z",
+      "mergeSha": null
+    },
+    "rel-pkt-003-resume-same-run": {
+      "id": "rel-pkt-003-resume-same-run",
+      "packetIds": [
+        "pkt-003-resume-same-run"
+      ],
+      "prNumber": 142,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/142",
+      "openedAt": "2026-10-31T13:43:22.118Z",
+      "mergeSha": null
+    },
+    "rel-pkt-007-fact-writes": {
+      "id": "rel-pkt-007-fact-writes",
+      "packetIds": [
+        "pkt-007-fact-writes"
+      ],
+      "prNumber": 143,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/143",
+      "openedAt": "2026-10-31T14:38:05.964Z",
+      "mergeSha": null
+    },
+    "rel-pkt-005-audit-row-grain": {
+      "id": "rel-pkt-005-audit-row-grain",
+      "packetIds": [
+        "pkt-005-audit-row-grain"
+      ],
+      "prNumber": 144,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/144",
+      "openedAt": "2026-10-31T14:38:58.157Z",
+      "mergeSha": null
+    },
+    "rel-pkt-008-meeting-writes": {
+      "id": "rel-pkt-008-meeting-writes",
+      "packetIds": [
+        "pkt-008-meeting-writes"
+      ],
+      "prNumber": 145,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/145",
+      "openedAt": "2026-10-31T14:39:05.208Z",
+      "mergeSha": null
+    },
+    "rel-pkt-010-campaign-failure-writes": {
+      "id": "rel-pkt-010-campaign-failure-writes",
+      "packetIds": [
+        "pkt-010-campaign-failure-writes"
+      ],
+      "prNumber": 146,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/146",
+      "openedAt": "2026-10-31T14:39:12.353Z",
+      "mergeSha": null
+    },
+    "rel-pkt-004-firing-handle--pkt-006-id-keyed-loads": {
+      "id": "rel-pkt-004-firing-handle--pkt-006-id-keyed-loads",
+      "packetIds": [
+        "pkt-004-firing-handle",
+        "pkt-006-id-keyed-loads"
+      ],
+      "prNumber": 147,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/147",
+      "openedAt": "2026-10-31T14:39:56.529Z",
+      "mergeSha": null
+    },
+    "rel-pkt-013-firm-provision-writes": {
+      "id": "rel-pkt-013-firm-provision-writes",
+      "packetIds": [
+        "pkt-013-firm-provision-writes"
+      ],
+      "prNumber": 148,
+      "prUrl": "https://github.com/bywale-com/omcoda_tower/pull/148",
+      "openedAt": "2026-10-31T14:40:03.546Z",
+      "mergeSha": null
+    }
+  }
+}

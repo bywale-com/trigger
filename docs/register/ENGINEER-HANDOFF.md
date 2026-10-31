@@ -4,9 +4,9 @@
 
 ## Where we stopped
 
-Packet 009 is on `cursor/founder-inbox-71ee`. **Wake:** hold. The plates in `docs/register/plates/packet-009/` were revised 31 Oct 2026: the inbox is the pulse drawer, releases first, and Why / Next use recorded fields or Unknown. Do not plant, and do not add a merge write, while the wake says hold. Operating ledger on `cursor/execution-architecture-74f7` was revision 192 at 10:44 AM America/Toronto: scope active, controller inactive, eight open releases (PR 141–148), execution `dsp-172` running on `pkt-019`. Production `GET /api/snapshot` at that time returned `cursor/factory-agents-scope-33ee`, revision 122, scope suspended. That is the server snapshot. This packet does not change the ref. The snapshot type still does not carry `releases`.
+Packet 009 is planted on `cursor/founder-inbox-71ee` (PR 15), rebased onto hotfix 007. The desk runs Tower’s `explainFactory` on the ledger it already reads and prints that headline, Why, Next, and Who. The founder inbox is the open releases in the pulse drawer (pull requests 141–148 on ledger 193). Merge is drawn and does not call GitHub. There is no write tool. Operating ledger on `cursor/execution-architecture-74f7` was revision 193 at 11:06 AM America/Toronto: scope active, controller inactive, `dsp-172` interrupted `lease_expired`, `pkt-019` intervention with next Unknown.
 
-Hotfix 007 is `cursor/operating-factory-lock-71ee`. Production deployment `78fa391` reads `cursor/factory-agents-scope-33ee`, ledger revision 122. Deployment `69380f9` of the same resolver reads `cursor/execution-architecture-74f7`, ledger revision 192. Production ignores `TOWER_REF` and `TOWER_SOURCE`. A missing operating signal fails the read instead of serving `source.json`.
+Hotfix 007 is on `main` as PR 16 (`3659d61`). Production ignores `TOWER_REF` and `TOWER_SOURCE`. A missing operating signal fails the read instead of serving `source.json`. Local and preview may still pin a branch.
 
 Hotfix 006 is the OAuth invocation cut (`cursor/oauth-node-entry-71ee`). Production `870a576` (hotfix 005, PR 13) is deployed. The 31 Oct 2026 8:19 AM America/Toronto failure was `invalid_function_runtime` from `runtime: nodejs20.x` in `vercel.json`, and removing that key let the build finish. The desk on https://trigger-theta-cyan.vercel.app reads `cursor/execution-architecture-74f7`, ledger revision 162, scope suspended, controller inactive. `GET /api/v1/factory` and `POST /api/mcp` return `401` without a bearer. `/.well-known/oauth-protected-resource` and `/.well-known/oauth-authorization-server` still return `FUNCTION_INVOCATION_FAILED`. The Node builder rewrites static `.ts` imports to `.js` and does not rewrite `import("…oauth.ts")`, so the compiled function cannot load that module. The compiled OAuth module imports `auth.ts`. That file was not in the function, so the route died. `includeFiles` is `src/observe/**`, the same set the other Node routes ship. Production `12e1109` (31 Oct 2026, 9:22 AM America/Toronto) returns `200` for both well-known metadata routes. `GET /api/v1/factory` and `POST /api/mcp` return `401` without a bearer. The desk reads `cursor/execution-architecture-74f7`, ledger revision 162, scope suspended, controller inactive. Do not put `nodejs20.x` in `vercel.json`.
 
@@ -26,13 +26,13 @@ Hotfix 002 is PR 9 (`cursor/compact-drawers-71ee`): on the phone the header show
 
 Packets 001–006 are on `main`. Packet 007 stays hold. Packet 008 (Factory Pulse) plants on PR 7, branch `cursor/live-factory-states-7b9a`. Do not reopen PR 4. Do not bring the work list back.
 
-`TOWER_REF` selects a branch. Unset, the desk follows the operating factory; `source.json` is the fallback. Fixture `9c45f19` still has no plate. Walk plates with `scripts/plate-fixture.mjs` then `scripts/walk-plates.mjs`. Walk prose with `scripts/walk-desk.mjs`. Walk interaction with `scripts/walk-ixd.mjs`. Compact with `scripts/walk-mobile.mjs`.
+Outside production, `TOWER_REF` selects a branch. Unset, the desk follows the operating factory; `source.json` is the fallback. Production ignores that pin. Fixture `9c45f19` still has no plate. Walk plates with `scripts/plate-fixture.mjs` then `scripts/walk-plates.mjs`. Walk prose with `scripts/walk-desk.mjs`. Walk interaction with `scripts/walk-ixd.mjs`. Compact with `scripts/walk-mobile.mjs`.
 
 How to run:
 
 - `npm run dev` — Vite. `GET /api/snapshot` reads the configured factory branch. Fixture/local plate images are `GET /api/tree-file?path=`. `GET /api/v1` and `POST /api/mcp` are the authenticated read. Set `TRIGGER_READ_TOKEN`.
 - `node scripts/walk-mcp.mjs` — official MCP client. `MCP_URL` defaults to `http://127.0.0.1:4173/api/mcp`.
-- `TOWER_REF` selects another branch and skips operating-factory resolution. `TOWER_SOURCE=configured` reads `source.json` only. `TOWER_FIXTURE` reads a tree and skips GitHub. `TOWER_FAIL_FLAG` contents `1` fails the read and keeps the last snapshot.
+- Outside production, `TOWER_REF` selects another branch and skips operating-factory resolution. `TOWER_SOURCE=configured` reads `source.json` only. Production ignores both. `TOWER_FIXTURE` reads a tree and skips GitHub. `TOWER_FAIL_FLAG` contents `1` fails the read and keeps the last snapshot.
 - `TOWER_READ=github` uses GitHub file fetches (Vercel does this). GitHub plate `img` src stays raw.githubusercontent.com.
 - `npm run build`, then `npm start`. `PORT` defaults to 4173.
 

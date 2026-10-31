@@ -144,6 +144,8 @@ export function App() {
             {snapshot ? (
               <FactoryPulseBar
                 pulse={snapshot.pulse}
+                explanation={snapshot.explanation}
+                pages={snapshot.pages}
                 readAt={snapshot.readAt}
                 scopeStatus={snapshot.scope.status}
                 activation={snapshot.activation}

@@ -3,6 +3,7 @@
  * Display strings are derived here, once. This file has no Tower paths and no rendering.
  */
 
+import { unknownWork, type Actor, type FactoryExplanation, type Situation, type WorkExplanation } from "./tower/explain.ts";
 import { projectPulse, type FactoryPulse } from "./tower/pulse.ts";
 
 export const REFRESH_MS = 60_000;
@@ -72,6 +73,16 @@ export type LedgerPacket = {
   dispatch: DispatchRecord | null;
   dispatchHistory?: DispatchRecord[];
   execution: { mode: "manual" | "automatic"; checks: CheckEvidence[] } | null;
+  siblings?: { id: string; basis: string; note?: string }[];
+};
+
+export type LedgerRelease = {
+  id: string;
+  packetIds: string[];
+  prNumber: number | null;
+  prUrl: string | null;
+  openedAt: string | null;
+  mergeSha: string | null;
 };
 
 export type EvidencePresence = "yes" | "no" | "unknown";
@@ -115,6 +126,11 @@ export type GithubPreview = {
   sha: string | null;
 };
 
+export type GithubFile = {
+  filename: string;
+  status: string | null;
+};
+
 export type GithubEvidence = {
   available: boolean;
   unavailableReason: string | null;
@@ -123,6 +139,7 @@ export type GithubEvidence = {
   latestSha: string | null;
   commits: GithubCommit[];
   checks: GithubCheck[];
+  files: GithubFile[];
   preview: GithubPreview | null;
   merge: { merged: boolean | null; sha: string | null; url: string | null };
 };
@@ -147,6 +164,12 @@ export type PageBase = {
   inside: string | null;
   dependsOn: string[];
   updatedAt: string | null;
+  where: string;
+  happening: string;
+  why: string;
+  next: string;
+  who: Actor;
+  situation: Situation;
 };
 
 export type InitiativePage = PageBase & {
@@ -195,6 +218,8 @@ export type PacketPage = PageBase & {
   plates: PacketPlates;
   lifecycle: LifecycleStep[];
   github: GithubEvidence;
+  ledgerRelease: LedgerRelease | null;
+  siblings: { id: string; basis: string; note?: string }[];
 };
 
 export type Page = InitiativePage | PacketPage;
@@ -216,6 +241,7 @@ export type Snapshot = {
   repo: string;
   factoryPull: FactoryPull | null;
   pulse: FactoryPulse;
+  explanation: FactoryExplanation | null;
   pages: Page[];
 };
 
@@ -250,6 +276,8 @@ export type Gathered = {
   initiatives: GatheredInitiative[];
   packets: GatheredPacket[];
   pulse?: FactoryPulse;
+  explanation?: FactoryExplanation | null;
+  releases?: LedgerRelease[];
 };
 
 export type SnapshotBody = {
@@ -516,6 +544,7 @@ export function emptyGithub(reason: string, checks: GithubCheck[] = []): GithubE
     latestSha: null,
     commits: [],
     checks,
+    files: [],
     preview: null,
     merge: { merged: null, sha: null, url: null },
   };
@@ -710,6 +739,7 @@ export function assemble(gathered: Gathered): Snapshot {
   const pages: Page[] = [];
   for (const item of initiatives) {
     const evidence = initiativeEvidence(item.raw, packets);
+    const work = workFor(gathered.explanation, item.raw.id, item.raw.investigation);
     const page: InitiativePage = {
       id: item.raw.id,
       type: "Initiative",
@@ -722,6 +752,7 @@ export function assemble(gathered: Gathered): Snapshot {
       inside: null,
       dependsOn: [...item.raw.dependsOn],
       updatedAt: item.raw.updatedAt,
+      ...stated(work),
       queue: item.raw.queue,
       session: item.raw.session,
       priority: item.raw.priority,
@@ -743,10 +774,10 @@ export function assemble(gathered: Gathered): Snapshot {
     };
     pages.push(page);
     for (const packet of byInitiative.get(item.raw.id) ?? []) {
-      pages.push(toPacket(packet, item.raw.module, gathered.readAt, repo));
+      pages.push(toPacket(packet, item.raw.module, gathered.readAt, repo, gathered.explanation, gathered.releases ?? []));
     }
   }
-  for (const packet of orphans) pages.push(toPacket(packet, "", gathered.readAt, repo));
+  for (const packet of orphans) pages.push(toPacket(packet, "", gathered.readAt, repo, gathered.explanation, gathered.releases ?? []));
 
   const pulse =
     gathered.pulse ??
@@ -803,14 +834,43 @@ export function assemble(gathered: Gathered): Snapshot {
     repo,
     factoryPull: null,
     pulse,
+    explanation: gathered.explanation ?? null,
     pages,
   };
 }
 
-function toPacket(packet: GatheredPacket, module: string, readAt: string, repo: string): PacketPage {
+function stated(work: WorkExplanation): Pick<PageBase, "where" | "happening" | "why" | "next" | "who" | "situation"> {
+  return {
+    where: work.where,
+    happening: work.happening,
+    why: work.why,
+    next: work.next,
+    who: work.who,
+    situation: work.situation,
+  };
+}
+
+function workFor(explanation: FactoryExplanation | null | undefined, id: string, where: string): WorkExplanation {
+  return explanation?.packets.find((item) => item.id === id) ?? explanation?.initiatives.find((item) => item.id === id) ?? unknownWork(id, where);
+}
+
+function releaseFor(packetId: string, releases: LedgerRelease[]): LedgerRelease | null {
+  const rows = releases.filter((release) => release.packetIds.includes(packetId));
+  return rows.find((release) => release.prNumber != null && !release.mergeSha) ?? rows[0] ?? null;
+}
+
+function toPacket(
+  packet: GatheredPacket,
+  module: string,
+  readAt: string,
+  repo: string,
+  explanation: FactoryExplanation | null | undefined,
+  releases: LedgerRelease[],
+): PacketPage {
   const raw = packet.raw;
   const evidence = packetEvidence(raw);
   const github = emptyGithub("not requested", ledgerChecks(raw, repo));
+  const work = workFor(explanation, raw.id, raw.stage);
   return {
     id: raw.id,
     type: "Packet",
@@ -823,6 +883,7 @@ function toPacket(packet: GatheredPacket, module: string, readAt: string, repo: 
     inside: raw.initiativeId,
     dependsOn: [],
     updatedAt: null,
+    ...stated(work),
     initiativeId: raw.initiativeId,
     wake: raw.wake,
     hold: raw.hold === true,
@@ -845,6 +906,8 @@ function toPacket(packet: GatheredPacket, module: string, readAt: string, repo: 
     plates: packet.plates ?? emptyPlates(),
     lifecycle: packetLifecycle(raw, readAt, github),
     github,
+    ledgerRelease: releaseFor(raw.id, releases),
+    siblings: (raw.siblings ?? []).map((link) => ({ ...link })),
   };
 }
 

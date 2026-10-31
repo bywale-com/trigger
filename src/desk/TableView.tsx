@@ -143,6 +143,8 @@ export const COLUMN_BASE = {
   type: 100,
   module: 196,
   stage: 112,
+  why: 240,
+  next: 220,
   execution: 156,
   evidence: 188,
   inside: 140,
@@ -332,6 +334,28 @@ export function TableView({
               width: widths.stage,
               render: (stage: string) => (
                 <FilterChip field="Stage" value={stageLabel(stage)} color={stageColor(stage)} filters={filters} onFilter={onFilter} />
+              ),
+            },
+            {
+              title: title("Why", "why"),
+              dataIndex: "why",
+              width: widths.why,
+              ellipsis: true,
+              render: (value: string) => (
+                <span className="desk-sentence" title={value}>
+                  {value}
+                </span>
+              ),
+            },
+            {
+              title: title("Next", "next"),
+              dataIndex: "next",
+              width: widths.next,
+              ellipsis: true,
+              render: (value: string) => (
+                <span className="desk-sentence" title={value}>
+                  {value}
+                </span>
               ),
             },
             {

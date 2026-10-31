@@ -6,6 +6,7 @@ Work repo. V1 direction: [`docs/register/PRODUCT-DIRECTION-V1.md`](docs/register
 
 Newest first. On completion of a packet or hotfix the Engineer **prepends** one line: date · ref · PR — the change, because. One sentence.
 
+- 2026-10-31 · packet 009 · PR 15 — the pulse prints Tower’s factory explanation and the open releases sit in that drawer, because the desk was writing its own sentences and the founder reviews a release from the ledger.
 - 2026-10-31 · hotfix 007 · PR 16 — production follows the operating factory. `TOWER_REF` and `TOWER_SOURCE` do not pin it, and a missing signal does not serve `source.json`.
 - 2026-10-31 · hotfix 006 · PR 14 — the OAuth functions ship `src/observe` and load `oauth.js`, because the compiled module imports `auth.ts` and that file was missing, so the route died on invocation.
 - 2026-10-31 · hotfix 005 · PR 13 — the OAuth function config no longer sets `runtime` to `nodejs20.x`, because that value is not a runtime package and the Vercel build stops on `invalid_function_runtime`.
